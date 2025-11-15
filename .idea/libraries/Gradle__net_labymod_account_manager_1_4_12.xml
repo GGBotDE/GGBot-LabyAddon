@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod:account-manager:1.4.12" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod" artifactId="account-manager" version="1.4.12" baseVersion="1.4.12" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/account-manager/1.4.12/54b719df1a0b17d3c69a8ae14e2e154d9fb4a935/account-manager-1.4.12.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/account-manager/1.4.12/20c3cfcf3cdef1c0c4d0697548c75b2b230ead3f/account-manager-1.4.12-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

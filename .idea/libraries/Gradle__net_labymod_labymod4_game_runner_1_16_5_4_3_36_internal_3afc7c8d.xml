@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:game-runner:1.16.5:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="game-runner" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/game-runner/4.3.36-internal-3afc7c8d/4e0193f58bc2f4c6e19a89d967b7ed7c6de0ea1c/game-runner-4.3.36-internal-3afc7c8d-1.16.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

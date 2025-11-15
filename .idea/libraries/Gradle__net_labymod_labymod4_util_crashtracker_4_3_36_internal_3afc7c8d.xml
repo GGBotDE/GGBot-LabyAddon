@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:util-crashtracker:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="util-crashtracker" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/util-crashtracker/4.3.36-internal-3afc7c8d/fd3ca13095285df7f76dc7bbe172a9da2ccf74d6/util-crashtracker-4.3.36-internal-3afc7c8d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

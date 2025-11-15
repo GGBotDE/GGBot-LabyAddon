@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.imgui:imgui-java-binding:1.0.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.imgui" artifactId="imgui-java-binding" version="1.0.2" baseVersion="1.0.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.imgui/imgui-java-binding/1.0.2/53783ed9b042c508c8a0a97c26f8992a989cfc2c/imgui-java-binding-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.imgui/imgui-java-binding/1.0.2/44ab39292c397116c4b42533c513eaf40a8e9a9c/imgui-java-binding-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

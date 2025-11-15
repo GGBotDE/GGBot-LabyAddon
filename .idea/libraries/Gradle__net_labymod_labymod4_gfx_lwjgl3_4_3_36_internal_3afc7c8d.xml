@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:gfx-lwjgl3:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="gfx-lwjgl3" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/gfx-lwjgl3/4.3.36-internal-3afc7c8d/70a8dbf1eb11dc38aa5507b239cbf69bfd84e4bd/gfx-lwjgl3-4.3.36-internal-3afc7c8d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

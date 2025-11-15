@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: pt.davidafsilva.apple:jkeychain:1.1.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="pt.davidafsilva.apple" artifactId="jkeychain" version="1.1.0" baseVersion="1.1.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pt.davidafsilva.apple/jkeychain/1.1.0/428c91b45e1a34f04cf092e8147a25afa2ede2ab/jkeychain-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pt.davidafsilva.apple/jkeychain/1.1.0/98c6a243ff1e99fba22e6d3d52e6dd8d36ecebd/jkeychain-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

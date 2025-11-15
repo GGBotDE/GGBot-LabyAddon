@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.neoforged.installertools:cli-utils:2.1.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.neoforged.installertools" artifactId="cli-utils" version="2.1.2" baseVersion="2.1.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged.installertools/cli-utils/2.1.2/e5a3115eb9e299117472675946be8a72e4990ad6/cli-utils-2.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.neoforged.installertools/cli-utils/2.1.2/5d4755218f066ee041ce13e244b82be425141232/cli-utils-2.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

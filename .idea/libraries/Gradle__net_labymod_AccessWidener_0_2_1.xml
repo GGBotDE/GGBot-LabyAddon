@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod:AccessWidener:0.2.1" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod" artifactId="AccessWidener" version="0.2.1" baseVersion="0.2.1" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/AccessWidener/0.2.1/50412d15a9dde3d7dba0b2b63c6217c6284fd731/AccessWidener-0.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/AccessWidener/0.2.1/1e6364348a413084676ae9ff149f9a377b861f08/AccessWidener-0.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

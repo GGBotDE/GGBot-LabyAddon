@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="initial Commit">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/game-runner">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/core">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="minecraft/runs/client" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="runtimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testCompileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="api" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testRuntimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+                <item name="project api" type="b3323d55:ExternalSystemViewDefaultContributor$DependencyExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+                <item name="project api" type="b3323d55:ExternalSystemViewDefaultContributor$DependencyExternalSystemNode" />
+                <item name="net.labymod.labymod4:api:4.3.31-internal-0c462027" type="b3323d55:ExternalSystemViewDefaultContributor$DependencyExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="runtimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testCompileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="core" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testRuntimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="game-runner" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="game-runner" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="labymod4-addon-template" type="f1a62948:ProjectNode" />
+                <item name="game-runner" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "BlackThonderJr"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/GGBotDE/GGBot-LabyAddon.git",
+    "accountId": "fd265dde-42fe-4eab-87aa-ba96e4115495"
+  }
+}]]></component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10" javaHome="$USER_HOME$/.jdks/corretto-21.0.7" gradleVersion="8.10" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="34ZSDgJLx6gvvsDjPNYYo5FqB44" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build GGBotAddon.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.GGBotAddon [client_v1.21.4].executor": "Run",
+    "Gradle.GGBotAddon:game-runner [:game-runner:net.minecraft.launchwrapper.Launch.main()].executor": "Run",
+    "Gradle.Load Gradle Dependencies.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Black/Desktop/GGBotAddon/api/src/main/java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.46961805",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Black\Desktop\GGBotAddon\api\src\main\java" />
+      <recent name="C:\Users\Black\Desktop\GGBotAddon\api" />
+      <recent name="C:\Users\Black\Desktop\GGBotAddon" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources\assets\ggbot" />
+      <recent name="C:\Users\Black\Desktop\GGBotAddon\core" />
+      <recent name="C:\Users\Black\Desktop\GGBotAddon\libs" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.GGBotAddon [client_v1.21.4]">
+    <configuration name="client v1.12.2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_12_2" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.12.2&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.12&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.12.2\client-1.12.2-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dminecraft.launcher.brand=${launcher_name}&quot; &quot;-Dminecraft.launcher.version=${launcher_version}&quot; &quot;-Dnet.labymod.running-version=1.12.2&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.16.5" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_16_5" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.16.5&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.16&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.16.5\client-1.16.5-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.16.5&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.17.1" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_17_1" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.17.1&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.17&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.17.1\client-1.17.1-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.17.1&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.18.2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_18_2" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.18.2&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.18&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.18.2\client-1.18.2-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.18.2&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.19.2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_19_2" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.19.2&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.19&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.19.2\client-1.19.2-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.19.2&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.19.3" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_19_3" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.19.3&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;2&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.19.3\client-1.19.3-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.19.3&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.19.4" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_19_4" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.19.4&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;3&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.19.4\client-1.19.4-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.19.4&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.20.1" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_20_1" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.20.1&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;5&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.20.1\client-1.20.1-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dnet.labymod.running-version=1.20.1&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.20.2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_20_2" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.20.2&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;8&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.20.2\client-1.20.2-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.20.2&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.20.4" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_20_4" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.20.4&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;12&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.20.4\client-1.20.4-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.20.4&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.20.5" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_20_5" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.20.5&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;16&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.20.5\client-1.20.5-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.20.5&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.20.6" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_20_6" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.20.6&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;16&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.20.6\client-1.20.6-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.20.6&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.21" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_21" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.21&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;17&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.21\client-1.21-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.21&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.21.1" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_21_1" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.21.1&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;17&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.21.1\client-1.21.1-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.21.1&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.21.3" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_21_3" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.21.3&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;18&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.21.3\client-1.21.3-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.21.3&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.21.4" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_21_4" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.21.4&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;19&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.21.4\client-1.21.4-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.21.4&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.21.5" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_21_5" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.21.5&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;24&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.21.5\client-1.21.5-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_18_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_6\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_4\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_12_2\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_4\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_4\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_17_1\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21_5\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_16_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_19_3\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_5\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_21\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_20_2\resources&quot; &quot;-Dnet.labymod.running-version=1.21.5&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot; &quot;-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump&quot; &quot;-Dminecraft.launcher.brand=LabyGradle&quot; &quot;-Dminecraft.launcher.version=0.5.9&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="client v1.8.9" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.minecraft.launchwrapper.Launch" />
+      <module name="ggbot-addon.game-runner.v1_8_9" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;--dummyMinecraftClass&quot; &quot;net.minecraft.client.main.Main&quot; &quot;--addon-dev-environment&quot; &quot;true&quot; &quot;--tweakClass&quot; &quot;net.labymod.core.loader.vanilla.launchwrapper.LabyModLaunchWrapperTweaker&quot; &quot;--labymod-dev-environment&quot; &quot;true&quot; &quot;--version&quot; &quot;1.8.9&quot; &quot;--gameDir&quot; &quot;C:\Users\Black\Desktop\GGBotAddon\run\client&quot; &quot;--assetsDir&quot; &quot;C:\Users\Black\.gradle\caches\labygradle\labymod-cache\assets&quot; &quot;--assetIndex&quot; &quot;1.8&quot; &quot;--accessToken&quot; &quot;0&quot;" />
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="VM_PARAMETERS" value="&quot;-Dnet.labymod.obfuscated-jar-path=C:\Users\Black\.gradle\caches\labygradle\minecraft-cache\net\minecraft\client\1.8.9\client-1.8.9-obfuscated.jar&quot; &quot;-Dnet.labymod.addons.potential-classpath=C:\Users\Black\Desktop\GGBotAddon\api\build\tmp;C:\Users\Black\Desktop\GGBotAddon\api\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build;C:\Users\Black\Desktop\GGBotAddon\game-runner\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\libs;C:\Users\Black\Desktop\GGBotAddon\game-runner\build;C:\Users\Black\Desktop\GGBotAddon\api\build\classes;C:\Users\Black\Desktop\GGBotAddon\api\build\generated;C:\Users\Black\Desktop\GGBotAddon\api\build;C:\Users\Black\Desktop\GGBotAddon\api\build\libs;C:\Users\Black\Desktop\GGBotAddon\core\build\classes;C:\Users\Black\Desktop\GGBotAddon\core\build\generated;C:\Users\Black\Desktop\GGBotAddon\core\build\resources;C:\Users\Black\Desktop\GGBotAddon\core\build\tmp&quot; &quot;-Dnet.labymod.debugging.hot-file-reloading-directories=C:\Users\Black\Desktop\GGBotAddon\api\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\api\src\test\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\combined\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\v1_8_9\resources;C:\Users\Black\Desktop\GGBotAddon\core\src\main\resources;C:\Users\Black\Desktop\GGBotAddon\game-runner\src\test\resources&quot; &quot;-Dminecraft.launcher.brand=${launcher_name}&quot; &quot;-Dminecraft.launcher.version=${launcher_version}&quot; &quot;-Dnet.labymod.running-version=1.8.9&quot; &quot;-Dmixin.debug=true&quot; &quot;-Dnet.labymod.debugging.all=true&quot; &quot;-Dmixin.env.disableRefMap=true&quot; &quot;-Xmx2G&quot; &quot;-XX:+UnlockExperimentalVMOptions&quot; &quot;-XX:+UseG1GC&quot; &quot;-XX:G1NewSizePercent=20&quot; &quot;-XX:G1ReservePercent=20&quot; &quot;-XX:MaxGCPauseMillis=50&quot; &quot;-XX:G1HeapRegionSize=32M&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GGBotAddon [client_v1.21.4]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="client_v1.21.4" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.GGBotAddon [client_v1.21.4]" />
+        <item itemvalue="Gradle.GGBotAddon [client_v1.21.4]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="" />
+      <created>1761419482229</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761419482229</updated>
+    </task>
+    <task id="LOCAL-00001" summary="initial Commit">
+      <option name="closed" value="true" />
+      <created>1763237891250</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763237891250</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial Commit" />
+  </component>
+</project>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.mojang:jtracy:natives-windows:1.0.29" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.mojang" artifactId="jtracy" version="1.0.29" baseVersion="1.0.29" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mojang/jtracy/1.0.29/e05332cb31c7ae582dc8d8bd1bffd47c2ff7636f/jtracy-1.0.29-natives-windows.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mojang/jtracy/1.0.29/335f3d8b2db1fd977b541c7e7a25133e5e10f1d1/jtracy-1.0.29-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

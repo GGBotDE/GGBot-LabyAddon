@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labypeer:common:4.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labypeer" artifactId="common" version="4.2" baseVersion="4.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labypeer/common/4.2/cb3ba99c2009ce8682e9908c2ad19690b59ff1d/common-4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

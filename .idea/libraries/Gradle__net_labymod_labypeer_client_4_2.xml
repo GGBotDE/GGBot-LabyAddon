@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labypeer:client:4.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labypeer" artifactId="client" version="4.2" baseVersion="4.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labypeer/client/4.2/ebe29379d3f0b9652f276cd9561da65d01f9ceee/client-4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

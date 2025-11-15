@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jitsi:jicoco-config:1.1-127-gf49982f" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.jitsi" artifactId="jicoco-config" version="1.1-127-gf49982f" baseVersion="1.1-127-gf49982f" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jitsi/jicoco-config/1.1-127-gf49982f/618c96152f568d7a735c692d168f1c7bea2edff5/jicoco-config-1.1-127-gf49982f.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jitsi/jicoco-config/1.1-127-gf49982f/39fd516fa70f52196740d3d43418a7b968ceb5f4/jicoco-config-1.1-127-gf49982f-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

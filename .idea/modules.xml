@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggbot-addon.iml" filepath="$PROJECT_DIR$/.idea/modules/ggbot-addon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.combined.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.combined.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.main.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.test.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_1.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_4.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_1.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_4.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_5.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_8_9.iml" filepath="$PROJECT_DIR$/.idea/modules/game-runner/ggbot-addon.game-runner.v1_8_9.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggbot-addon.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ggbot-addon.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ggbot-addon.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ggbot-addon.test.iml" />
+    </modules>
+  </component>
+</project>

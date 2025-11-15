@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:util-annotation:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="util-annotation" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/util-annotation/4.3.36-internal-3afc7c8d/6eaa192ad70d5dc6ab924ee2e9f5d1953fe4e5d2/util-annotation-4.3.36-internal-3afc7c8d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/util-annotation/4.3.36-internal-3afc7c8d/e2cf3f7ecb0eff43ff788184c66b7a4d26750a66/util-annotation-4.3.36-internal-3afc7c8d-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

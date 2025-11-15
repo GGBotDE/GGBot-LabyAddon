@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:util-mixin:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="util-mixin" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/util-mixin/4.3.36-internal-3afc7c8d/bc303e627f3bac88d9740c1b423e21bcbf32586d/util-mixin-4.3.36-internal-3afc7c8d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/util-mixin/4.3.36-internal-3afc7c8d/91a70582535c2811b4e597d0ba18bbfeae16a8dd/util-mixin-4.3.36-internal-3afc7c8d-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

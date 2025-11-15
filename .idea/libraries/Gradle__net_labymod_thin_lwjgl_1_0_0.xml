@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod:thin-lwjgl:1.0.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod" artifactId="thin-lwjgl" version="1.0.0" baseVersion="1.0.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/labygradle/labymod-cache/net/labymod/thin-lwjgl/1.0.0/thin-lwjgl-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

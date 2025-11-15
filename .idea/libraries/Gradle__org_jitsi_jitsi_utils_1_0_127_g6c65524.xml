@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jitsi:jitsi-utils:1.0-127-g6c65524" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.jitsi" artifactId="jitsi-utils" version="1.0-127-g6c65524" baseVersion="1.0-127-g6c65524" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jitsi/jitsi-utils/1.0-127-g6c65524/18f6dcc55109984b20661d87481549641c8b9b1c/jitsi-utils-1.0-127-g6c65524.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jitsi/jitsi-utils/1.0-127-g6c65524/edcf49aa4058986fbd764024852b14f21e057ea6/jitsi-utils-1.0-127-g6c65524-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

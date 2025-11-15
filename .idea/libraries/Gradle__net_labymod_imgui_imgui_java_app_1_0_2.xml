@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.imgui:imgui-java-app:1.0.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.imgui" artifactId="imgui-java-app" version="1.0.2" baseVersion="1.0.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.imgui/imgui-java-app/1.0.2/94500f036d9ad0c7d7e8d8ce3af8e9543b29e620/imgui-java-app-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.imgui/imgui-java-app/1.0.2/a2c71538a1483b578a1137bf1d0f95256723f486/imgui-java-app-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

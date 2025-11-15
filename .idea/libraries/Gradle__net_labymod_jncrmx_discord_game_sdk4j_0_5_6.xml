@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.jncrmx:discord-game-sdk4j:0.5.6" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.jncrmx" artifactId="discord-game-sdk4j" version="0.5.6" baseVersion="0.5.6" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.jncrmx/discord-game-sdk4j/0.5.6/eea906712d00c14db682687c0d6efbb7b4408f43/discord-game-sdk4j-0.5.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.jncrmx/discord-game-sdk4j/0.5.6/ca6c3087e9ec23d214c3d9331d5f927cb0ed3155/discord-game-sdk4j-0.5.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

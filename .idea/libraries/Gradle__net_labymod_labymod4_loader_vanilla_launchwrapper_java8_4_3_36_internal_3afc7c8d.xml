@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod.labymod4:loader-vanilla-launchwrapper-java8:4.3.36-internal-3afc7c8d" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod.labymod4" artifactId="loader-vanilla-launchwrapper-java8" version="4.3.36-internal-3afc7c8d" baseVersion="4.3.36-internal-3afc7c8d" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/loader-vanilla-launchwrapper-java8/4.3.36-internal-3afc7c8d/6dd675ff56bb50424fbdb840ffb4d15dcd2ae9b7/loader-vanilla-launchwrapper-java8-4.3.36-internal-3afc7c8d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/loader-vanilla-launchwrapper-java8/4.3.36-internal-3afc7c8d/f016e7c88932caecb906b9cea20628b51f204a22/loader-vanilla-launchwrapper-java8-4.3.36-internal-3afc7c8d-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

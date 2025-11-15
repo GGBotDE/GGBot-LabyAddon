@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.opentelecoms.sdp:java-sdp-nist-bridge:1.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.opentelecoms.sdp" artifactId="java-sdp-nist-bridge" version="1.2" baseVersion="1.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opentelecoms.sdp/java-sdp-nist-bridge/1.2/687e316fecc651d3103a3b3eebf1b050f0a26f23/java-sdp-nist-bridge-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opentelecoms.sdp/java-sdp-nist-bridge/1.2/da8472c2dcaad7868bcf07fb5ab3861e195ec926/java-sdp-nist-bridge-1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

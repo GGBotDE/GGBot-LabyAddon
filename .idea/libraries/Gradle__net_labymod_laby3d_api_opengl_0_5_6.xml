@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.labymod:laby3d-api-opengl:0.5.6" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.labymod" artifactId="laby3d-api-opengl" version="0.5.6" baseVersion="0.5.6" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/laby3d-api-opengl/0.5.6/6530ebfbdf19bdd5e0915f0fa86d6a1e052bb72a/laby3d-api-opengl-0.5.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod/laby3d-api-opengl/0.5.6/5855b65a6ceb7607414d4503cccf2284ecfe44b9/laby3d-api-opengl-0.5.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
