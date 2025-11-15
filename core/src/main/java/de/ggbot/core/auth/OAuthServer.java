@@ -1,0 +1,176 @@
+package de.ggbot.core.auth;
+
+import com.google.gson.JsonObject;
+import net.labymod.api.util.io.web.request.Request;
+import net.labymod.api.util.io.web.request.Request.Method;
+import net.labymod.api.util.io.web.request.Response;
+import de.ggbot.core.GGBot;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
+/**
+ * OAuth-Server zur lokalen Verarbeitung der Redirect-URL und zum
+ * Abrufen des OAuth-Codes sowie Access-Tokens vom GGBot OAuth-System.
+ */
+public class OAuthServer {
+
+  /**
+   * Port, auf dem der lokale Redirect-Server läuft.
+   */
+  public static final int REDIRECT_PORT = 8090;
+
+  /**
+   * URL, auf die der OAuth-Provider zurückleitet.
+   */
+  public static final String REDIRECT_URL = String.format("http://localhost:%s", OAuthServer.REDIRECT_PORT);
+
+  /**
+   * Client-ID der Anwendung.
+   */
+  public static final String CLIENT_ID = "603c8d33-ed2c-442a-b7fd-113fa388069b";
+
+  /**
+   * Angeforderte OAuth-Scopes.
+   */
+  public static final String SCOPES = "read:bots write:bots execute:bots";
+
+  private final GGBot addon;
+  private final ServerSocket serverSocket;
+  private final ExecutorService executor;
+
+  /**
+   * Erstellt einen neuen lokalen OAuth-Redirect-Server.
+   *
+   * @param addon Addon-Instanz
+   * @throws IOException falls der ServerSocket nicht gestartet werden kann
+   */
+  public OAuthServer(GGBot addon) throws IOException {
+    this.addon = addon;
+    this.serverSocket = new ServerSocket(OAuthServer.REDIRECT_PORT);
+    this.executor = Executors.newSingleThreadExecutor();
+  }
+
+  /**
+   * Wartet asynchron auf den Authorization-Code und liefert ihn an den Callback.
+   *
+   * @param callback Callback, der den Code erhält
+   */
+  public void listenForCodeAsync(Consumer<String> callback) {
+    this.executor.execute(() -> callback.accept(this.listenForCode()));
+  }
+
+  /**
+   * Wartet synchron auf den OAuth-Redirect und liest den Authorization-Code aus.
+   *
+   * @return der erhaltene Code oder null bei einem Fehler
+   */
+  public String listenForCode() {
+    while (this.serverSocket.isBound()) {
+      try {
+        Socket socket = this.serverSocket.accept();
+        Scanner scanner = new Scanner(socket.getInputStream());
+        String path = scanner.nextLine().split(" ")[1];
+
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+        printWriter.write("HTTP/1.0 200 OK\r\n");
+        printWriter.write("Content-Type: html; charset=UTF-8\r\n");
+        printWriter.write("\r\n");
+        printWriter.write("You can close this window now");
+        printWriter.flush();
+
+        printWriter.close();
+        scanner.close();
+        socket.close();
+        this.close();
+
+        if (path.contains("=") && path.contains("?code=")) {
+          return path.substring(path.indexOf("=") + 1);
+        } else if (path.contains("?error=")) {
+          return null;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+        break;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Schließt den lokalen OAuth-Server.
+   */
+  public void close() {
+    try {
+      this.serverSocket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Erstellt die vollständige OAuth-Authorize-URL.
+   *
+   * @return URL zum Öffnen im Browser
+   * @throws IOException falls die URL ungültig ist
+   */
+  public URL getUrl() throws IOException {
+    return new URL(String.format(
+        "https://api.ggbot.de/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s&scope=%s",
+        CLIENT_ID, REDIRECT_URL, SCOPES
+    ));
+  }
+
+  /**
+   * Gibt die OAuth-Authorize-URL als String zurück.
+   *
+   * @return vollständige URL als String
+   */
+  public String getStringUrl() {
+    return String.format(
+        "https://api.ggbot.de/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s&scope=%s",
+        CLIENT_ID, REDIRECT_URL, SCOPES
+    );
+  }
+
+  /**
+   * Ruft asynchron den Access Token anhand des Codes ab.
+   *
+   * @param code Authorization-Code
+   * @param callback Callback für das JSON-Ergebnis
+   */
+  public void getTokenAsync(String code, Consumer<JsonObject> callback) {
+    this.executor.execute(() -> callback.accept(this.getData(code)));
+  }
+
+  /**
+   * Sendet den Token-Request an die OAuth-API.
+   *
+   * @param code Authorization-Code
+   * @return JSON-Antwort der API
+   */
+  public JsonObject getData(String code) {
+    Map<String, String> body = new HashMap<>();
+    body.put("grant_type", "authorization_code");
+    body.put("code", code);
+    body.put("redirect_uri", REDIRECT_URL);
+    body.put("client_id", CLIENT_ID);
+
+    Response<JsonObject> result = Request.ofGson(JsonObject.class)
+        .method(Method.POST)
+        .url("https://api.ggbot.de/oauth/token")
+        .body(body)
+        .executeSync();
+
+    addon.logger().info(result.get().toString());
+    return result.get();
+  }
+}

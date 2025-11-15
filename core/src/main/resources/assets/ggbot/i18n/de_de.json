@@ -1,0 +1,107 @@
+{
+  "ggbot": {
+    "settings": {
+      "header": {
+        "Addon": {
+          "name": "Addon"
+        },
+        "Bot": {
+          "name": "Bot"
+        },
+        "Authentication": {
+          "name": "Authentifizierung"
+        }
+      },
+      "enabled": {
+        "name": "Aktiviert"
+      },
+      "botlist": {
+        "name": "Verfügbare Bots"
+      },
+      "auth": {
+        "name": "GGBot Account authentifizieren",
+        "text": "Auth"
+      },
+      "reauth": {
+        "name": "GGBot Account neu authentifizieren",
+        "text": "Re-Auth"
+      },
+      "discord": {
+        "name": "GGBot Discord",
+        "text": "Beitreten"
+      },
+      "startSelectedBot": {
+        "name": "Ausgewählten Bot starten",
+        "text": "Start"
+      },
+      "stopSelectedBot": {
+        "name": "Ausgewählten Bot stoppen",
+        "text": "Stop"
+      },
+      "prefixSub": {
+        "name": "Bot Befehle",
+        "prefix": {
+          "name": "Befehlspräfix"
+        }
+      }
+    },
+    "hudWidget": {
+      "botname": {
+        "name": "Bot Name"
+      },
+      "status": {
+        "name": "Status"
+      }
+    },
+    "messages": {
+      "join": {
+        "prefix1": "-----------------[",
+        "prefix2": "]-----------------",
+        "prefix3": "--------------------------------------------",
+        "prefixname": " GGBot ",
+        "error": {
+          "expired": {
+            "text": "Dein Token ist abgelaufen.",
+            "text2": "Klicke hier, ",
+            "text3": "um ihn zu erneuern."
+          },
+          "authenticate": {
+            "text": "Dein Account wurde noch nicht authentifiziert.",
+            "text2": "Klicke hier, ",
+            "text3": "um ihn zu authentifizieren."
+          }
+        }
+      },
+      "command": {
+        "send": {
+          "error": {
+            "offline": "Fehler: Der Bot ist zurzeit offline."
+          }
+        },
+        "stop": {
+          "error": {
+            "offline": "Der Bot ist bereits offline."
+          }
+        }
+      }
+    },
+    "toasts": {
+      "status": {
+        "info": "INFO",
+        "error": "FEHLER",
+        "upload": "UPLOAD",
+        "download": "DOWNLOAD"
+      },
+      "error": {
+        "text": "Fehler: %s Status: %s"
+      },
+      "info": {
+        "start": "Bot wurde erfolgreich gestartet.",
+        "stop": "Bot wurde erfolgreich gestoppt.",
+        "command": "Befehl wurde erfolgreich gesendet."
+      },
+      "upload": "%s / %s",
+      "download": "%s / %s"
+    }
+  }
+}

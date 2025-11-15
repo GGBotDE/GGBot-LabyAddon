@@ -1,0 +1,107 @@
+{
+  "ggbot": {
+    "settings": {
+      "header": {
+        "Addon": {
+          "name": "Addon (Jo eh)"
+        },
+        "Bot": {
+          "name": "Botl"
+        },
+        "Authentication": {
+          "name": "Authnizzierung, host mi ned"
+        }
+      },
+      "enabled": {
+        "name": "An oder Aus? Joa"
+      },
+      "botlist": {
+        "name": "Alle Bots die da rumhocken"
+      },
+      "auth": {
+        "name": "GGBot Account einfuchsn",
+        "text": "Mach Auth"
+      },
+      "reauth": {
+        "name": "Nochmal Auth, weil warum ned",
+        "text": "Re-Auth lol"
+      },
+      "discord": {
+        "name": "GGBot Discord, kumm ma hi",
+        "text": "Beitritt"
+      },
+      "startSelectedBot": {
+        "name": "Start jetz den Botl",
+        "text": "Los!"
+      },
+      "stopSelectedBot": {
+        "name": "Halt den Bot an",
+        "text": "Stopp!"
+      },
+      "prefixSub": {
+        "name": "Befehle vom Botl",
+        "prefix": {
+          "name": "Prefix, kapiert?"
+        }
+      }
+    },
+    "hudWidget": {
+      "botname": {
+        "name": "Botl Name"
+      },
+      "status": {
+        "name": "Status: Voll krass"
+      }
+    },
+    "messages": {
+      "join": {
+        "prefix1": "-----------------[",
+        "prefix2": "]-----------------",
+        "prefix3": "--------------------------------------------",
+        "prefixname": " GGBot ",
+        "error": {
+          "expired": {
+            "text": "Dein Token is fertig, weg isser.",
+            "text2": "Drück do, ",
+            "text3": "und mach ma a frisches."
+          },
+          "authenticate": {
+            "text": "Dein Account hot no nix gscheid authentifiziert.",
+            "text2": "Klick do, ",
+            "text3": "und mach’s richtig."
+          }
+        }
+      },
+      "command": {
+        "send": {
+          "error": {
+            "offline": "Oida, der Bot is grad offline, chill mal."
+          }
+        },
+        "stop": {
+          "error": {
+            "offline": "Eh, der Bot is scho aus."
+          }
+        }
+      }
+    },
+    "toasts": {
+      "status": {
+        "info": "INFO, na guat",
+        "error": "FEHLAAA",
+        "upload": "HOCHSCHIEBEN",
+        "download": "RUNTERZIEHEN"
+      },
+      "error": {
+        "text": "Fehler, jo eh: %s Status: %s"
+      },
+      "info": {
+        "start": "Botl is am Start, zack!",
+        "stop": "Botl is aus, Ruhe da!",
+        "command": "Befehl gschickt, easy."
+      },
+      "upload": "%s / %s",
+      "download": "%s / %s"
+    }
+  }
+}
