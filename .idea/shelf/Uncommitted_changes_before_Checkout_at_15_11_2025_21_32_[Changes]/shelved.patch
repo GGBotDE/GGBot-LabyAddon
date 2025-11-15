@@ -1,0 +1,262 @@
+Index: .idea/modules/api/ggbot-addon.api.main.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"AdditionalModuleElements\">\r\n    <content url=\"file://$MODULE_DIR$/../../../api/build/generated/sources/annotationProcessor/java/main\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/../../../api/build/generated/sources/annotationProcessor/java/main\" isTestSource=\"false\" generated=\"true\" />\r\n    </content>\r\n  </component>\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/api/ggbot-addon.api.main.iml b/.idea/modules/api/ggbot-addon.api.main.iml
+--- a/.idea/modules/api/ggbot-addon.api.main.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/api/ggbot-addon.api.main.iml	(date 1763238743089)
+@@ -1,10 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module version="4">
+-  <component name="AdditionalModuleElements">
+-    <content url="file://$MODULE_DIR$/../../../api/build/generated/sources/annotationProcessor/java/main">
+-      <sourceFolder url="file://$MODULE_DIR$/../../../api/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
+-    </content>
+-  </component>
+   <component name="FacetManager">
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_21_3.iml	(date 1763238743056)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/core/ggbot-addon.core.main.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"AdditionalModuleElements\">\r\n    <content url=\"file://$MODULE_DIR$/../../../core/build/generated/sources/annotationProcessor/java/main\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/../../../core/build/generated/sources/annotationProcessor/java/main\" isTestSource=\"false\" generated=\"true\" />\r\n    </content>\r\n  </component>\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/core/ggbot-addon.core.main.iml b/.idea/modules/core/ggbot-addon.core.main.iml
+--- a/.idea/modules/core/ggbot-addon.core.main.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/core/ggbot-addon.core.main.iml	(date 1763238743162)
+@@ -1,10 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module version="4">
+-  <component name="AdditionalModuleElements">
+-    <content url="file://$MODULE_DIR$/../../../core/build/generated/sources/annotationProcessor/java/main">
+-      <sourceFolder url="file://$MODULE_DIR$/../../../core/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
+-    </content>
+-  </component>
+   <component name="FacetManager">
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_2.iml	(date 1763238743155)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_3.iml	(date 1763238743138)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_18_2.iml	(date 1763238743143)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_2.iml	(date 1763238743132)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_19_4.iml	(date 1763238743135)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_17_1.iml	(date 1763238743128)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_12_2.iml	(date 1763238743115)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_16_5.iml	(date 1763238743119)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_6.iml	(date 1763238743106)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
+Index: .idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module version=\"4\">\r\n  <component name=\"FacetManager\">\r\n    <facet type=\"minecraft\" name=\"Minecraft\">\r\n      <configuration>\r\n        <autoDetectTypes>\r\n          <platformType>MIXIN</platformType>\r\n          <platformType>MCP</platformType>\r\n        </autoDetectTypes>\r\n        <projectReimportVersion>1</projectReimportVersion>\r\n      </configuration>\r\n    </facet>\r\n  </component>\r\n  <component name=\"McpModuleSettings\">\r\n    <option name=\"srgType\" value=\"SRG\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml
+--- a/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml	(revision 44680d30b027a1dbbec25564a6ae3e08f6e3d604)
++++ b/.idea/modules/game-runner/ggbot-addon.game-runner.v1_20_5.iml	(date 1763238743111)
+@@ -4,8 +4,8 @@
+     <facet type="minecraft" name="Minecraft">
+       <configuration>
+         <autoDetectTypes>
+-          <platformType>MIXIN</platformType>
+           <platformType>MCP</platformType>
++          <platformType>MIXIN</platformType>
+         </autoDetectTypes>
+         <projectReimportVersion>1</projectReimportVersion>
+       </configuration>
