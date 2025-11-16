@@ -17,6 +17,7 @@ import org.openapitools.client.ApiCallback;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.ApiResponse;
+import org.openapitools.client.BotLogEntry;
 import org.openapitools.client.Configuration;
 import org.openapitools.client.Pair;
 import org.openapitools.client.ProgressRequestBody;
@@ -36,6 +37,7 @@ import org.openapitools.client.model.StatisticsQuery;
 import org.openapitools.client.model.StatisticsResult;
 import org.openapitools.client.model.UpdateBotKeyboardStateRequest;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -577,7 +579,7 @@ public class BotsApi {
      */
     public ApiResponse<List<Command>> getBotCommandsWithHttpInfo(@javax.annotation.Nonnull String token) throws ApiException {
         okhttp3.Call localVarCall = getBotCommandsValidateBeforeCall(token, null);
-        Type localVarReturnType = new TypeToken<List<Command>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BotLogEntry>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -687,9 +689,9 @@ public class BotsApi {
         <tr><td> 404 </td><td> Bot not found </td><td>  -  </td></tr>
      </table>
      */
-    public List<String> getBotLogs(@javax.annotation.Nonnull String token) throws ApiException {
-        ApiResponse<List<String>> localVarResp = getBotLogsWithHttpInfo(token);
-        return localVarResp.getData();
+    public List<BotLogEntry> getBotLogs(@Nonnull String token) throws ApiException {
+      ApiResponse<List<BotLogEntry>> localVarResp = getBotLogsWithHttpInfo(token);
+      return localVarResp.getData();
     }
 
     /**
@@ -706,9 +708,9 @@ public class BotsApi {
         <tr><td> 404 </td><td> Bot not found </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<String>> getBotLogsWithHttpInfo(@javax.annotation.Nonnull String token) throws ApiException {
+    public ApiResponse<List<BotLogEntry>> getBotLogsWithHttpInfo(@javax.annotation.Nonnull String token) throws ApiException {
         okhttp3.Call localVarCall = getBotLogsValidateBeforeCall(token, null);
-        Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BotLogEntry>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -727,10 +729,10 @@ public class BotsApi {
         <tr><td> 404 </td><td> Bot not found </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getBotLogsAsync(@javax.annotation.Nonnull String token, final ApiCallback<List<String>> _callback) throws ApiException {
+    public okhttp3.Call getBotLogsAsync(@javax.annotation.Nonnull String token, final ApiCallback<List<BotLogEntry>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getBotLogsValidateBeforeCall(token, _callback);
-        Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<BotLogEntry>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
