@@ -1,9 +1,18 @@
 package de.ggbot.core.listener;
 
+import net.labymod.api.Laby;
+import net.labymod.api.client.chat.ChatMessage;
+import net.labymod.api.client.chat.advanced.IngameChatTab;
+import net.labymod.api.client.chat.filter.ChatFilter;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.component.format.TextDecoration;
+import net.labymod.api.configuration.labymod.chat.AdvancedChatMessage;
+import net.labymod.api.configuration.labymod.chat.ChatTab;
+import net.labymod.api.configuration.labymod.chat.ChatWindow;
+import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig;
+import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig.Type;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.network.server.ServerJoinEvent;
@@ -14,6 +23,9 @@ import de.ggbot.core.widget.StatusWidget;
 import org.openapitools.client.model.Bot;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static de.ggbot.core.api.BotRequests.bots;
 
@@ -71,8 +83,10 @@ public class AuthEvent {
     }else{
       botLoad();
     }
+
   }
-  @Subscribe
+
+    @Subscribe
   public void onServerDisconnect(ServerDisconnectEvent e) {
     if(authServer != null)
       authServer.close();
