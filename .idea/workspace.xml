@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="initial Commit numero 2">
-      <change afterPath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/BotLogEntry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotLogsSubConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/SetupBotLogsChannel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
+    <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="Listener for botlog added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/api/BotsApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/api/BotsApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/ChatListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +38,11 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="ggbot-addon" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ggbot-addon" type="f1a62948:ProjectNode" />
+                <item name="game-runner" type="2d1252cf:ModuleNode" />
               </path>
             </expand>
             <select />
@@ -85,6 +80,18 @@
   }
 }</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10" javaHome="$PROJECT_DIR$/../../../../Program Files/Java/jdk-23" gradleVersion="8.10" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/chat/advanced/AdvancedChatController.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/chat/advanced/ChatMessagesWidget.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/chat/advanced/IngameChatTab.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/chat/filter/ChatFilter.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/gui/screen/widget/widgets/input/TextFieldWidget.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/gui/screen/widget/widgets/input/itemstack/ItemStackPickerWidget.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/client/network/server/ServerController.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/configuration/labymod/chat/ChatWindow.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/configuration/labymod/chat/config/RootChatTabConfig.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.labymod.labymod4/api/4.3.36-internal-3afc7c8d/fd4330514433e577157cdac7b861b2e8fb86cac4/api-4.3.36-internal-3afc7c8d-sources.jar!/net/labymod/api/configuration/loader/property/ConfigProperty.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -98,6 +105,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "Gradle.Build GGBotAddon.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
     "Gradle.GGBotAddon [client_v1.21.4].executor": "Run",
@@ -112,11 +120,11 @@
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Black/Desktop/GGBotAddon/api/src/main/java",
+    "last_opened_file_path": "C:/Users/Black/Desktop/GGBotAddon",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.46961805",
-    "settings.editor.selected.configurable": "discord-application",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
@@ -387,12 +395,66 @@
       <option name="project" value="LOCAL" />
       <updated>1763239262427</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="API fixed">
+      <option name="closed" value="true" />
+      <created>1763260769538</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260769538</updated>
+    </task>
+    <task id="LOCAL-00004" summary="imports removed">
+      <option name="closed" value="true" />
+      <created>1763260791106</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260791106</updated>
+    </task>
+    <task id="LOCAL-00005" summary="New Config Settings + Botlog added">
+      <option name="closed" value="true" />
+      <created>1763260814717</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260814717</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Botlog check added">
+      <option name="closed" value="true" />
+      <created>1763260823936</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260823936</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Imports removed">
+      <option name="closed" value="true" />
+      <created>1763260858436</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260858436</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Listener for botlog added">
+      <option name="closed" value="true" />
+      <created>1763260884010</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1763260884010</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial Commit" />
     <MESSAGE value="initial Commit numero 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial Commit numero 2" />
+    <MESSAGE value="API fixed" />
+    <MESSAGE value="imports removed" />
+    <MESSAGE value="New Config Settings + Botlog added" />
+    <MESSAGE value="Botlog check added" />
+    <MESSAGE value="Imports removed" />
+    <MESSAGE value="Listener for botlog added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Listener for botlog added" />
   </component>
 </project>

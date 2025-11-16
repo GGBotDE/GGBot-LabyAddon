@@ -21,13 +21,12 @@ import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
 import net.labymod.api.util.MethodOrder;
 import org.openapitools.client.ApiException;
-import org.openapitools.client.BotLogEntry;
 import java.io.IOException;
 
 @ConfigName("settings")
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
-  private boolean debug = false;
+  private boolean debug = true;
 
   @SwitchSetting @SettingSection("Addon")
   @SpriteSlot(x = 6)

@@ -1,18 +1,9 @@
 package de.ggbot.core.listener;
 
-import net.labymod.api.Laby;
-import net.labymod.api.client.chat.ChatMessage;
-import net.labymod.api.client.chat.advanced.IngameChatTab;
-import net.labymod.api.client.chat.filter.ChatFilter;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.component.format.TextDecoration;
-import net.labymod.api.configuration.labymod.chat.AdvancedChatMessage;
-import net.labymod.api.configuration.labymod.chat.ChatTab;
-import net.labymod.api.configuration.labymod.chat.ChatWindow;
-import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig;
-import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig.Type;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.network.server.ServerJoinEvent;
@@ -23,9 +14,6 @@ import de.ggbot.core.widget.StatusWidget;
 import org.openapitools.client.model.Bot;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import static de.ggbot.core.api.BotRequests.bots;
 
@@ -43,8 +31,8 @@ public class AuthEvent {
     authServer = new OAuthServer(addon);
     if(!GGBot.isAuth){
       Component message = Component.text()
-          .append(Component.text("ggbot.messages.join.prefix1").color(NamedTextColor.BLUE))
-          .append(Component.text("ggbot.messages.join.prefixname").color(NamedTextColor.AQUA))
+          .append(Component.translatable("ggbot.messages.join.prefix1").color(NamedTextColor.BLUE))
+          .append(Component.translatable("ggbot.messages.join.prefixname").color(NamedTextColor.AQUA))
           .append(Component.translatable("ggbot.messages.join.prefix2").color(NamedTextColor.BLUE))
           .build();
       Component message2;
@@ -72,7 +60,7 @@ public class AuthEvent {
       }
 
       Component message4 = Component.text()
-          .append(Component.text("ggbot.messages.join.prefix3").color(NamedTextColor.BLUE))
+          .append(Component.translatable("ggbot.messages.join.prefix3").color(NamedTextColor.BLUE))
           .build();
 
       addon.displayMessage(message);

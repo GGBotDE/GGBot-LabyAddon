@@ -157,7 +157,6 @@ public class BotRequests {
           public void onSuccess(List<BotLogEntry> result, int statusCode,
               Map<String, List<String>> responseHeaders) {
 
-            // Liste umdrehen
             Collections.reverse(result);
 
             for (BotLogEntry logs : result) {

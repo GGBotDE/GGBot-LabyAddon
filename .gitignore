@@ -1,6 +1,2 @@
 /run/
-/api/build/
-/build/
 /.gradle/
-/core/build/
-/game-runner/build/
