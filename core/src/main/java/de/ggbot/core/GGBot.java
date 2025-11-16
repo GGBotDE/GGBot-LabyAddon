@@ -1,6 +1,7 @@
 package de.ggbot.core;
 
 import de.ggbot.core.listener.ChatListener;
+import de.ggbot.core.listener.SetupBotLogsChannel;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import de.ggbot.core.cfg.BotConfiguration;
@@ -30,6 +31,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
 
     this.registerListener(new AuthEvent(this));
     this.registerListener(new ChatListener(this));
+    this.registerListener(new SetupBotLogsChannel(this));
     BotNameWidget botNameWidget = new BotNameWidget();
     StatusWidget statusWidget = new StatusWidget();
     labyAPI().hudWidgetRegistry().register(botNameWidget);
@@ -72,7 +74,6 @@ public class GGBot extends LabyAddon<BotConfiguration> {
       }
     }
   }
-
 
   public static GGBot getInstance() {
     return instance;
