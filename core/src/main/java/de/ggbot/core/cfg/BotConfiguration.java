@@ -21,6 +21,7 @@ import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
 import net.labymod.api.util.MethodOrder;
 import org.openapitools.client.ApiException;
+import org.openapitools.client.BotLogEntry;
 import java.io.IOException;
 
 @ConfigName("settings")
@@ -38,7 +39,7 @@ public class BotConfiguration extends AddonConfig {
   @BotDropDownMenu
   @SpriteSlot(x = 5)
   public final ConfigProperty<String> botlist = new ConfigProperty<>("");
-  public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();
+
 
 
   @MethodOrder(after = "botlist")
@@ -67,8 +68,12 @@ public class BotConfiguration extends AddonConfig {
       }
     }
   }
+  @MethodOrder(after = "stopSelectedBot")
+  public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();
+  @MethodOrder(after = "prefixSub")
+  public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
 
-  @MethodOrder(after = "stopSelectedBot") @SettingSection("Authentication")
+  @MethodOrder(after = "botlogSub") @SettingSection("Authentication")
   @SpriteSlot(x = 1)
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
@@ -112,7 +117,7 @@ public class BotConfiguration extends AddonConfig {
   @MethodOrder(after = "reauth")
   @SpriteSlot()
   @ButtonSetting
-  public void discord(Setting setting) {
+  public void discord(Setting setting) throws ApiException {
     Laby.references().chatExecutor().openUrl("https://discord.ggbot.de/");
   }
 

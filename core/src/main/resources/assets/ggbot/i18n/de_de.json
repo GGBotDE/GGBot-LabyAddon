@@ -43,6 +43,12 @@
         "prefix": {
           "name": "Befehlspräfix"
         }
+      },
+      "botlogSub": {
+        "name": "Bot-Logs (wirkt nach Rejoin)",
+        "minutes": {
+          "name": "Log Update Rate (wirkt nach Rejoin)"
+        }
       }
     },
     "hudWidget": {

@@ -43,6 +43,12 @@
         "prefix": {
           "name": "Command Prefix"
         }
+      },
+      "botlogSub": {
+        "name": "Bot Logs (applies after rejoin)",
+        "minutes": {
+          "name": "Log Update Delay (applies after rejoin)"
+        }
       }
     },
     "hudWidget": {
