@@ -157,7 +157,7 @@ public class BotRequests {
           public void onSuccess(List<BotLogEntry> result, int statusCode,
               Map<String, List<String>> responseHeaders) {
 
-            Collections.reverse(result);
+            //Collections.reverse(result);
 
             for (BotLogEntry logs : result) {
               String logId = logs.getMessage();
