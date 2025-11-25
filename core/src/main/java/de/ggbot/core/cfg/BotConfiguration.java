@@ -3,11 +3,14 @@ package de.ggbot.core.cfg;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.auth.OAuthServer;
+import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
+import net.labymod.api.client.gui.mouse.MouseAction;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget.TextFieldSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
@@ -20,8 +23,12 @@ import net.labymod.api.configuration.settings.annotation.SettingSection;
 import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
 import net.labymod.api.util.MethodOrder;
-import org.openapitools.client.ApiException;
+import net.labymod.serverapi.core.model.feature.InteractionMenuEntry;
 import java.io.IOException;
+import java.time.ZoneId;
+
+import static de.ggbot.core.listener.StartTimerOnJoin.startTimer;
+import static de.ggbot.core.listener.StartTimerOnJoin.stopTimer;
 
 @ConfigName("settings")
 @SpriteTexture("settings.png")
@@ -61,7 +68,7 @@ public class BotConfiguration extends AddonConfig {
       }else{
         Notification.Builder builder = Notification.builder()
             .title(Component.text("INFO", NamedTextColor.GREEN))
-            .text(Component.translatable("ggbot.commands.stop.error.offline"))
+            .text(Component.translatable("ggbot.messages.command.stop.error.offline"))
             .type(Type.SYSTEM);
         Laby.labyAPI().notificationController().push(builder.build());
       }
@@ -72,7 +79,7 @@ public class BotConfiguration extends AddonConfig {
   @MethodOrder(after = "prefixSub")
   public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
 
-  @MethodOrder(after = "botlogSub") @SettingSection("Authentication")
+  @MethodOrder(after = "statusMinutes") @SettingSection("Authentication")
   @SpriteSlot(x = 1)
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
@@ -119,6 +126,14 @@ public class BotConfiguration extends AddonConfig {
   public void discord(Setting setting) throws ApiException {
     Laby.references().chatExecutor().openUrl("https://discord.ggbot.de/");
   }
+  @MethodOrder(after = "botlogSub")
+  @SliderSetting(min = 1, max = 10)
+  public final ConfigProperty<Integer> statusMinutes = new ConfigProperty<>(1).addChangeListener((integer) -> {
+    if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
+      stopTimer();
+      startTimer(integer);
+    }
+  });
 
   @Override
   public ConfigProperty<Boolean> enabled() {

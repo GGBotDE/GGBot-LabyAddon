@@ -49,6 +49,9 @@
         "minutes": {
           "name": "Log Update Rate (wirkt nach Rejoin)"
         }
+      },
+      "statusMinutes": {
+        "name": "Verzögerung der Bot-Statusprüfungen"
       }
     },
     "hudWidget": {
@@ -57,6 +60,9 @@
       },
       "status": {
         "name": "Status"
+      },
+      "botmoney": {
+        "name": "Bot Kontostand"
       }
     },
     "messages": {

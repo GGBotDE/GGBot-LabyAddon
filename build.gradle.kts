@@ -39,3 +39,7 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
 }
+
+dependencies {
+    implementation("de.ggbot:ggbot-sdk:0.14.1")
+}

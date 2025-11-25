@@ -1,2 +1,5 @@
 /run/
+/build/
 /.gradle/
+/core/build/
+/game-runner/build/

@@ -49,6 +49,9 @@
         "minutes": {
           "name": "Log Update Rate (wirkt nach Rejoin)"
         }
+      },
+      "statusMinutes": {
+        "name": "Verzögerung bei den Bot-Statuskontrollen"
       }
     },
     "hudWidget": {
@@ -57,6 +60,9 @@
       },
       "status": {
         "name": "Status: Voll krass"
+      },
+      "botmoney": {
+        "name": "Bot Kontostand"
       }
     },
     "messages": {
@@ -89,6 +95,20 @@
             "offline": "Eh, der Bot is scho aus."
           }
         }
+      },
+      "interaction": {
+        "checkggbot": {
+          "prefix1": "[",
+          "prefix2": "GGBot",
+          "prefix3": "]",
+          "isbot": "Dies ist ein Bot",
+          "isnotbot": "Dies ist kein Bot",
+          "name": "Check GGBot"
+        }
+      },
+      "log": {
+        "time": "%s",
+        "textfilter": "%s\u200B"
       }
     },
     "toasts": {

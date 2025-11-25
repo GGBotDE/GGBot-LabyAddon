@@ -49,6 +49,9 @@
         "minutes": {
           "name": "Log Update Delay (applies after rejoin)"
         }
+      },
+      "statusMinutes": {
+        "name": "Bot Status Checks Delay"
       }
     },
     "hudWidget": {
@@ -57,6 +60,9 @@
       },
       "status": {
         "name": "Status"
+      },
+      "botmoney": {
+        "name": "Bot Money"
       }
     },
     "messages": {
@@ -88,7 +94,20 @@
           "error": {
             "offline": "The bot is already offline."
           }
+        },
+        "interaction": {
+          "checkggbot": {
+            "prefix1": "[",
+            "prefix2": "GGBot",
+            "prefix3": "]",
+            "isbot": "This is a Bot",
+            "isnotbot": "This is not a Bot"
+          }
         }
+      },
+      "log": {
+        "time": "%s",
+        "textfilter": "%s\u200B"
       }
     },
     "toasts":{

@@ -1,14 +1,23 @@
 package de.ggbot.core;
 
+import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.ChatListener;
 import de.ggbot.core.listener.SetupBotLogsChannel;
+import de.ggbot.core.listener.StartTimerOnJoin;
+import de.ggbot.core.widget.BotMoneyWidget;
+import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.addon.LabyAddon;
+import net.labymod.api.client.entity.player.interaction.BulletPoint;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.widget.BotNameWidget;
 import de.ggbot.core.widget.StatusWidget;
-import org.openapitools.client.ApiException;
+import net.labymod.serverapi.api.model.component.ServerAPIComponent;
+import net.labymod.serverapi.core.model.feature.InteractionMenuEntry;
+import net.labymod.serverapi.core.model.feature.InteractionMenuEntry.InteractionMenuType;
+
+import java.time.ZoneId;
 
 import static de.ggbot.core.api.BotRequests.updateBotList;
 
@@ -31,13 +40,17 @@ public class GGBot extends LabyAddon<BotConfiguration> {
 
     this.registerListener(new AuthEvent(this));
     this.registerListener(new ChatListener(this));
-    this.registerListener(new SetupBotLogsChannel(this));
+    this.registerListener(new SetupBotLogsChannel());
+    this.registerListener(new StartTimerOnJoin(this));
     BotNameWidget botNameWidget = new BotNameWidget();
     StatusWidget statusWidget = new StatusWidget();
+    BotMoneyWidget moneyWidget = new BotMoneyWidget();
     labyAPI().hudWidgetRegistry().register(botNameWidget);
     labyAPI().hudWidgetRegistry().register(statusWidget);
+    labyAPI().hudWidgetRegistry().register(moneyWidget);
 
     this.logger().info("Enabled the Addon");
+    createInteractions();
 
   }
 
@@ -77,5 +90,8 @@ public class GGBot extends LabyAddon<BotConfiguration> {
 
   public static GGBot getInstance() {
     return instance;
+  }
+  public void createInteractions(){
+    labyAPI().interactionMenuRegistry().register(new CheckGGBot());
   }
 }

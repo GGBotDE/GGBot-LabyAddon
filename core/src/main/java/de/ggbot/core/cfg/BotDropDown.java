@@ -2,6 +2,8 @@ package de.ggbot.core.cfg;
 
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.GGBot;
+import de.ggbot.sdk.core.ApiException;
+import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget;
@@ -14,8 +16,6 @@ import net.labymod.api.configuration.settings.annotation.SettingElement;
 import net.labymod.api.configuration.settings.annotation.SettingFactory;
 import net.labymod.api.configuration.settings.annotation.SettingWidget;
 import net.labymod.api.configuration.settings.widget.WidgetFactory;
-import org.openapitools.client.ApiException;
-import org.openapitools.client.model.Bot;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

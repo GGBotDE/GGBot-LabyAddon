@@ -2,20 +2,14 @@ package de.ggbot.core.listener;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
+import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.Laby;
-import net.labymod.api.client.Minecraft;
-import net.labymod.api.client.chat.advanced.ChatMessagesWidget;
-import net.labymod.api.client.chat.advanced.IngameChatTab;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
-import net.labymod.api.configuration.labymod.chat.AdvancedChatMessage;
-import net.labymod.api.configuration.labymod.chat.ChatWindow;
-import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
-import org.openapitools.client.ApiException;
 
 public class ChatListener {
   private static GGBot addon;

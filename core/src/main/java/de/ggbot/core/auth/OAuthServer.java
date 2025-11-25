@@ -82,9 +82,9 @@ public class OAuthServer {
 
         PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
         printWriter.write("HTTP/1.0 200 OK\r\n");
-        printWriter.write("Content-Type: html; charset=UTF-8\r\n");
+        printWriter.write("Content-Type: text/html; charset=UTF-8\r\n");
         printWriter.write("\r\n");
-        printWriter.write("You can close this window now");
+        printWriter.write("<!doctypehtml><html lang=en><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>Success</title><link href=https://ggbot.de/assets/css/globals.css rel=stylesheet><link href=https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css rel=stylesheet><div><i class=\"bx bxs-check-circle\"></i><h1>Success!</h1><p>Your operation was completed successfully.<p class=strong>You can now close this page</div><style>i{display:block;font-size:100px;color:green}div{text-align:center;background:var(--background-100);padding:2em;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px}h1{margin-bottom:.5em;font-family:Sora,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}p{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--text-600);margin:.5em 0}.strong{font-weight:600;color:var(--text-800)}</style>");
         printWriter.flush();
 
         printWriter.close();

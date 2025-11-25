@@ -13,7 +13,8 @@ pluginManagement {
 
         dependencies {
             classpath("net.labymod.gradle", "common", labyGradlePluginVersion)
-            files("libs/openai-java-client-0.1.0.jar")
+            classpath("de.ggbot","ggbot-sdk","0.14.1")
+
         }
     }
 }

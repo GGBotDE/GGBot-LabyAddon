@@ -1,5 +1,6 @@
 package de.ggbot.core.listener;
 
+import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.client.component.format.NamedTextColor;
@@ -11,7 +12,6 @@ import de.ggbot.core.GGBot;
 import de.ggbot.core.auth.OAuthServer;
 import de.ggbot.core.widget.BotNameWidget;
 import de.ggbot.core.widget.StatusWidget;
-import org.openapitools.client.model.Bot;
 
 import java.io.IOException;
 
@@ -83,9 +83,9 @@ public class AuthEvent {
     try {
        authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
         addon.configuration().token.set(Token.get("access_token").getAsString());
-        GGBot.code = addon.configuration().token.get();
-        addon.configuration().expiresAt.set(String.valueOf(
-            System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));
+         addon.configuration().expiresAt.set(String.valueOf(
+             System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));
+        GGBot.code = Token.get("access_token").getAsString();
         GGBot.isAuth = true;
         GGBot.isExpired = false;
       }));
@@ -102,8 +102,6 @@ public class AuthEvent {
       String id = bot.substring(bot.lastIndexOf('(') + 1, bot.lastIndexOf(')')); // ID aus String holen
       for (Bot bots : bots) {
         if (bots.getId().toString().equals(id)) { // passenden Bot gefunden
-          BotNameWidget.BotName.updateAndFlush(bots.getDescription()); // Namen setzen
-          StatusWidget.Status.updateAndFlush(bots.getStatus()); // Status setzen
           break;
         }
       }

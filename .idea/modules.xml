@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api/ggbot-addon.api.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" />

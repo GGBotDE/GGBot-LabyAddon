@@ -1,12 +1,12 @@
 package de.ggbot.core.api;
 
+import de.ggbot.sdk.core.ApiCallback;
+import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
-import org.openapitools.client.ApiCallback;
-import org.openapitools.client.ApiException;
 import java.util.List;
 import java.util.Map;
 
