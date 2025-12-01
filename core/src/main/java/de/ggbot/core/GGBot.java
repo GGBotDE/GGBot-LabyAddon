@@ -4,19 +4,29 @@ import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.ChatListener;
 import de.ggbot.core.listener.SetupBotLogsChannel;
 import de.ggbot.core.listener.StartTimerOnJoin;
+import de.ggbot.core.nametag.GGBotTeamTagUserSnapshotFactory;
+import de.ggbot.core.nametag.TeamFetcher;
+import de.ggbot.core.nametag.TeamNameTagIcon;
+import de.ggbot.core.nametag.TeamNameTagIconBadge;
 import de.ggbot.core.widget.BotMoneyWidget;
 import de.ggbot.sdk.core.ApiException;
+import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.entity.player.interaction.BulletPoint;
+import net.labymod.api.client.entity.player.tag.PositionType;
+import net.labymod.api.client.entity.player.tag.TagRegistry;
+import net.labymod.api.client.render.state.entity.EntitySnapshotProcessor;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.widget.BotNameWidget;
 import de.ggbot.core.widget.StatusWidget;
 import net.labymod.serverapi.api.model.component.ServerAPIComponent;
+import net.labymod.serverapi.core.model.display.ServerBadge;
 import net.labymod.serverapi.core.model.feature.InteractionMenuEntry;
 import net.labymod.serverapi.core.model.feature.InteractionMenuEntry.InteractionMenuType;
 
+import java.awt.*;
 import java.time.ZoneId;
 
 import static de.ggbot.core.api.BotRequests.updateBotList;
@@ -48,6 +58,22 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     labyAPI().hudWidgetRegistry().register(botNameWidget);
     labyAPI().hudWidgetRegistry().register(statusWidget);
     labyAPI().hudWidgetRegistry().register(moneyWidget);
+
+    new TeamFetcher().fetch();
+
+    TagRegistry tagRegistry = this.labyAPI().tagRegistry();
+    tagRegistry.registerAfter(
+        "labymod_role",
+        "ggbot_role",
+        PositionType.LEFT_TO_NAME,
+        new TeamNameTagIcon(() -> 1F)
+    );
+
+    Laby.references().badgeRegistry().registerBefore(
+        "labymod_role",
+        "ggbot_role",
+        net.labymod.api.client.entity.player.badge.PositionType.LEFT_TO_NAME,
+        new TeamNameTagIconBadge());
 
     this.logger().info("Enabled the Addon");
     createInteractions();
