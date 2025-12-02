@@ -14,14 +14,15 @@ import static net.labymod.api.client.component.format.NamedTextColor.RED;
 import static net.labymod.api.client.component.format.NamedTextColor.WHITE;
 
 public class Callbacks {
+
   /**
-   * Callback für asynchrone Bot-API-Aufrufe.
-   * Zeigt die Ergebnisse als LabyMod-Notifications an.
+   * Callback for asynchronous Bot API calls.
+   * Displays results as LabyMod notifications.
    */
   public static ApiCallback<Void> startCallback = new ApiCallback<>() {
 
     /**
-     * Wird aufgerufen, wenn der API-Call fehlschlägt.
+     * Called when the API call fails.
      */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -33,7 +34,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird aufgerufen, wenn der API-Call erfolgreich war.
+     * Called when the API call was successful.
      */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -45,7 +46,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird während des Upload-Fortschritts aufgerufen.
+     * Called during upload progress.
      */
     @Override
     public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
@@ -57,7 +58,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird während des Download-Fortschritts aufgerufen.
+     * Called during download progress.
      */
     @Override
     public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
@@ -70,25 +71,25 @@ public class Callbacks {
   };
 
   /**
-   * Callback für asynchrone Bot-API-Aufrufe.
-   * Zeigt die Ergebnisse als LabyMod-Notifications an.
+   * Callback for asynchronous Bot API calls.
+   * Displays results as LabyMod notifications.
    */
   public static ApiCallback<Void> stopCallback = new ApiCallback<>() {
 
     /**
-     * Wird aufgerufen, wenn der API-Call fehlschlägt.
+     * Called when the API call fails.
      */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
       Notification.Builder builder = Notification.builder()
-          .title(Component.translatable("ggbot.toasts.status.error",RED))
+          .title(Component.translatable("ggbot.toasts.status.error", RED))
           .text(Component.translatable("ggbot.toasts.error", WHITE, Component.text(e.getMessage()), Component.text(statusCode)))
           .type(Type.SYSTEM);
       Laby.labyAPI().notificationController().push(builder.build());
     }
 
     /**
-     * Wird aufgerufen, wenn der API-Call erfolgreich war.
+     * Called when the API call was successful.
      */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -100,7 +101,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird während des Upload-Fortschritts aufgerufen.
+     * Called during upload progress.
      */
     @Override
     public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
@@ -112,7 +113,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird während des Download-Fortschritts aufgerufen.
+     * Called during download progress.
      */
     @Override
     public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
@@ -124,11 +125,10 @@ public class Callbacks {
     }
   };
 
-
   public static ApiCallback<Void> sendCommandCallback = new ApiCallback<>() {
 
     /**
-     * Wird aufgerufen, wenn der API-Call fehlschlägt.
+     * Called when the API call fails.
      */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -141,7 +141,7 @@ public class Callbacks {
     }
 
     /**
-     * Wird aufgerufen, wenn der API-Call erfolgreich war.
+     * Called when the API call was successful.
      */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
@@ -153,18 +153,17 @@ public class Callbacks {
     }
 
     /**
-     * Wird während des Upload-Fortschritts aufgerufen.
+     * Called during upload progress.
      */
     @Override
     public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
     }
 
     /**
-     * Wird während des Download-Fortschritts aufgerufen.
+     * Called during download progress.
      */
     @Override
     public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
     }
   };
-
 }

@@ -4,47 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="Bot Log Reihenfolge fixed">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/CitybuildWidget.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/PlotWidget.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ingame/HealthWidget.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketAmountWidget.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketClosedAmountWidget.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketOpenAmountWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/core/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/addon.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/addon.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/GGBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/GGBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/widget/BotNameWidget.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/widget/StatusWidget.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/generated/sources/annotationProcessor/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/generated/sources/annotationProcessor/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/libs/core-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/libs/core-1.0.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_at.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_at.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_de.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/en_us.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" afterDir="false" />
+    <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="Adding Widgets">
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotLogEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotLogEntry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/auth/OAuthServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/auth/OAuthServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotLogsSubConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotLogsSubConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/MovementTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/MovementTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/StartTimerOnJoin.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/StartTimerOnJoin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/BotMoneyWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/BotMoneyWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/BotNameWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/info/BotNameWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/StatusWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/info/StatusWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/Callbacks.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/Callbacks.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -629,7 +592,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763852920424</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Adding Widgets">
+      <option name="closed" value="true" />
+      <created>1764703032280</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1764703032280</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -643,6 +614,7 @@
     <MESSAGE value="Listener for botlog added" />
     <MESSAGE value="translate fixed" />
     <MESSAGE value="Bot Log Reihenfolge fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bot Log Reihenfolge fixed" />
+    <MESSAGE value="Adding Widgets" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding Widgets" />
   </component>
 </project>

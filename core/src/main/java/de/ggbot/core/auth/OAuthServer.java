@@ -18,28 +18,28 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
- * OAuth-Server zur lokalen Verarbeitung der Redirect-URL und zum
- * Abrufen des OAuth-Codes sowie Access-Tokens vom GGBot OAuth-System.
+ * OAuth server responsible for handling the local redirect URL and retrieving
+ * the OAuth authorization code and access token from the GGBot OAuth system.
  */
 public class OAuthServer {
 
   /**
-   * Port, auf dem der lokale Redirect-Server läuft.
+   * Port on which the local redirect server listens.
    */
   public static final int REDIRECT_PORT = 8090;
 
   /**
-   * URL, auf die der OAuth-Provider zurückleitet.
+   * URL that the OAuth provider redirects to after authentication.
    */
   public static final String REDIRECT_URL = String.format("http://localhost:%s", OAuthServer.REDIRECT_PORT);
 
   /**
-   * Client-ID der Anwendung.
+   * Client ID of this application.
    */
   public static final String CLIENT_ID = "ggbot_1c305ba092a14c11504291818f1b0c98";
 
   /**
-   * Angeforderte OAuth-Scopes.
+   * OAuth scopes requested during authorization.
    */
   public static final String SCOPES = "read:bots%20write:bots%20execute:bots";
 
@@ -48,10 +48,10 @@ public class OAuthServer {
   private final ExecutorService executor;
 
   /**
-   * Erstellt einen neuen lokalen OAuth-Redirect-Server.
+   * Creates a new local OAuth redirect server.
    *
-   * @param addon Addon-Instanz
-   * @throws IOException falls der ServerSocket nicht gestartet werden kann
+   * @param addon Reference to the addon instance
+   * @throws IOException if the ServerSocket cannot be opened
    */
   public OAuthServer(GGBot addon) throws IOException {
     this.addon = addon;
@@ -60,18 +60,19 @@ public class OAuthServer {
   }
 
   /**
-   * Wartet asynchron auf den Authorization-Code und liefert ihn an den Callback.
+   * Waits asynchronously for the Authorization Code and passes it to the callback.
    *
-   * @param callback Callback, der den Code erhält
+   * @param callback Callback that receives the authorization code
    */
   public void listenForCodeAsync(Consumer<String> callback) {
     this.executor.execute(() -> callback.accept(this.listenForCode()));
   }
 
   /**
-   * Wartet synchron auf den OAuth-Redirect und liest den Authorization-Code aus.
+   * Waits synchronously for the OAuth redirect and extracts the authorization code.
+   * A success HTML page is returned to the browser.
    *
-   * @return der erhaltene Code oder null bei einem Fehler
+   * @return The received authorization code, or null if an error occurred
    */
   public String listenForCode() {
     while (this.serverSocket.isBound()) {
@@ -105,8 +106,9 @@ public class OAuthServer {
     return null;
   }
 
+
   /**
-   * Schließt den lokalen OAuth-Server.
+   * Closes the local OAuth server.
    */
   public void close() {
     try {
@@ -117,10 +119,10 @@ public class OAuthServer {
   }
 
   /**
-   * Erstellt die vollständige OAuth-Authorize-URL.
+   * Creates the full OAuth authorization URL.
    *
-   * @return URL zum Öffnen im Browser
-   * @throws IOException falls die URL ungültig ist
+   * @return URL that should be opened in the browser
+   * @throws IOException if the URL is invalid
    */
   public URL getUrl() throws IOException {
     return new URL(String.format(
@@ -130,9 +132,9 @@ public class OAuthServer {
   }
 
   /**
-   * Gibt die OAuth-Authorize-URL als String zurück.
+   * Returns the OAuth authorization URL as a string.
    *
-   * @return vollständige URL als String
+   * @return Full authorization URL as text
    */
   public String getStringUrl() {
     return String.format(
@@ -142,20 +144,20 @@ public class OAuthServer {
   }
 
   /**
-   * Ruft asynchron den Access Token anhand des Codes ab.
+   * Fetches the access token asynchronously using the Authorization Code.
    *
-   * @param code Authorization-Code
-   * @param callback Callback für das JSON-Ergebnis
+   * @param code Authorization Code received from OAuth redirect
+   * @param callback Callback receiving the JSON response
    */
   public void getTokenAsync(String code, Consumer<JsonObject> callback) {
     this.executor.execute(() -> callback.accept(this.getData(code)));
   }
 
   /**
-   * Sendet den Token-Request an die OAuth-API.
+   * Sends the token request to the OAuth API and retrieves the access token.
    *
-   * @param code Authorization-Code
-   * @return JSON-Antwort der API
+   * @param code Authorization Code from the redirect
+   * @return JSON response from the OAuth API containing the access token
    */
   public JsonObject getData(String code) {
     Map<String, String> body = new HashMap<>();

@@ -44,20 +44,22 @@ import static net.labymod.api.client.component.format.NamedTextColor.BLUE;
 import static net.labymod.api.client.component.format.NamedTextColor.GRAY;
 
 /**
- * Verwaltet Bot-bezogene API-Anfragen wie Abruf, Start und Stopp.
+ * Handles all bot-related API operations such as fetching, starting, stopping,
+ * sending commands, retrieving logs, and accessing GGFeatures module data.
  */
 public class BotRequests {
 
+
   /**
-   * Liste aller Bots, geladen aus der API.
+   * List of all bots fetched from the API.
    */
   public static List<Bot> bots = new ArrayList<>();
 
   /**
-   * Aktualisiert die Botliste über die API.
+   * Updates the global bot list by requesting all available bots from the API.
    *
-   * @param addon Instanz des Addons, um Token zu laden
-   * @throws ApiException falls die API-Anfrage fehlschlägt
+   * @param addon Addon instance used to load the OAuth token
+   * @throws ApiException if the API request fails
    */
   public static void updateBotList(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
@@ -70,6 +72,13 @@ public class BotRequests {
     bots = api.getAllBots();
   }
 
+  /**
+   * Returns the status string of the currently configured bot.
+   *
+   * @param addon Addon instance used to load the OAuth token
+   * @return Bot status as string or "Unknown" if not found
+   * @throws ApiException if the API request fails
+   */
   public static String getStatus(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -88,6 +97,14 @@ public class BotRequests {
 
     return "Unknown";
   }
+
+  /**
+   * Returns the link name of the configured bot.
+   *
+   * @param addon Addon instance used to load the OAuth token
+   * @return Bot link name or "Unknown"
+   * @throws ApiException if the API request fails
+   */
   public static String getName(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -108,10 +125,10 @@ public class BotRequests {
   }
 
   /**
-   * Startet den ausgewählten Bot asynchron.
+   * Starts the configured bot asynchronously.
    *
-   * @param addon Instanz des Addons, um Token und Botliste zu lesen
-   * @throws ApiException falls die API-Anfrage fehlschlägt
+   * @param addon Addon instance used to access token and bot selection
+   * @throws ApiException if the API request fails
    */
   public static void startBot(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
@@ -130,10 +147,10 @@ public class BotRequests {
   }
 
   /**
-   * Stoppt den ausgewählten Bot asynchron.
+   * Stops the configured bot asynchronously.
    *
-   * @param addon Instanz des Addons, um Token und Botliste zu lesen
-   * @throws ApiException falls die API-Anfrage fehlschlägt
+   * @param addon Addon instance used to access token and bot selection
+   * @throws ApiException if the API request fails
    */
   public static void stopBot(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
@@ -150,12 +167,13 @@ public class BotRequests {
       }
     }
   }
+
   /**
-   * Prüft, ob der konfigurierte Bot online ist.
+   * Checks whether the configured bot is currently online.
    *
-   * @param addon GGBot Addon-Instanz
-   * @return true wenn Bot online, sonst false
-   * @throws ApiException wenn API-Aufruf fehlschlägt
+   * @param addon Addon instance
+   * @return true if the bot is online, false otherwise
+   * @throws ApiException if the API request fails
    */
   public static boolean isOnline(GGBot addon) throws ApiException {
     GGBot.code = addon.configuration().token.get();
@@ -175,6 +193,13 @@ public class BotRequests {
     return false;
   }
 
+  /**
+   * Sends a command to the configured bot asynchronously.
+   *
+   * @param addon Addon instance used to load the OAuth token
+   * @param command The command string to be executed by the bot
+   * @throws ApiException if the API request fails
+   */
   public static void sendCommand(GGBot addon, String command) throws ApiException {
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -191,8 +216,21 @@ public class BotRequests {
       }
     }
   }
+
+
+  /**
+   * Keeps track of already displayed log entries to prevent duplicates.
+   */
   public static final Set<String> sentLogIds = new HashSet<>();
 
+  /**
+   * Fetches all logs from the configured bot asynchronously and displays them
+   * in the user's client. New logs are filtered so each entry is shown only once.
+   *
+   * This method uses OkHttp directly because logs are not part of the SDK yet.
+   *
+   * @throws ApiException if the API request fails
+   */
   public static void logsAsync() throws ApiException {
     if(!GGBot.isAuth && GGBot.isExpired){
       return;
@@ -251,6 +289,13 @@ public class BotRequests {
     }
   }
 
+  /**
+   * Retrieves the current money amount of the bot via GGFeatures.
+   *
+   * @param addon Addon instance
+   * @param callback Callback returning the money value (0.0 if unavailable)
+   * @throws ApiException if the API request fails
+   */
   public static void getMoney(GGBot addon, Consumer<Double> callback) throws ApiException {
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(0.0);
@@ -293,6 +338,13 @@ public class BotRequests {
     callback.accept(0.0);
   }
 
+  /**
+   * Retrieves the current bot health from the in-game API.
+   *
+   * @param addon Addon instance
+   * @param callback Callback receiving the health value (0.0 if unavailable)
+   * @throws ApiException if the API request fails
+   */
   public static void getHealth(GGBot addon, Consumer<Double> callback) throws ApiException {
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(0.0);
@@ -336,6 +388,14 @@ public class BotRequests {
       }
     }
   }
+
+  /**
+   * Retrieves the bot’s current Citybuild server name (e.g. "CB1").
+   *
+   * @param addon Addon instance
+   * @param callback Callback receiving the citybuild string or "Unknown"
+   * @throws ApiException if the API request fails
+   */
   public static void getCitybuild(GGBot addon, Consumer<String> callback) throws ApiException {
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept("Unknown");
@@ -379,6 +439,13 @@ public class BotRequests {
     callback.accept("Unknown");
   }
 
+  /**
+   * Retrieves the bot’s current plot string (e.g. "0;0").
+   *
+   * @param addon Addon instance
+   * @param callback Callback receiving the plot string or "Unknown"
+   * @throws ApiException if the API request fails
+   */
   public static void getPlot(GGBot addon, Consumer<String> callback) throws ApiException {
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept("Unknown");
@@ -422,6 +489,14 @@ public class BotRequests {
     callback.accept("Unknown");
   }
 
+  /**
+   * Fetches all tickets matching the given status (e.g. "OPEN", "CLOSED").
+   *
+   * @param addon Addon instance
+   * @param statusEnum Ticket status filter
+   * @param callback Callback returning the ticket list
+   * @throws ApiException if the API request fails
+   */
   public static void getTickets(GGBot addon, String statusEnum, Consumer<List<Ticket>> callback) throws ApiException {
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(new ArrayList<>());
@@ -470,6 +545,12 @@ public class BotRequests {
     callback.accept(new ArrayList<>());
   }
 
+  /**
+   * Returns the display color matching a log level string.
+   *
+   * @param level Log level string
+   * @return Corresponding TextColor
+   */
   private static TextColor getColorForLevel(String level) {
     return switch (level.toLowerCase()) {
       case "debug" -> NamedTextColor.BLUE;
@@ -480,6 +561,13 @@ public class BotRequests {
       default -> NamedTextColor.GRAY;
     };
   }
+
+  /**
+   * Formats a log level into a padded readable label (e.g. "[Info]").
+   *
+   * @param levelRaw Raw log level string
+   * @return Formatted label
+   */
   private static String formatLevel(String levelRaw) {
     String formatted = levelRaw.substring(0, 1).toUpperCase() +
         levelRaw.substring(1).toLowerCase();
@@ -493,6 +581,14 @@ public class BotRequests {
 
     return "[" + formatted + "]" + space.repeat(diff + 1);
   }
+
+  /**
+   * Formats a log timestamp to the user's local time zone.
+   *
+   * @param zoneId Target timezone
+   * @param logEntry The log entry
+   * @return Formatted timestamp string
+   */
   public static String getTimestampForZone(ZoneId zoneId, BotLogEntry logEntry) {
     java.time.ZonedDateTime zoned = logEntry.getTimestampInstant().atZone(zoneId);
     java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd.MM HH:mm:ss");

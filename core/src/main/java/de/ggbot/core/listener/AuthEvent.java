@@ -98,13 +98,12 @@ public class AuthEvent {
       // Bot ausgewählt
       String bot = addon.configuration().botlist.get();
       if (!bot.contains("(") || !bot.contains(")")) return; // Ungültiges Format
-      String id = bot.substring(bot.lastIndexOf('(') + 1, bot.lastIndexOf(')')); // ID aus String holen
+      String id = bot.substring(bot.lastIndexOf('(') + 1, bot.lastIndexOf(')'));
       for (Bot bots : bots) {
-        if (bots.getId().toString().equals(id)) { // passenden Bot gefunden
+        if (bots.getId().toString().equals(id)) {
           break;
         }
       }
-      // kein passender Bot gefunden
     }
   }
 }

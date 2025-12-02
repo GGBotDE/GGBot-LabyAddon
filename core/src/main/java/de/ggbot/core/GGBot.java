@@ -65,17 +65,18 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     return BotConfiguration.class;
   }
   /**
-   * Prüft den lokalen Auth-Status des Nutzers anhand des gespeicherten Tokens
-   * und der Ablaufzeit. Setzt die Flags isAuth und isExpired entsprechend
-   * und aktualisiert bei gültigem Token die Botliste.
-   * Ablauf:
-   * 1. Kein Token → nicht authentifiziert.
-   * 2. Token vorhanden → Ablaufzeit prüfen.
-   * 3. Abgelaufen → nicht authentifiziert, isExpired = true.
-   * 4. Gültig → authentifiziert und Botliste wird aktualisiert.
+   * Checks the user's local authentication status based on the stored token
+   * and its expiration time. Sets the flags isAuth and isExpired accordingly
+   * and updates the bot list if the token is valid.
    *
-   * @param addon Instanz des Addons, dessen Konfiguration geprüft wird
-   * @throws ApiException falls beim Aktualisieren der Botliste ein Fehler auftritt
+   * Process:
+   * 1. No token → not authenticated.
+   * 2. Token exists → check expiration time.
+   * 3. Expired → not authenticated, isExpired = true.
+   * 4. Valid → authenticated and bot list will be refreshed.
+   *
+   * @param addon Instance of the addon whose configuration is being verified
+   * @throws ApiException if an error occurs while updating the bot list
    */
   public static void checkAuth(GGBot addon) throws ApiException {
     if (addon.configuration().token.get().isEmpty()) {

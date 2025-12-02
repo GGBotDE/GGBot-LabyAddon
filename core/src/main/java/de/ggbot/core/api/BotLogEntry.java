@@ -17,7 +17,6 @@ public class BotLogEntry {
   public String getLevel() { return level; }
   public String getTimestamp() { return timestamp; }
 
-  // Hilfsmethode, um Timestamp direkt als Instant zu bekommen
   public Instant getTimestampInstant() {
     return Instant.parse(timestamp);
   }
