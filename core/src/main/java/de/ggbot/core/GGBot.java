@@ -1,7 +1,9 @@
 package de.ggbot.core;
 
+import de.ggbot.core.gui.shop.ShopInterfaceActivity;
 import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.ChatListener;
+import de.ggbot.core.listener.MovementTest;
 import de.ggbot.core.listener.SetupBotLogsChannel;
 import de.ggbot.core.listener.StartTimerOnJoin;
 import de.ggbot.core.nametag.GGBotTeamTagUserSnapshotFactory;
@@ -52,6 +54,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     this.registerListener(new ChatListener(this));
     this.registerListener(new SetupBotLogsChannel());
     this.registerListener(new StartTimerOnJoin(this));
+    this.registerListener(new MovementTest());
     BotNameWidget botNameWidget = new BotNameWidget();
     StatusWidget statusWidget = new StatusWidget();
     BotMoneyWidget moneyWidget = new BotMoneyWidget();

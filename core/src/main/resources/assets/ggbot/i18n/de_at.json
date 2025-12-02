@@ -128,6 +128,19 @@
       },
       "upload": "%s / %s",
       "download": "%s / %s"
+    },
+    "gui": {
+      "shop": {
+        "title": "Kaufe Artikel von %s",
+        "cart": "Dein Warenkorb",
+        "total": "Gesamt: %s",
+        "cancel": "Abbrechen",
+        "buy": "Kaufen",
+        "itemCount": "%s Artikel",
+        "item": "Artikel: %s",
+        "search": "Suchen..."
+      }
     }
+
   }
 }
