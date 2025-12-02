@@ -24,7 +24,7 @@ public class CartTopBarWidget extends HorizontalListWidget {
   public CartTopBarWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
-    titleWidget = ComponentWidget.i18n("ggbot.gui.shop.cancel").addId("cart-top-bar-title");
+    titleWidget = ComponentWidget.i18n("ggbot.gui.shop.cart").addId("cart-top-bar-title");
     itemCountWidget = ComponentWidget.i18n("ggbot.gui.shop.itemCount", 0).addId("cart-top-bar-item-count");
     clearCartButton = new ButtonWidget();
     clearCartButton.icon().set(Icon.texture(
