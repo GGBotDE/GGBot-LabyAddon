@@ -3,7 +3,16 @@ package de.ggbot.core.api;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.ggbot.core.GGBot;
+import de.ggbot.sdk.api.IngameApi;
+import de.ggbot.sdk.api.ModulesApi;
+import de.ggbot.sdk.core.ApiCallback;
+import de.ggbot.sdk.model.GetBotHealth200Response;
+import de.ggbot.sdk.model.GetGGFeaturesCityBuild200Response;
+import de.ggbot.sdk.model.GetGGFeaturesCurrentPlot200Response;
+import de.ggbot.sdk.model.GetGGFeaturesMoney200Response;
 import de.ggbot.sdk.model.SendCommandToBotRequest;
+import de.ggbot.sdk.model.Ticket;
+import de.ggbot.sdk.model.Ticket.StatusEnum;
 import net.labymod.api.client.component.Component;
 import de.ggbot.sdk.core.ApiClient;
 import de.ggbot.sdk.core.ApiException;
@@ -27,7 +36,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static net.labymod.api.client.component.format.NamedTextColor.BLUE;
 import static net.labymod.api.client.component.format.NamedTextColor.GRAY;
@@ -238,6 +249,225 @@ public class BotRequests {
         });
       }
     }
+  }
+
+  public static void getMoney(GGBot addon, Consumer<Double> callback) throws ApiException {
+    if (!GGBot.isAuth && GGBot.isExpired) {
+      callback.accept(0.0);
+      return;
+    }
+
+    GGBot.code = addon.configuration().token.get();
+
+    ApiClient client = Configuration.getDefaultApiClient();
+    client.setBasePath("https://api.ggbot.de/api");
+    OAuth oauth = (OAuth) client.getAuthentication("oauth2");
+    oauth.setAccessToken(GGBot.code);
+
+    BotsApi bots = new BotsApi(client);
+    long botId = Long.parseLong(GGBot.getInstance().configuration().botlist.get().replaceAll("\\D+", ""));
+
+    for (Bot bot : bots.getAllBots()) {
+      if (bot.getId() == botId) {
+        String token = bot.getToken();
+        ModulesApi modules = new ModulesApi(client);
+
+          modules.getGGFeaturesMoneyAsync(token, new ApiCallback<>() {
+          @Override
+          public void onFailure(ApiException e, int statusCode, Map<String, List<String>> headers) {
+            callback.accept(0.0);
+          }
+
+          @Override
+          public void onSuccess(GetGGFeaturesMoney200Response result, int statusCode, Map<String, List<String>> headers) {
+            callback.accept(result.getData() != null ? result.getData() : 0.0);
+          }
+
+          @Override public void onUploadProgress(long a, long b, boolean c) {}
+          @Override public void onDownloadProgress(long a, long b, boolean c) {}
+        });
+        return;
+      }
+    }
+
+    callback.accept(0.0);
+  }
+
+  public static void getHealth(GGBot addon, Consumer<Double> callback) throws ApiException {
+    if (!GGBot.isAuth && GGBot.isExpired) {
+      callback.accept(0.0);
+      return;
+    }
+
+    GGBot.code = addon.configuration().token.get();
+
+    ApiClient client = Configuration.getDefaultApiClient();
+    client.setBasePath("https://api.ggbot.de/api");
+    OAuth oauth = (OAuth) client.getAuthentication("oauth2");
+    oauth.setAccessToken(GGBot.code);
+
+    BotsApi bots = new BotsApi(client);
+    long botId = Long.parseLong(GGBot.getInstance().configuration().botlist.get().replaceAll("\\D+", ""));
+
+    for (Bot bot : bots.getAllBots()) {
+      if (bot.getId() == botId) {
+        String token = bot.getToken();
+        IngameApi ingameApi = new IngameApi();
+        ingameApi.getBotHealthAsync(token, new ApiCallback<>() {
+          @Override
+          public void onFailure(ApiException e, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+            callback.accept(0.0);
+          }
+
+          @Override
+          public void onSuccess(GetBotHealth200Response result, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+            callback.accept(result.getData() != null ? result.getData() : 0.0);
+          }
+
+          @Override
+          public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {}
+
+          @Override
+          public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {}
+        });
+        return;
+      }
+    }
+  }
+  public static void getCitybuild(GGBot addon, Consumer<String> callback) throws ApiException {
+    if (!GGBot.isAuth && GGBot.isExpired) {
+      callback.accept("Unknown");
+      return;
+    }
+
+    GGBot.code = addon.configuration().token.get();
+
+    ApiClient client = Configuration.getDefaultApiClient();
+    client.setBasePath("https://api.ggbot.de/api");
+    OAuth oauth = (OAuth) client.getAuthentication("oauth2");
+    oauth.setAccessToken(GGBot.code);
+
+    BotsApi bots = new BotsApi(client);
+    long botId = Long.parseLong(GGBot.getInstance().configuration().botlist.get().replaceAll("\\D+", ""));
+
+    for (Bot bot : bots.getAllBots()) {
+      if (bot.getId() == botId) {
+        String token = bot.getToken();
+        ModulesApi modules = new ModulesApi(client);
+
+        modules.getGGFeaturesCityBuildAsync(token, new ApiCallback<>() {
+          @Override
+          public void onFailure(ApiException e, int statusCode, Map<String, List<String>> headers) {
+            callback.accept("Unknown");
+          }
+
+          @Override
+          public void onSuccess(GetGGFeaturesCityBuild200Response result, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+            callback.accept(result.getData() != null ? result.getData() : "Unknown");
+          }
+
+          @Override public void onUploadProgress(long a, long b, boolean c) {}
+          @Override public void onDownloadProgress(long a, long b, boolean c) {}
+        });
+        return;
+      }
+    }
+
+    callback.accept("Unknown");
+  }
+
+  public static void getPlot(GGBot addon, Consumer<String> callback) throws ApiException {
+    if (!GGBot.isAuth && GGBot.isExpired) {
+      callback.accept("Unknown");
+      return;
+    }
+
+    GGBot.code = addon.configuration().token.get();
+
+    ApiClient client = Configuration.getDefaultApiClient();
+    client.setBasePath("https://api.ggbot.de/api");
+    OAuth oauth = (OAuth) client.getAuthentication("oauth2");
+    oauth.setAccessToken(GGBot.code);
+
+    BotsApi bots = new BotsApi(client);
+    long botId = Long.parseLong(GGBot.getInstance().configuration().botlist.get().replaceAll("\\D+", ""));
+
+    for (Bot bot : bots.getAllBots()) {
+      if (bot.getId() == botId) {
+        String token = bot.getToken();
+        ModulesApi modules = new ModulesApi(client);
+
+        modules.getGGFeaturesCurrentPlotAsync(token, new ApiCallback<>() {
+          @Override
+          public void onFailure(ApiException e, int statusCode, Map<String, List<String>> headers) {
+            callback.accept("Unknown");
+          }
+
+          @Override
+          public void onSuccess(GetGGFeaturesCurrentPlot200Response result, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+            callback.accept(result.getData() != null ? result.getData().getPlotString() : "Unknown");
+          }
+
+          @Override public void onUploadProgress(long a, long b, boolean c) {}
+          @Override public void onDownloadProgress(long a, long b, boolean c) {}
+        });
+        return;
+      }
+    }
+
+    callback.accept("Unknown");
+  }
+
+  public static void getTickets(GGBot addon, String statusEnum, Consumer<List<Ticket>> callback) throws ApiException {
+    if (!GGBot.isAuth && GGBot.isExpired) {
+      callback.accept(new ArrayList<>());
+      return;
+    }
+    GGBot.code = addon.configuration().token.get();
+
+    ApiClient client = Configuration.getDefaultApiClient();
+    client.setBasePath("https://api.ggbot.de/api");
+    OAuth oauth = (OAuth) client.getAuthentication("oauth2");
+    oauth.setAccessToken(GGBot.code);
+
+    BotsApi bots = new BotsApi(client);
+    long botId = Long.parseLong(GGBot.getInstance().configuration().botlist.get().replaceAll("\\D+", ""));
+
+    for (Bot bot : bots.getAllBots()) {
+      if (bot.getId() == botId) {
+        String token = bot.getToken();
+        ModulesApi modules = new ModulesApi(client);
+        modules.getTicketsAsync(token, statusEnum, new ApiCallback<>() {
+          @Override
+          public void onFailure(ApiException e, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+              callback.accept(new ArrayList<>());
+          }
+
+          @Override
+          public void onSuccess(List<Ticket> result, int statusCode,
+              Map<String, List<String>> responseHeaders) {
+              callback.accept(result);
+          }
+
+          @Override
+          public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
+
+          }
+
+          @Override
+          public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
+
+          }
+        });
+        return;
+      }
+    }
+    callback.accept(new ArrayList<>());
   }
 
   private static TextColor getColorForLevel(String level) {

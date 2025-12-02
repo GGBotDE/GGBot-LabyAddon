@@ -1,5 +1,28 @@
 {
   "ggbot": {
+    "widget": {
+      "status": {
+        "name": "Bot Status"
+      },
+      "money": {
+        "name": "Bot Kontostand",
+        "unit": "$"
+      },
+      "citybuild": {
+        "name": "Bot Citybuild"
+      },
+      "health": {
+        "name": "Bot Leben",
+        "unit": "Herzen"
+      },
+      "botname": {
+        "name": "Bot Name"
+      },
+      "plot": {
+        "name": "Bot Grundstück"
+      },
+      "unknown": "Unbekannt"
+    },
     "settings": {
       "header": {
         "Addon": {
@@ -52,6 +75,9 @@
       },
       "statusMinutes": {
         "name": "Verzögerung der Bot-Statusprüfungen"
+      },
+      "statsMinutes": {
+        "name": "Verzögerung der Bot-Statistikenprüfung"
       }
     },
     "hudWidget": {
@@ -63,6 +89,15 @@
       },
       "botmoney": {
         "name": "Bot Kontostand"
+      },
+      "health": {
+        "name": "Bot Leben"
+      },
+      "plot": {
+        "name": "Bot Grundstück"
+      },
+      "cb": {
+        "name": "Bot Citybuild"
       }
     },
     "messages": {
@@ -139,6 +174,26 @@
         "itemCount": "%s Artikel",
         "item": "Artikel: %s",
         "search": "Suche..."
+      }
+    }
+  },
+  "labymod": {
+    "hudWidgetCategory": {
+      "botggfeatures": {
+        "name": "GG-Features",
+        "description": "Server-spezifische Infos für das GGFeatures-Modul"
+      },
+      "botingame": {
+        "name": "Bot In-Game",
+        "description": "Alle wichtigen Ingame-Infos vom Bot"
+      },
+      "botinfo": {
+        "name": "Bot-Infos",
+        "description": "Allgemeine Informationen über den Bot"
+      },
+      "botticket": {
+        "name": "Ticket-Infos",
+        "description": "Details aus dem Ticket-Modul"
       }
     }
   }

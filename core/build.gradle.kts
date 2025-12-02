@@ -15,7 +15,7 @@ dependencies {
     //testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
     //testImplementation("org.mockito:mockito-core:3.12.4")
     //testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.3")
-    addonMavenDependency("de.ggbot:ggbot-sdk:0.14.1")
+    addonMavenDependency("de.ggbot:ggbot-sdk:0.14.2")
 
     // An example of how to add an external dependency that is used by the addon.
     // addonMavenDependency("org.jeasy:easy-random:5.0.0")

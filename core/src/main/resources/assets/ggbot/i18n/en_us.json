@@ -1,5 +1,28 @@
 {
   "ggbot": {
+    "widget": {
+      "status": {
+        "name": "Bot Status"
+      },
+      "money": {
+        "name": "Bot Balance",
+        "unit": "$"
+      },
+      "citybuild": {
+        "name": "Bot Citybuild"
+      },
+      "health": {
+        "name": "Bot Health",
+        "unit": "Hearts"
+      },
+      "botname": {
+        "name": "Bot Name"
+      },
+      "plot": {
+        "name": "Bot Plot"
+      },
+      "unknown": "Unknown"
+    },
     "settings": {
       "header": {
         "Addon": {
@@ -52,6 +75,9 @@
       },
       "statusMinutes": {
         "name": "Bot Status Checks Delay"
+      },
+      "statsMinutes": {
+        "name": "Bot Statistic Checks Delay"
       }
     },
     "hudWidget": {
@@ -63,6 +89,15 @@
       },
       "botmoney": {
         "name": "Bot Money"
+      },
+      "health": {
+        "name": "Bot Health"
+      },
+      "plot": {
+        "name": "Bot Plot"
+      },
+      "cb": {
+        "name": "Bot Citybuild"
       }
     },
     "messages": {
@@ -139,6 +174,26 @@
         "itemCount": "%s items",
         "item": "Item: %s",
         "search": "Search..."
+      }
+    }
+  },
+  "labymod": {
+    "hudWidgetCategory": {
+      "botggfeatures": {
+        "name": "GGFeatures",
+        "description": "GrieferGames.net Server-Only Infos for the GGFeatures Module"
+      },
+      "botingame": {
+        "name": "In-Game Bot Details",
+        "description": "Ingame Details from the Bot"
+      },
+      "botinfo": {
+        "name": "Bot Infos",
+        "description": "General Infos from the Bot"
+      },
+      "botticket": {
+        "name": "Ticket Details",
+        "description": "Infos from the Ticket Module"
       }
     }
   }

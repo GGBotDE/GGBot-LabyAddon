@@ -1,0 +1,59 @@
+<changelist name="Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]" date="1764701235804" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 02.12.2025 19:46 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/widget/StatusWidget.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/widget/StatusWidget.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/StatusWidget.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/AuthEvent.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/previous-compilation-data.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/BotRequests$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/widget/BotNameWidget.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/widget/BotNameWidget.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/BotNameWidget.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/BotLogsSubConfig.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="AFTER_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/core-1.0.0.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/OAuthServer.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/GGBot.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/GGBot.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/GGBot.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/BotRequests.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_12_2025_19_46_[Changes]/BotConfiguration.class" />
+  </binary>
+</changelist>

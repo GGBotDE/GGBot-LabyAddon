@@ -36,12 +36,12 @@ public class OAuthServer {
   /**
    * Client-ID der Anwendung.
    */
-  public static final String CLIENT_ID = "603c8d33-ed2c-442a-b7fd-113fa388069b";
+  public static final String CLIENT_ID = "ggbot_1c305ba092a14c11504291818f1b0c98";
 
   /**
    * Angeforderte OAuth-Scopes.
    */
-  public static final String SCOPES = "read:bots write:bots execute:bots";
+  public static final String SCOPES = "read:bots%20write:bots%20execute:bots";
 
   private final GGBot addon;
   private final ServerSocket serverSocket;
@@ -169,7 +169,6 @@ public class OAuthServer {
         .url("https://api.ggbot.de/oauth/token")
         .body(body)
         .executeSync();
-
     addon.logger().info(result.get().toString());
     return result.get();
   }

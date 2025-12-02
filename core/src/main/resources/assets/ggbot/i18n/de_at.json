@@ -1,5 +1,23 @@
 {
   "ggbot": {
+    "widget": {
+      "status": {
+        "name": "Bua sei Status"
+      },
+      "money": {
+        "name": "Bua sei Kohle"
+      },
+      "citybuild": {
+        "name": "Bua sei Citybuild"
+      },
+      "health": {
+        "name": "Bua sei Gsundheit"
+      },
+      "botname": {
+        "name": "Bua sei Namensschild"
+      },
+      "unknown": "Koa Ahnig"
+    },
     "settings": {
       "header": {
         "Addon": {
@@ -52,6 +70,9 @@
       },
       "statusMinutes": {
         "name": "Verzögerung bei den Bot-Statuskontrollen"
+      },
+      "statsMinutes": {
+        "name": "Verzögerung bei der Bot-Statistikenprüfung"
       }
     },
     "hudWidget": {
@@ -63,6 +84,15 @@
       },
       "botmoney": {
         "name": "Bot Kontostand"
+      },
+      "health": {
+        "name": "Bua sei Gsundheit"
+      },
+      "plot": {
+        "name": "Bua sei Grundstuck"
+      },
+      "cb": {
+        "name": "Bua sei Citybuild"
       }
     },
     "messages": {
@@ -141,6 +171,25 @@
         "search": "Suchen..."
       }
     }
-
+  },
+  "labymod": {
+    "hudWidgetCategory": {
+      "botggfeatures": {
+        "name": "GG-Features",
+        "description": "Server-spezifische Infos für das GGFeatures-Modul"
+      },
+      "botingame": {
+        "name": "Bot im Spiel",
+        "description": "Alle wichtigen Ingame-Infos vom Bot"
+      },
+      "botinfo": {
+        "name": "Bot-Infos",
+        "description": "Allgemeine Informationen über den Bot"
+      },
+      "botticket": {
+        "name": "Ticket-Infos",
+        "description": "Details aus dem Ticket-Modul"
+      }
+    }
   }
 }

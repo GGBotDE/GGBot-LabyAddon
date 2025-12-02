@@ -10,8 +10,6 @@ import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.network.server.ServerJoinEvent;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.auth.OAuthServer;
-import de.ggbot.core.widget.BotNameWidget;
-import de.ggbot.core.widget.StatusWidget;
 
 import java.io.IOException;
 
@@ -82,6 +80,7 @@ public class AuthEvent {
   public static void auth(){
     try {
        authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
+         System.out.println("Token: " + Token);
         addon.configuration().token.set(Token.get("access_token").getAsString());
          addon.configuration().expiresAt.set(String.valueOf(
              System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));

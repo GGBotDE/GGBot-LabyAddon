@@ -1,14 +1,13 @@
 package de.ggbot.core.cfg;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.listener.StartTimerOnJoin;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 
-import static de.ggbot.core.listener.StartTimerOnJoin.startTimer;
-import static de.ggbot.core.listener.StartTimerOnJoin.stopTimer;
 
 
 public class BotLogsSubConfig extends Config {
@@ -17,14 +16,14 @@ public class BotLogsSubConfig extends Config {
   public final ConfigProperty<Boolean> botLog = new ConfigProperty<>(true);
 
   @SliderSetting(min = 1, max = 10)
-  public final ConfigProperty<Integer> minutes = new ConfigProperty<>(1).addChangeListener((integer) -> {
-    if(GGBot.getInstance().configuration().botlogSub.botLog.get()) {
-      if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
-        stopTimer();
-        startTimer(integer);
-      }
-    }
-  });
+  public final ConfigProperty<Integer> minutes = new ConfigProperty<>(1)
+      .addChangeListener(minutesValue -> {
+        if (GGBot.getInstance().configuration().botlogSub.botLog.get()
+            && GGBot.getInstance().labyAPI().serverController().isConnected()) {
+          StartTimerOnJoin.cancelLogTimer();
+          StartTimerOnJoin.startLogTimer(minutesValue * 60 * 1000L);
+        }
+      });
 
 
 }

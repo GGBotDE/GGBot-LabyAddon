@@ -3,6 +3,7 @@ package de.ggbot.core.cfg;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.auth.OAuthServer;
+import de.ggbot.core.listener.StartTimerOnJoin;
 import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
@@ -23,17 +24,12 @@ import net.labymod.api.configuration.settings.annotation.SettingSection;
 import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
 import net.labymod.api.util.MethodOrder;
-import net.labymod.serverapi.core.model.feature.InteractionMenuEntry;
 import java.io.IOException;
-import java.time.ZoneId;
-
-import static de.ggbot.core.listener.StartTimerOnJoin.startTimer;
-import static de.ggbot.core.listener.StartTimerOnJoin.stopTimer;
 
 @ConfigName("settings")
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
-  private boolean debug = true;
+  private boolean debug = false;
 
   @SwitchSetting @SettingSection("Addon")
   @SpriteSlot(x = 6)
@@ -79,7 +75,7 @@ public class BotConfiguration extends AddonConfig {
   @MethodOrder(after = "prefixSub")
   public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
 
-  @MethodOrder(after = "statusMinutes") @SettingSection("Authentication")
+  @MethodOrder(after = "statsMinute") @SettingSection("Authentication")
   @SpriteSlot(x = 1)
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
@@ -128,12 +124,23 @@ public class BotConfiguration extends AddonConfig {
   }
   @MethodOrder(after = "botlogSub")
   @SliderSetting(min = 1, max = 10)
-  public final ConfigProperty<Integer> statusMinutes = new ConfigProperty<>(1).addChangeListener((integer) -> {
-    if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
-      stopTimer();
-      startTimer(integer);
-    }
-  });
+  public final ConfigProperty<Integer> statusMinutes = new ConfigProperty<>(1)
+      .addChangeListener(minutes -> {
+        if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
+          StartTimerOnJoin.cancelStatusTimer();
+          StartTimerOnJoin.startStatusTimer(minutes * 60 * 1000L);
+        }
+      });
+  @MethodOrder(after = "statusMinutes")
+  @SliderSetting(min = 10, max = 30)
+  public final ConfigProperty<Integer> statsMinute = new ConfigProperty<>(1)
+      .addChangeListener(minutes -> {
+        if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
+          StartTimerOnJoin.cancelStatsTimer();
+          StartTimerOnJoin.startStatsTimer(minutes * 60 * 1000L);
+        }
+      });
+
 
   @Override
   public ConfigProperty<Boolean> enabled() {

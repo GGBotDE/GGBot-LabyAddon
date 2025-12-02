@@ -5,411 +5,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8cf35ee7-f5ae-4b0b-a2a2-143b44a22669" name="Changes" comment="Bot Log Reihenfolge fixed">
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotLogEntry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/interactions/CheckGGBot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/MovementTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/StartTimerOnJoin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/BotMoneyWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/CitybuildWidget.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/PlotWidget.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ingame/HealthWidget.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketAmountWidget.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketClosedAmountWidget.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ticket/TicketOpenAmountWidget.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/core/ggbot-addon.core.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_11_2025_21_26_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_11_2025_21_26__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_11_2025_21_32_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_15_11_2025_21_32__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/api/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiCallback.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiClient$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiClient$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiClient$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiClient$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ApiResponse.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/BotLogEntry.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/Configuration.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/GzipRequestInterceptor$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/GzipRequestInterceptor$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/GzipRequestInterceptor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$ByteArrayAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$DateTypeAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$LocalDateTypeAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$OffsetDateTimeTypeAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON$SqlDateTypeAdapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/JSON.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/Pair.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ProgressRequestBody$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ProgressRequestBody.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ProgressResponseBody$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ProgressResponseBody.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ServerConfiguration.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/ServerVariable.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/StringUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$10.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$11.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$12.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$13.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$14.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$6.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$7.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$8.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi$9.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/BotsApi.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi$6.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/ModulesApi.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$6.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$7.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi$8.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/api/PublicApi.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/ApiKeyAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/Authentication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/HttpBasicAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/HttpBearerAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/OAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/OAuthFlow.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/OAuthOkHttpClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/RetryingOAuth$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/auth/RetryingOAuth.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/AbstractOpenApiSchema.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BlockPosition$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BlockPosition$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BlockPosition.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Bot$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Bot$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Bot.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BuyItem$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BuyItem$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/BuyItem.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Command$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Command$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Command.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/LogMessageForBotRequest$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/LogMessageForBotRequest$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/LogMessageForBotRequest$TypeEnum$Adapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/LogMessageForBotRequest$TypeEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/LogMessageForBotRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Module$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Module$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Module.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/PublicBot$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/PublicBot$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/PublicBot.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItem$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItem$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItem.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItemPrice$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItemPrice$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SellItemPrice.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SendCommandToBotRequest$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SendCommandToBotRequest$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/SendCommandToBotRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Server$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Server$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEvent$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEvent$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEvent.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEventMetadata$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEventMetadata$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsEventMetadata.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsGroup$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsGroup$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsGroup.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuery$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuery$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuery$GroupByTimeEnum$Adapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuery$GroupByTimeEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuery.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFilters$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFilters$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFilters.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner$OpEnum$Adapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner$OpEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuerySort$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuerySort$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuerySort$DirEnum$Adapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuerySort$DirEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsQuerySort.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsResult$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsResult$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/StatisticsResult.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateBotKeyboardStateRequest$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateBotKeyboardStateRequest$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateBotKeyboardStateRequest$KeyEnum$Adapter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateBotKeyboardStateRequest$KeyEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateBotKeyboardStateRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateModuleSettingRequest$CustomTypeAdapterFactory$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateModuleSettingRequest$CustomTypeAdapterFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/classes/java/main/org/openapitools/client/model/UpdateModuleSettingRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/libs/api-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/api/build/libs/api-1.0.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ApiCallback.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ApiClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ApiException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ApiResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/BotLogEntry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/Configuration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/GzipRequestInterceptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/JSON.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/Pair.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ProgressRequestBody.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ProgressResponseBody.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ServerConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/ServerVariable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/StringUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/api/BotsApi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/api/ModulesApi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/api/PublicApi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/ApiKeyAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/Authentication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/HttpBasicAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/HttpBearerAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/OAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/OAuthFlow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/OAuthOkHttpClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/auth/RetryingOAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/AbstractOpenApiSchema.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/BlockPosition.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/Bot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/BuyItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/Command.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/LogMessageForBotRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/Module.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/PublicBot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/SellItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/SellItemPrice.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/SendCommandToBotRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/Server.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsEvent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsEventMetadata.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsGroup.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsQuery.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsQueryFilters.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsQueryFiltersMetadataInner.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsQuerySort.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/StatisticsResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/UpdateBotKeyboardStateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/org/openapitools/client/model/UpdateModuleSettingRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/ggbot-addon-release.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/core/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/addon.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/addon.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/GGBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/GGBot.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/BotRequests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/api/Callbacks.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/auth/OAuthServer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotConfiguration.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotDropDown.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotDropDown.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/cfg/BotLogsSubConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/AuthEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/ChatListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/SetupBotLogsChannel$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/SetupBotLogsChannel$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/SetupBotLogsChannel.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/listener/SetupBotLogsChannel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/widget/BotNameWidget.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/de/ggbot/core/widget/StatusWidget.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/generated/sources/annotationProcessor/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/generated/sources/annotationProcessor/java/main/net/labymod/autogen/core/lss/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/libs/core-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/libs/core-1.0.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_at.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_at.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/de_de.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/resources/main/assets/ggbot/i18n/en_us.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlignmentXPropertyValueAccessor.class.uniqueId38" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlignmentXPropertyValueAccessor.java.uniqueId138" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlignmentYPropertyValueAccessor.class.uniqueId120" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlignmentYPropertyValueAccessor.java.uniqueId105" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlwaysFocusedPropertyValueAccessor.class.uniqueId121" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAlwaysFocusedPropertyValueAccessor.java.uniqueId39" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAnimationDurationPropertyValueAccessor.class.uniqueId118" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAnimationDurationPropertyValueAccessor.java.uniqueId101" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAnimationTimingFunctionPropertyValueAccessor.class.uniqueId34" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetAnimationTimingFunctionPropertyValueAccessor.java.uniqueId2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundAlwaysDirtPropertyValueAccessor.class.uniqueId48" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundAlwaysDirtPropertyValueAccessor.java.uniqueId8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundColorPropertyValueAccessor.class.uniqueId82" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundColorPropertyValueAccessor.java.uniqueId12" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundColorTransitionDurationPropertyValueAccessor.class.uniqueId30" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundColorTransitionDurationPropertyValueAccessor.java.uniqueId145" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtBrightnessPropertyValueAccessor.class.uniqueId135" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtBrightnessPropertyValueAccessor.java.uniqueId68" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtShiftPropertyValueAccessor.class.uniqueId67" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtShiftPropertyValueAccessor.java.uniqueId21" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtTypePropertyValueAccessor.class.uniqueId66" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBackgroundDirtTypePropertyValueAccessor.java.uniqueId157" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBottomPropertyValueAccessor.class.uniqueId136" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBottomPropertyValueAccessor.java.uniqueId132" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBoxSizingPropertyValueAccessor.class.uniqueId83" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetBoxSizingPropertyValueAccessor.java.uniqueId134" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetCancelParentHoverComponentPropertyValueAccessor.class.uniqueId96" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetCancelParentHoverComponentPropertyValueAccessor.java.uniqueId60" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetClearDepthPropertyValueAccessor.class.uniqueId61" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetClearDepthPropertyValueAccessor.java.uniqueId88" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDestroyDelayPropertyValueAccessor.class.uniqueId86" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDestroyDelayPropertyValueAccessor.java.uniqueId31" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDirectPropertyValueAccessor.class.uniqueId149" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDirectPropertyValueAccessor.java.uniqueId140" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDistinctPropertyValueAccessor.class.uniqueId26" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDistinctPropertyValueAccessor.java.uniqueId78" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDraggablePropertyValueAccessor.class.uniqueId62" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetDraggablePropertyValueAccessor.java.uniqueId18" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFilterPropertyValueAccessor.class.uniqueId16" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFilterPropertyValueAccessor.java.uniqueId91" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFitOuterPropertyValueAccessor.class.uniqueId89" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFitOuterPropertyValueAccessor.java.uniqueId92" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFontWeightPropertyValueAccessor.class.uniqueId13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetFontWeightPropertyValueAccessor.java.uniqueId20" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetForceVanillaFontPropertyValueAccessor.class.uniqueId57" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetForceVanillaFontPropertyValueAccessor.java.uniqueId10" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetHeightPrecisionPropertyValueAccessor.class.uniqueId59" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetHeightPrecisionPropertyValueAccessor.java.uniqueId80" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetHoverBoxDelayPropertyValueAccessor.class.uniqueId84" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetHoverBoxDelayPropertyValueAccessor.java.uniqueId71" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetInteractableOutsidePropertyValueAccessor.class.uniqueId94" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetInteractableOutsidePropertyValueAccessor.java.uniqueId115" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetInteractablePropertyValueAccessor.class.uniqueId7" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetInteractablePropertyValueAccessor.java.uniqueId32" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetLeftPropertyValueAccessor.class.uniqueId113" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetLeftPropertyValueAccessor.java.uniqueId17" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetLssPropertyResetter.class.uniqueId128" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetLssPropertyResetter.java.uniqueId104" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginBottomPropertyValueAccessor.class.uniqueId85" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginBottomPropertyValueAccessor.java.uniqueId28" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginLeftPropertyValueAccessor.class.uniqueId122" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginLeftPropertyValueAccessor.java.uniqueId5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginRightPropertyValueAccessor.class.uniqueId79" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginRightPropertyValueAccessor.java.uniqueId36" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginTopPropertyValueAccessor.class.uniqueId147" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMarginTopPropertyValueAccessor.java.uniqueId76" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMouseRenderDistancePropertyValueAccessor.class.uniqueId53" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetMouseRenderDistancePropertyValueAccessor.java.uniqueId15" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetOpacityPropertyValueAccessor.class.uniqueId124" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetOpacityPropertyValueAccessor.java.uniqueId95" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingBottomPropertyValueAccessor.class.uniqueId50" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingBottomPropertyValueAccessor.java.uniqueId141" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingLeftPropertyValueAccessor.class.uniqueId43" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingLeftPropertyValueAccessor.java.uniqueId106" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingRightPropertyValueAccessor.class.uniqueId51" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingRightPropertyValueAccessor.java.uniqueId33" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingTopPropertyValueAccessor.class.uniqueId117" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPaddingTopPropertyValueAccessor.java.uniqueId139" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPressablePropertyValueAccessor.class.uniqueId40" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPressablePropertyValueAccessor.java.uniqueId143" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPriorityLayerPropertyValueAccessor.class.uniqueId99" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetPriorityLayerPropertyValueAccessor.java.uniqueId70" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRenderChildrenPropertyValueAccessor.class.uniqueId142" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRenderChildrenPropertyValueAccessor.java.uniqueId137" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRendererPropertyValueAccessor.class.uniqueId123" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRendererPropertyValueAccessor.java.uniqueId154" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRightPropertyValueAccessor.class.uniqueId129" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetRightPropertyValueAccessor.java.uniqueId151" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetScaleXPropertyValueAccessor.class.uniqueId27" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetScaleXPropertyValueAccessor.java.uniqueId37" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetScaleYPropertyValueAccessor.class.uniqueId102" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetScaleYPropertyValueAccessor.java.uniqueId112" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilTranslationPropertyValueAccessor.class.uniqueId148" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilTranslationPropertyValueAccessor.java.uniqueId65" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilXPropertyValueAccessor.class.uniqueId52" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilXPropertyValueAccessor.java.uniqueId11" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilYPropertyValueAccessor.class.uniqueId44" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetStencilYPropertyValueAccessor.java.uniqueId100" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTopPropertyValueAccessor.class.uniqueId87" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTopPropertyValueAccessor.java.uniqueId9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTranslateXPropertyValueAccessor.class.uniqueId23" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTranslateXPropertyValueAccessor.java.uniqueId47" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTranslateYPropertyValueAccessor.class.uniqueId77" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetTranslateYPropertyValueAccessor.java.uniqueId81" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetUseFloatingPointPositionPropertyValueAccessor.class.uniqueId58" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetUseFloatingPointPositionPropertyValueAccessor.java.uniqueId63" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetVisiblePropertyValueAccessor.class.uniqueId125" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetVisiblePropertyValueAccessor.java.uniqueId131" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetWidthPrecisionPropertyValueAccessor.class.uniqueId127" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetWidthPrecisionPropertyValueAccessor.java.uniqueId3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetWriteToStencilBufferPropertyValueAccessor.class.uniqueId49" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetWriteToStencilBufferPropertyValueAccessor.java.uniqueId42" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetZIndexPropertyValueAccessor.class.uniqueId35" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AbstractWidgetZIndexPropertyValueAccessor.java.uniqueId64" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/AuthEvent.class.uniqueId108" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotConfiguration.class.uniqueId116" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDown$BotDropDownMenu.class.uniqueId69" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDown$Factory.class.uniqueId0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDown.class.uniqueId109" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDownDirectPropertyValueAccessor.class.uniqueId14" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDownDirectPropertyValueAccessor.java.uniqueId29" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDownLssPropertyResetter.class.uniqueId158" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotDropDownLssPropertyResetter.java.uniqueId153" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotRequests$1.class.uniqueId22" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/BotRequests.class.uniqueId41" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/ChatListener.class.uniqueId6" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.class.uniqueId46" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/CoreGgbot_addonDirectPropertyValueAccessorRegisterBulk.java.uniqueId126" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/DefaultReferenceStorage.class.uniqueId152" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/DefaultReferenceStorage.java.uniqueId98" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/DefaultWidgetStorage.class.uniqueId4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/DefaultWidgetStorage.java.uniqueId45" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/GGBot.class.uniqueId156" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetDirectPropertyValueAccessor.class.uniqueId72" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetDirectPropertyValueAccessor.java.uniqueId103" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetLayoutPropertyValueAccessor.class.uniqueId107" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetLayoutPropertyValueAccessor.java.uniqueId133" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetLssPropertyResetter.class.uniqueId111" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetLssPropertyResetter.java.uniqueId73" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceBetweenEntriesPropertyValueAccessor.class.uniqueId146" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceBetweenEntriesPropertyValueAccessor.java.uniqueId119" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceLeftPropertyValueAccessor.class.uniqueId97" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceLeftPropertyValueAccessor.java.uniqueId90" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceRightPropertyValueAccessor.class.uniqueId130" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/HorizontalListWidgetSpaceRightPropertyValueAccessor.java.uniqueId54" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/ListWidgetDirectPropertyValueAccessor.class.uniqueId1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/ListWidgetDirectPropertyValueAccessor.java.uniqueId114" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/ListWidgetLssPropertyResetter.class.uniqueId55" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/ListWidgetLssPropertyResetter.java.uniqueId75" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/SetupBotLogsChannel$1.class.uniqueId93" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/SetupBotLogsChannel$2.class.uniqueId25" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/SetupBotLogsChannel.class.uniqueId56" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/StyledWidgetDirectPropertyValueAccessor.class.uniqueId144" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/StyledWidgetDirectPropertyValueAccessor.java.uniqueId155" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/StyledWidgetLssPropertyResetter.class.uniqueId19" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/StyledWidgetLssPropertyResetter.java.uniqueId159" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/addon.json.uniqueId24" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/net.labymod.api.client.gui.lss.property.DirectPropertyValueAccessorRegisterBulk.json.uniqueId74" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/net.labymod.api.configuration.settings.widget.WidgetStorage.json.uniqueId110" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/compileTransaction/stash-dir/net.labymod.api.reference.ReferenceStorageAccessor.json.uniqueId150" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/GGBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/BotRequests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/Callbacks.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/api/Callbacks.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/auth/OAuthServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/auth/OAuthServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotDropDown.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotDropDown.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotLogsSubConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/cfg/BotLogsSubConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/AuthEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/ChatListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/SetupBotLogsChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/SetupBotLogsChannel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/MovementTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/MovementTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/StartTimerOnJoin.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/listener/StartTimerOnJoin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/BotMoneyWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/ggfeatures/BotMoneyWidget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/BotNameWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/info/BotNameWidget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/StatusWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/de/ggbot/core/widget/info/StatusWidget.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_at.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/de_de.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/assets/ggbot/i18n/en_us.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -541,35 +176,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Gradle.Build GGBotAddon.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.GGBotAddon [build].executor": "Run",
-    "Gradle.GGBotAddon [client_v1.21.4].executor": "Run",
-    "Gradle.GGBotAddon [client_v1.21.5].executor": "Run",
-    "Gradle.GGBotAddon [refreshAddonDependencies].executor": "Run",
-    "Gradle.GGBotAddon:api [build].executor": "Run",
-    "Gradle.GGBotAddon:game-runner [:game-runner:net.minecraft.launchwrapper.Launch.main()].executor": "Debug",
-    "Gradle.Load Gradle Dependencies.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Black/Desktop/GGBotAddon/core/src/main/java/de/ggbot/core/api",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.46961805",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;Gradle.Build GGBotAddon.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon [client_v1.21.4].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon [client_v1.21.5].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon [refreshAddonDependencies].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon:api [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GGBotAddon:game-runner [:game-runner:net.minecraft.launchwrapper.Launch.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.Load Gradle Dependencies.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Black/Desktop/GGBotAddon/core/src/main/java/de/ggbot/core/api&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.46961805&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Black\Desktop\GGBotAddon\core\src\main\java\de\ggbot\core\api" />
