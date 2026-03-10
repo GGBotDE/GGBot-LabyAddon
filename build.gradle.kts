@@ -47,10 +47,6 @@ subprojects {
     version = rootProject.version
 }
 
-configurations.all {
-    exclude(group = "com.google.code.gson", module = "gson")
-}
-
 tasks.register("removeGsonFromAddonJson") {
     description = "Removes com.google.code.gson dependencies from addon.json inside all built .jar files"
     group = "labymod"
