@@ -1,5 +1,10 @@
 package de.ggbot.core;
 
+import de.ggbot.core.api.VersioningHandler;
+import de.ggbot.core.api.versioning.VersionCheckRequest;
+import de.ggbot.core.api.versioning.VersionCheckResponse;
+import de.ggbot.core.api.versioning.VersioningApiClient;
+import de.ggbot.core.api.versioning.response.MessageResponse;
 import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.ChatListener;
 import de.ggbot.core.listener.MovementTest;
@@ -26,11 +31,13 @@ import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.widget.info.BotNameWidget;
 import de.ggbot.core.widget.info.StatusWidget;
+import net.labymod.api.models.addon.info.dependency.MavenDependency;
 
 import static de.ggbot.core.api.BotRequests.updateBotList;
 
 @AddonMain
 public class GGBot extends LabyAddon<BotConfiguration> {
+  private VersioningHandler versioningHandler;
   private HudWidgetCategory ggfeatures;
   private HudWidgetCategory ticket;
   private HudWidgetCategory ingame;
@@ -44,6 +51,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   @Override
   protected void enable() {
     instance = this;
+    versioningHandler = new VersioningHandler(this);
     this.registerSettingCategory();
     try {
       checkAuth(this);
@@ -144,5 +152,9 @@ public class GGBot extends LabyAddon<BotConfiguration> {
         "ggbot_role",
         net.labymod.api.client.entity.player.badge.PositionType.LEFT_TO_NAME,
         new TeamNameTagIconBadge());
+  }
+
+  public VersioningHandler getVersioningHandler() {
+    return versioningHandler;
   }
 }
