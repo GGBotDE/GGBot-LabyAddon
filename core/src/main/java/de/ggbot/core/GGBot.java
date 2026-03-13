@@ -5,7 +5,7 @@ import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.listener.ChatListener;
-import de.ggbot.core.listener.MovementTest;
+import de.ggbot.core.listener.ShopListener;
 import de.ggbot.core.listener.SetupBotLogsChannel;
 import de.ggbot.core.listener.StartTimerOnJoin;
 import de.ggbot.core.nametag.TeamFetcher;
@@ -42,6 +42,8 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   private HudWidgetCategory ticketCategory;
   private HudWidgetCategory ingameCategory;
   private HudWidgetCategory infoCategory;
+
+  private CheckGGBot checkGGBotInteraction;
 
   /** Whether the user currently holds a valid authentication token. */
   private static boolean authenticated = false;
@@ -176,6 +178,16 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   }
 
   /**
+   * Returns the {@link CheckGGBot} interaction instance for external state checks
+   * (e.g. enabling/disabling the interaction based on authentication).
+   *
+   * @return the check-GGBot interaction
+   */
+  public CheckGGBot getCheckGGBotInteraction() {
+    return checkGGBotInteraction;
+  }
+
+  /**
    * Creates and registers all event listeners.
    */
   private void registerListeners() {
@@ -185,7 +197,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     this.registerListener(new SetupBotLogsChannel(this));
     timerListener = new StartTimerOnJoin(this);
     this.registerListener(timerListener);
-    this.registerListener(new MovementTest(this));
+    this.registerListener(new ShopListener(this));
   }
 
   /**
@@ -253,7 +265,10 @@ public class GGBot extends LabyAddon<BotConfiguration> {
    * Registers player interaction menu entries.
    */
   private void registerInteractions() {
-    labyAPI().interactionMenuRegistry().register(new CheckGGBot(this));
+    checkGGBotInteraction = new CheckGGBot(this);
+
+    if(!this.configuration().generalSub.checkBotEnabled.get()) return;
+    labyAPI().interactionMenuRegistry().register("de.ggbot.addon.checkGGBotInteraction",checkGGBotInteraction);
   }
 
   /**

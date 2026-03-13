@@ -2,9 +2,7 @@ package de.ggbot.core.interactions;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.sdk.api.PublicApi;
-import de.ggbot.sdk.core.ApiClient;
 import de.ggbot.sdk.core.ApiException;
-import de.ggbot.sdk.core.Configuration;
 import de.ggbot.sdk.model.PublicBot;
 import de.ggbot.sdk.model.Server;
 import net.labymod.api.client.component.Component;
@@ -36,45 +34,54 @@ public class CheckGGBot implements BulletPoint {
   @Override
   public void execute(Player player) {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
-    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.checkbot")) return;
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath(this.addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.checkbot"));
+    if (!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.checkbot")) return;
 
-    PublicApi api = new PublicApi();
-    String serverIP = GGBot.getInstance().labyAPI().serverController().getCurrentServerData().address().getHost().toLowerCase();
-    String[] splittedServer = serverIP.split("\\.");
-    try {
-      if(splittedServer.length > 1) {
-        String baseDomain = splittedServer[splittedServer.length - 2] + "." + splittedServer[splittedServer.length - 1];
-        for (Server server : api.getPublicServers()) {
-          if (server.getName().equals(baseDomain)) {
-            serverIP = baseDomain;
+    String rawServerIP = GGBot.getInstance().labyAPI().serverController()
+        .getCurrentServerData().address().getHost().toLowerCase();
+    String[] parts = rawServerIP.split("\\.");
+
+    Thread checkThread = new Thread(() -> {
+      PublicApi api = new PublicApi();
+      api.setCustomBaseUrl(this.addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.checkbot"));
+
+      String serverIP = rawServerIP;
+      try {
+        if (parts.length > 1) {
+          String baseDomain = parts[parts.length - 2] + "." + parts[parts.length - 1];
+          for (Server server : api.getPublicServers()) {
+            if (server.getName().equals(baseDomain)) {
+              serverIP = baseDomain;
+              break;
+            }
           }
         }
+      } catch (ApiException e) {
+        addon.logger().error("Failed to fetch public servers: " + e.getMessage());
+        addon.getVersioningHandler().reportError(e);
       }
-    } catch (ApiException e) {
-      addon.logger().error("Failed to fetch public servers: " + e.getMessage());
-      e.printStackTrace();
-      addon.getVersioningHandler().reportError(e);
-    }
-    try {
-      PublicBot bot = api.getPublicBotByLink(player.getName(), serverIP);
-      if(bot.getOnline()){
-        addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
-            .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
-            .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
-            .append(Component.translatable("ggbot.messages.interaction.checkggbot.isbot", GRAY)));
-      }else{
-        addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
+
+      final String finalServerIP = serverIP;
+      try {
+        PublicBot bot = api.getPublicBotByLink(player.getName(), finalServerIP);
+        if (bot.getOnline()) {
+          addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1", BLUE)
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.isbot", GRAY)));
+        } else {
+          addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1", BLUE)
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
+              .append(Component.translatable("ggbot.messages.interaction.checkggbot.isnotbot", GRAY)));
+        }
+      } catch (ApiException e) {
+        addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1", BLUE)
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.isnotbot", GRAY)));
       }
-    } catch (ApiException e) {
-      addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
-          .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
-          .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
-          .append(Component.translatable("ggbot.messages.interaction.checkggbot.isnotbot", GRAY)));
-    }
+    }, "ggbot-check-bot");
+    checkThread.setDaemon(true);
+    checkThread.start();
   }
 }

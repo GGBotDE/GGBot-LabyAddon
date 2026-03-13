@@ -51,7 +51,9 @@ public class AuthEvent {
       return;
     }
     if (!GGBot.isAuthenticated()) {
-      displayAuthPrompt();
+      if (addon.configuration().generalSub.joinNotificationEnabled.get()) {
+        displayAuthPrompt();
+      }
       startAuth();
     } else {
       loadBotData();

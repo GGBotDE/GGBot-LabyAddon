@@ -13,6 +13,7 @@ import de.ggbot.sdk.model.GetGGFeaturesMoney200Response;
 import de.ggbot.sdk.model.SendCommandToBotRequest;
 import de.ggbot.sdk.model.Ticket;
 import de.ggbot.sdk.model.Ticket.StatusEnum;
+import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import de.ggbot.sdk.core.ApiClient;
 import de.ggbot.sdk.core.ApiException;
@@ -66,6 +67,66 @@ public class BotRequests {
   }
 
   /**
+   * Finds the currently selected bot in the local cache without making any API
+   * request. Returns {@code null} when no bot is selected or when the cached list
+   * does not yet contain the selected ID.
+   *
+   * @param addon the addon instance
+   * @return the matching {@link Bot}, or {@code null}
+   */
+  public static Bot getBotFromCache(GGBot addon) {
+    String botString = addon.configuration().botlist.get();
+    if (botString.isEmpty() || !botString.contains("(")) return null;
+    try {
+      long botId = getSelectedBotId(addon);
+      for (Bot bot : cachedBots) {
+        if (bot.getId() == botId) return bot;
+      }
+    } catch (Exception ignored) {}
+    return null;
+  }
+
+  /**
+   * Returns whether the selected bot is online according to the last cached data.
+   * No network request is made — call {@link #updateBotList(GGBot)} first if
+   * freshness is required.
+   *
+   * @param addon the addon instance
+   * @return {@code true} if the cached bot entry is marked online
+   */
+  public static boolean isOnlineCached(GGBot addon) {
+    Bot bot = getBotFromCache(addon);
+    return bot != null && Boolean.TRUE.equals(bot.getOnline());
+  }
+
+  /**
+   * Refreshes the cached bot list on a background thread and notifies the
+   * render thread when done.
+   *
+   * @param addon      the addon instance
+   * @param onComplete optional callback executed on the render thread after
+   *                   the refresh completes (may be {@code null})
+   */
+  public static void updateBotListAsync(GGBot addon, Runnable onComplete) {
+    Thread t = new Thread(() -> {
+      try {
+        if (addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) {
+          cachedBots = new ArrayList<>(new BotsApi(
+              createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots());
+        }
+      } catch (ApiException e) {
+        addon.logger().error("Failed to refresh bot list: " + e.getMessage());
+        addon.getVersioningHandler().reportError(e);
+      }
+      if (onComplete != null) {
+        Laby.labyAPI().minecraft().executeOnRenderThread(onComplete);
+      }
+    }, "ggbot-botlist-refresh");
+    t.setDaemon(true);
+    t.start();
+  }
+
+  /**
    * Creates an {@link ApiClient} configured with the addon's OAuth token and the
    * base URL resolved for the given feature flag.
    *
@@ -99,41 +160,33 @@ public class BotRequests {
    */
   public static void updateBotList(GGBot addon) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) return;
-    cachedBots = new BotsApi(createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots();
+    cachedBots = new ArrayList<>(new BotsApi(
+        createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots());
   }
 
   /**
-   * Returns the status string of the currently configured bot.
+   * Returns the status of the selected bot from the local cache.
+   * Call {@link #updateBotList(GGBot)} to refresh before reading if freshness matters.
    *
    * @param addon the addon instance
-   * @return bot status, or {@code "Unknown"} if not found
-   * @throws ApiException if the API request fails
+   * @return bot status string, or {@code "Unknown"} if not found in cache
    */
-  public static String getStatus(GGBot addon) throws ApiException {
+  public static String getStatus(GGBot addon) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getstatus")) return "Unknown";
-    ApiClient client = createApiClient(addon, "de.ggbot.addon.api.getstatus");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) return bot.getStatus();
-    }
-    return "Unknown";
+    Bot bot = getBotFromCache(addon);
+    return bot != null ? bot.getStatus() : "Unknown";
   }
 
   /**
-   * Returns the link name of the currently configured bot.
+   * Returns the link name of the selected bot from the local cache.
    *
    * @param addon the addon instance
-   * @return bot link name, or {@code "Unknown"} if not found
-   * @throws ApiException if the API request fails
+   * @return bot link name, or {@code "Unknown"}
    */
-  public static String getName(GGBot addon) throws ApiException {
+  public static String getName(GGBot addon) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getname")) return "Unknown";
-    ApiClient client = createApiClient(addon, "de.ggbot.addon.api.getname");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) return bot.getLinkName();
-    }
-    return "Unknown";
+    Bot bot = getBotFromCache(addon);
+    return bot != null ? bot.getLinkName() : "Unknown";
   }
 
   /**
@@ -144,15 +197,10 @@ public class BotRequests {
    */
   public static void startBot(GGBot addon) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.startbot")) return;
-    ApiClient client = createApiClient(addon, "de.ggbot.addon.api.startbot");
-    long botId = getSelectedBotId(addon);
-    BotsApi api = new BotsApi(client);
-    for (Bot bot : api.getAllBots()) {
-      if (bot.getId() == botId) {
-        api.startBotAsync(bot.getToken(), Callbacks.START);
-        return;
-      }
-    }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) return;
+    new BotsApi(createApiClient(addon, "de.ggbot.addon.api.startbot"))
+        .startBotAsync(bot.getToken(), Callbacks.START);
   }
 
   /**
@@ -163,15 +211,10 @@ public class BotRequests {
    */
   public static void stopBot(GGBot addon) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.stopbot")) return;
-    ApiClient client = createApiClient(addon, "de.ggbot.addon.api.stopbot");
-    long botId = getSelectedBotId(addon);
-    BotsApi api = new BotsApi(client);
-    for (Bot bot : api.getAllBots()) {
-      if (bot.getId() == botId) {
-        api.stopBotAsync(bot.getToken(), Callbacks.STOP);
-        return;
-      }
-    }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) return;
+    new BotsApi(createApiClient(addon, "de.ggbot.addon.api.stopbot"))
+        .stopBotAsync(bot.getToken(), Callbacks.STOP);
   }
 
   /**
@@ -200,16 +243,11 @@ public class BotRequests {
    */
   public static void sendCommand(GGBot addon, String command) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.sendcommand")) return;
-    ApiClient client = createApiClient(addon, "de.ggbot.addon.api.sendcommand");
-    long botId = getSelectedBotId(addon);
-    BotsApi api = new BotsApi(client);
-    for (Bot bot : api.getAllBots()) {
-      if (bot.getId() == botId) {
-        api.sendCommandToBotAsync(bot.getToken(),
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) return;
+    new BotsApi(createApiClient(addon, "de.ggbot.addon.api.sendcommand"))
+        .sendCommandToBotAsync(bot.getToken(),
             new SendCommandToBotRequest().command(command), Callbacks.SEND_COMMAND);
-        return;
-      }
-    }
   }
 
   /**
@@ -223,56 +261,53 @@ public class BotRequests {
   public static void logsAsync() throws ApiException {
     GGBot addon = GGBot.getInstance();
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.logs")) return;
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) return;
+    if (!GGBot.isAuthenticated()) return;
+
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) return;
 
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.logs");
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
-    long botId = getSelectedBotId(addon);
     String baseUrl = addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.logs");
 
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        Request request = new Request.Builder()
-            .url(baseUrl + "/bot/" + bot.getToken() + "/logs")
-            .addHeader("Authorization", "Bearer " + oauth.getAccessToken())
-            .build();
+    Request request = new Request.Builder()
+        .url(baseUrl + "/bot/" + bot.getToken() + "/logs")
+        .addHeader("Authorization", "Bearer " + oauth.getAccessToken())
+        .build();
 
-        new OkHttpClient().newCall(request).enqueue(new Callback() {
-          @Override
-          public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            addon.logger().error("Failed to fetch bot logs: " + e.getMessage());
-          }
-
-          @Override
-          public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if (response.body() == null) return;
-            String body = response.body().string();
-            Type listType = new TypeToken<List<BotLogEntry>>() {}.getType();
-            List<BotLogEntry> entries = new Gson().fromJson(body, listType);
-            if (entries == null || entries.isEmpty()) return;
-
-            entries.sort(Comparator.comparing(BotLogEntry::getTimestampInstant));
-            ZoneId zoneId = ZoneId.systemDefault();
-            for (BotLogEntry log : entries) {
-              String logId = log.getMessage() + log.getTimestamp();
-              if (!sentLogIds.contains(logId)) {
-                Component entry = Component
-                    .translatable("ggbot.messages.log.time", BLUE,
-                        Component.text(getTimestampForZone(zoneId, log)))
-                    .append(Component.text(" ", BLUE))
-                    .append(Component.text(formatLevel(log.getLevel()),
-                        getColorForLevel(log.getLevel())))
-                    .append(Component.translatable("ggbot.messages.log.textfilter", GRAY,
-                        Component.text(log.getMessage())));
-                addon.displayMessage(entry);
-                sentLogIds.add(logId);
-              }
-            }
-          }
-        });
-        return;
+new OkHttpClient().newCall(request).enqueue(new Callback() {
+      @Override
+      public void onFailure(@NotNull Call call, @NotNull IOException e) {
+        addon.logger().error("Failed to fetch bot logs: " + e.getMessage());
       }
-    }
+
+      @Override
+      public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+        if (response.body() == null) return;
+        String body = response.body().string();
+        Type listType = new TypeToken<List<BotLogEntry>>() {}.getType();
+        List<BotLogEntry> entries = new Gson().fromJson(body, listType);
+        if (entries == null || entries.isEmpty()) return;
+
+        entries.sort(Comparator.comparing(BotLogEntry::getTimestampInstant));
+        ZoneId zoneId = ZoneId.systemDefault();
+        for (BotLogEntry log : entries) {
+          String logId = log.getMessage() + log.getTimestamp();
+          if (!sentLogIds.contains(logId)) {
+            Component entry = Component
+                .translatable("ggbot.messages.log.time", BLUE,
+                    Component.text(getTimestampForZone(zoneId, log)))
+                .append(Component.text(" ", BLUE))
+                .append(Component.text(formatLevel(log.getLevel()),
+                    getColorForLevel(log.getLevel())))
+                .append(Component.translatable("ggbot.messages.log.textfilter", GRAY,
+                    Component.text(log.getMessage())));
+            addon.displayMessage(entry);
+            sentLogIds.add(logId);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -286,21 +321,16 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getmoney")) {
       callback.accept(0.0); return;
     }
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) { callback.accept(0.0); return; }
+    if (!GGBot.isAuthenticated()) { callback.accept(0.0); return; }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) { callback.accept(0.0); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.getmoney");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        new ModulesApi(client).getGGFeaturesMoneyAsync(bot.getToken(), new ApiCallback<>() {
-          @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(0.0); }
-          @Override public void onSuccess(GetGGFeaturesMoney200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : 0.0); }
-          @Override public void onUploadProgress(long a, long b, boolean c) {}
-          @Override public void onDownloadProgress(long a, long b, boolean c) {}
-        });
-        return;
-      }
-    }
-    callback.accept(0.0);
+    new ModulesApi(client).getGGFeaturesMoneyAsync(bot.getToken(), new ApiCallback<>() {
+      @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(0.0); }
+      @Override public void onSuccess(GetGGFeaturesMoney200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : 0.0); }
+      @Override public void onUploadProgress(long a, long b, boolean c) {}
+      @Override public void onDownloadProgress(long a, long b, boolean c) {}
+    });
   }
 
   /**
@@ -314,21 +344,16 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.gethealth")) {
       callback.accept(0.0); return;
     }
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) { callback.accept(0.0); return; }
+    if (!GGBot.isAuthenticated()) { callback.accept(0.0); return; }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) { callback.accept(0.0); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.gethealth");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        new IngameApi(client).getBotHealthAsync(bot.getToken(), new ApiCallback<>() {
-          @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(0.0); }
-          @Override public void onSuccess(GetBotHealth200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : 0.0); }
-          @Override public void onUploadProgress(long a, long b, boolean c) {}
-          @Override public void onDownloadProgress(long a, long b, boolean c) {}
-        });
-        return;
-      }
-    }
-    callback.accept(0.0);
+    new IngameApi(client).getBotHealthAsync(bot.getToken(), new ApiCallback<>() {
+      @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(0.0); }
+      @Override public void onSuccess(GetBotHealth200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : 0.0); }
+      @Override public void onUploadProgress(long a, long b, boolean c) {}
+      @Override public void onDownloadProgress(long a, long b, boolean c) {}
+    });
   }
 
   /**
@@ -342,21 +367,16 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getcitybuild")) {
       callback.accept("Unknown"); return;
     }
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) { callback.accept("Unknown"); return; }
+    if (!GGBot.isAuthenticated()) { callback.accept("Unknown"); return; }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) { callback.accept("Unknown"); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.getcitybuild");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        new ModulesApi(client).getGGFeaturesCityBuildAsync(bot.getToken(), new ApiCallback<>() {
-          @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept("Unknown"); }
-          @Override public void onSuccess(GetGGFeaturesCityBuild200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : "Unknown"); }
-          @Override public void onUploadProgress(long a, long b, boolean c) {}
-          @Override public void onDownloadProgress(long a, long b, boolean c) {}
-        });
-        return;
-      }
-    }
-    callback.accept("Unknown");
+    new ModulesApi(client).getGGFeaturesCityBuildAsync(bot.getToken(), new ApiCallback<>() {
+      @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept("Unknown"); }
+      @Override public void onSuccess(GetGGFeaturesCityBuild200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData() : "Unknown"); }
+      @Override public void onUploadProgress(long a, long b, boolean c) {}
+      @Override public void onDownloadProgress(long a, long b, boolean c) {}
+    });
   }
 
   /**
@@ -370,21 +390,16 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getplot")) {
       callback.accept("Unknown"); return;
     }
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) { callback.accept("Unknown"); return; }
+    if (!GGBot.isAuthenticated()) { callback.accept("Unknown"); return; }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) { callback.accept("Unknown"); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.getplot");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        new ModulesApi(client).getGGFeaturesCurrentPlotAsync(bot.getToken(), new ApiCallback<>() {
-          @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept("Unknown"); }
-          @Override public void onSuccess(GetGGFeaturesCurrentPlot200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData().getPlotString() : "Unknown"); }
-          @Override public void onUploadProgress(long a, long b, boolean c) {}
-          @Override public void onDownloadProgress(long a, long b, boolean c) {}
-        });
-        return;
-      }
-    }
-    callback.accept("Unknown");
+    new ModulesApi(client).getGGFeaturesCurrentPlotAsync(bot.getToken(), new ApiCallback<>() {
+      @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept("Unknown"); }
+      @Override public void onSuccess(GetGGFeaturesCurrentPlot200Response r, int s, Map<String, List<String>> h) { callback.accept(r.getData() != null ? r.getData().getPlotString() : "Unknown"); }
+      @Override public void onUploadProgress(long a, long b, boolean c) {}
+      @Override public void onDownloadProgress(long a, long b, boolean c) {}
+    });
   }
 
   /**
@@ -399,21 +414,16 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.gettickets")) {
       callback.accept(new ArrayList<>()); return;
     }
-    if (!GGBot.isAuthenticated() && GGBot.isTokenExpired()) { callback.accept(new ArrayList<>()); return; }
+    if (!GGBot.isAuthenticated()) { callback.accept(new ArrayList<>()); return; }
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) { callback.accept(new ArrayList<>()); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.gettickets");
-    long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
-      if (bot.getId() == botId) {
-        new ModulesApi(client).getTicketsAsync(bot.getToken(), statusEnum, new ApiCallback<>() {
-          @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(new ArrayList<>()); }
-          @Override public void onSuccess(List<Ticket> r, int s, Map<String, List<String>> h) { callback.accept(r); }
-          @Override public void onUploadProgress(long a, long b, boolean c) {}
-          @Override public void onDownloadProgress(long a, long b, boolean c) {}
-        });
-        return;
-      }
-    }
-    callback.accept(new ArrayList<>());
+    new ModulesApi(client).getTicketsAsync(bot.getToken(), statusEnum, new ApiCallback<>() {
+      @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(new ArrayList<>()); }
+      @Override public void onSuccess(List<Ticket> r, int s, Map<String, List<String>> h) { callback.accept(r); }
+      @Override public void onUploadProgress(long a, long b, boolean c) {}
+      @Override public void onDownloadProgress(long a, long b, boolean c) {}
+    });
   }
 
   /**

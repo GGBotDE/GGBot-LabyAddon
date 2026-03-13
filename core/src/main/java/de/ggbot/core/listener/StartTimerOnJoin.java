@@ -69,8 +69,8 @@ public class StartTimerOnJoin {
   public void onServerJoin(ServerJoinEvent e) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers")) return;
     startLogTimer(addon.configuration().botlogSub.minutes.get() * 60_000L);
-    startStatusTimer(addon.configuration().statusMinutes.get() * 60_000L);
-    startStatsTimer(addon.configuration().statsMinute.get() * 60_000L);
+    startStatusTimer(addon.configuration().statusSub.statusMinutes.get() * 60_000L);
+    startStatsTimer(addon.configuration().statsSub.statsMinutes.get() * 60_000L);
   }
 
   /**
@@ -97,18 +97,19 @@ public class StartTimerOnJoin {
    */
   public void startStatusTimer(long intervalMs) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.status")) return;
+    if (!addon.configuration().statusSub.statusEnabled.get()) return;
     statusTimer = new Timer(true);
     statusTimer.scheduleAtFixedRate(wrapTask(() -> {
       if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
-      try {
-        var botNameWidget = addon.labyAPI().hudWidgetRegistry().getById(BotNameWidget.WIDGET_ID);
-        if (botNameWidget != null && botNameWidget.isEnabled())
-          BotNameWidget.update(BotRequests.getName(addon));
+      // Refresh the cache first so getName/getStatus read up-to-date data.
+      try { BotRequests.updateBotList(addon); } catch (ApiException ignored) {}
+      var botNameWidget = addon.labyAPI().hudWidgetRegistry().getById(BotNameWidget.WIDGET_ID);
+      if (botNameWidget != null && botNameWidget.isEnabled())
+        BotNameWidget.update(BotRequests.getName(addon));
 
-        var statusWidget = addon.labyAPI().hudWidgetRegistry().getById(StatusWidget.WIDGET_ID);
-        if (statusWidget != null && statusWidget.isEnabled())
-          StatusWidget.update(BotRequests.getStatus(addon));
-      } catch (ApiException ignored) {}
+      var statusWidget = addon.labyAPI().hudWidgetRegistry().getById(StatusWidget.WIDGET_ID);
+      if (statusWidget != null && statusWidget.isEnabled())
+        StatusWidget.update(BotRequests.getStatus(addon));
     }), 0, intervalMs);
   }
 
@@ -120,6 +121,7 @@ public class StartTimerOnJoin {
    */
   public void startStatsTimer(long intervalMs) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.stats")) return;
+    if (!addon.configuration().statsSub.statsEnabled.get()) return;
     statsTimer = new Timer(true);
     statsTimer.scheduleAtFixedRate(wrapTask(() -> {
       if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;

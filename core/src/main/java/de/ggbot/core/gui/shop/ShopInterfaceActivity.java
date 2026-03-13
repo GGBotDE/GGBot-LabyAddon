@@ -23,7 +23,6 @@ import net.labymod.api.client.gui.screen.activity.types.SimpleActivity;
 import net.labymod.api.client.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -96,35 +95,45 @@ public class ShopInterfaceActivity extends SimpleActivity {
   protected void postInitialize() {
     super.postInitialize();
 
-    shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.purchaseButton.setEnabled(versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy"));
+    shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.purchaseButton
+        .setEnabled(versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy"));
 
-    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
-    try {
-      publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-      modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-      publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+    if (!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
 
-      List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());
-      for(SellItem item : fetchedItems) {
-        for(SellItemPrice price : item.getPrices()) {
-          CustomSellItem customSellItem = new CustomSellItem(
-              item.getId(),
-              item.getName(),
-              item.getItemType(),
-              item.getNbt(),
-              price.getPrice(),
-              price.getAmount(),
-              item.getChestPosition()
-          );
-          customSellItems.add(customSellItem);
+    Thread loadThread = new Thread(() -> {
+      try {
+        publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
+        modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
+        publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+
+        List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());
+        List<CustomSellItem> loaded = new ArrayList<>();
+        for (SellItem item : fetchedItems) {
+          for (SellItemPrice price : item.getPrices()) {
+            loaded.add(new CustomSellItem(
+                item.getId(),
+                item.getName(),
+                item.getItemType(),
+                item.getNbt(),
+                price.getPrice(),
+                price.getAmount(),
+                item.getChestPosition()
+            ));
+          }
         }
-      }
+        customSellItems = loaded;
 
-      shopWidget.mainShopWidget.itemsWidget.refreshItems();
-    } catch (ApiException e) {
-      GGBot.getInstance().logger().error("Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
-      GGBot.getInstance().getVersioningHandler().reportError(e);
-    }
+        Laby.labyAPI().minecraft().executeOnRenderThread(
+            () -> shopWidget.mainShopWidget.itemsWidget.refreshItems());
+
+      } catch (ApiException e) {
+        GGBot.getInstance().logger().error(
+            "Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
+        GGBot.getInstance().getVersioningHandler().reportError(e);
+      }
+    }, "ggbot-shop-load");
+    loadThread.setDaemon(true);
+    loadThread.start();
   }
 
   @Override

@@ -78,20 +78,24 @@ public class CustomSellItem {
   }
 
   public Icon getIcon() {
+    String typeName = this.getType().toLowerCase();
+    // Strip namespace prefix (e.g. "minecraft:diamond_sword" → "diamond_sword")
+    if (typeName.contains(":")) {
+      typeName = typeName.substring(typeName.indexOf(':') + 1);
+    }
     ResourceLocation resourceLocation = ResourceLocation.create(
-        "minecraft", "textures/item/" + this.getType().toLowerCase() + ".png"
+        "minecraft", "textures/item/" + typeName + ".png"
     );
     if (!resourceLocation.exists()) {
       resourceLocation = ResourceLocation.create(
-          "minecraft", "textures/block/" + this.getType().toLowerCase() + ".png"
+          "minecraft", "textures/block/" + typeName + ".png"
       );
     }
-    if(!resourceLocation.exists()) {
+    if (!resourceLocation.exists()) {
       resourceLocation = ResourceLocation.create(
           "minecraft", "textures/item/barrier.png"
       );
     }
-
     return Icon.texture(resourceLocation);
   }
 
