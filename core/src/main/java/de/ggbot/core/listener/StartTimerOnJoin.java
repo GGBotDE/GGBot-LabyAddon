@@ -140,7 +140,8 @@ public class StartTimerOnJoin {
                   TicketClosedAmountWidget.TicketAmount.updateAndFlush(tickets.size())
               );
           } catch (ApiException e) {
-            throw new RuntimeException(e);
+            addon.logger().error("Failed to fetch stats: " + e.getMessage());
+            addon.getVersioningHandler().reportError(e);
           }
         }
       }

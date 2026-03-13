@@ -39,7 +39,9 @@ public class MovementTest {
                 try {
                   Thread.sleep(3000);
                 } catch (InterruptedException ex) {
-
+                  addon.logger().error("Purchase thread interrupted: " + ex.getMessage());
+                  ex.printStackTrace();
+                  addon.getVersioningHandler().reportError(ex);
                 }
               }
             }

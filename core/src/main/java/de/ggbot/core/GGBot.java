@@ -56,7 +56,8 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     try {
       checkAuth(this);
     } catch (ApiException e) {
-      throw new RuntimeException(e);
+      this.logger().error("Failed to check authentication status: " + e.getMessage());
+      instance.versioningHandler.reportError(e);
     }
     registerListeners();
     registerWidgetsCategories();

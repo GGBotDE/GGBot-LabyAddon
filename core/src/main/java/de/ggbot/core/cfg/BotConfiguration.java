@@ -105,7 +105,9 @@ public class BotConfiguration extends AddonConfig {
           GGBot.isExpired = false;
         }));
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        addon.logger().error("Error during authentication", e);
+        e.printStackTrace();
+        addon.getVersioningHandler().reportError(e);
       }
       Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
     }
@@ -127,7 +129,9 @@ public class BotConfiguration extends AddonConfig {
         GGBot.isExpired = false;
       }));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Error during re-authentication", e);
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
     Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
   }

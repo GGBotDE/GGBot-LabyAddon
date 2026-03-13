@@ -99,6 +99,7 @@ public class OAuthServer {
           return null;
         }
       } catch (Exception e) {
+        addon.getVersioningHandler().reportError(e);
         e.printStackTrace();
         break;
       }
@@ -114,6 +115,7 @@ public class OAuthServer {
     try {
       this.serverSocket.close();
     } catch (IOException e) {
+      addon.getVersioningHandler().reportError(e);
       e.printStackTrace();
     }
   }

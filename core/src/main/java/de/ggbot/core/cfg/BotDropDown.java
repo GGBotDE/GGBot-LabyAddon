@@ -78,7 +78,8 @@ public class BotDropDown extends HorizontalListWidget {
           try {
             BotRequests.updateBotList(GGBot.getInstance());
           } catch (ApiException e) {
-            throw new RuntimeException(e);
+            GGBot.getInstance().logger().error("Failed to update bot list: " + e.getMessage());
+            GGBot.getInstance().getVersioningHandler().reportError(e);
           }
           dropdown.clear();
           for (Bot bot : BotRequests.bots){

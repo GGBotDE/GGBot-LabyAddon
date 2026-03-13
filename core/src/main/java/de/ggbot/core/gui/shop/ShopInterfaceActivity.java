@@ -101,6 +101,7 @@ public class ShopInterfaceActivity extends SimpleActivity {
     } catch (ApiException e) {
       GGBot.getInstance().logger().error("Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
       e.printStackTrace();
+      GGBot.getInstance().getVersioningHandler().reportError(e);
     }
   }
 

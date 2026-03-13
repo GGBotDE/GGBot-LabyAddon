@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.ggbot.core.GGBot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public class NBTParser {
 
     } catch (Exception e) {
       e.printStackTrace();
+      GGBot.getInstance().getVersioningHandler().reportError(e);
       return new ParsedNBT(new ArrayList<>(), new ArrayList<>(), null);
     }
   }
@@ -258,6 +260,7 @@ public class NBTParser {
       return result.toString();
     } catch (Exception e) {
       // If parsing fails, return the original string
+      GGBot.getInstance().getVersioningHandler().reportError(e);
       return jsonText;
     }
   }
@@ -372,6 +375,7 @@ public class NBTParser {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      GGBot.getInstance().getVersioningHandler().reportError(e);
     }
 
     return null;

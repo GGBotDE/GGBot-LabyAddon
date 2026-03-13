@@ -92,7 +92,9 @@ public class AuthEvent {
         GGBot.isExpired = false;
       }));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Error during authentication", e);
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
   }
 

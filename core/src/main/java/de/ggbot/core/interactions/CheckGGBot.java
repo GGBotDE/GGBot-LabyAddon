@@ -53,7 +53,9 @@ public class CheckGGBot implements BulletPoint {
         }
       }
     } catch (ApiException e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Failed to fetch public servers: " + e.getMessage());
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
     try {
       PublicBot bot = api.getPublicBotByLink(player.getName(), serverIP);
