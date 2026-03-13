@@ -1,6 +1,7 @@
 package de.ggbot.core.gui.shop;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.api.VersioningHandler;
 import de.ggbot.core.gui.shop.utils.CustomSellItem;
 import de.ggbot.core.gui.shop.utils.NBTParser;
 import de.ggbot.core.gui.shop.widgets.ShopWidget;
@@ -32,6 +33,7 @@ import java.util.function.Supplier;
 public class ShopInterfaceActivity extends SimpleActivity {
   public final String botName;
   public final String serverIp;
+  private final VersioningHandler versioningHandler;
   public final ShopWidget shopWidget;
   public PublicBot publicBot;
   public final PublicApi publicApi = new PublicApi();
@@ -41,12 +43,12 @@ public class ShopInterfaceActivity extends SimpleActivity {
   private final List<Consumer<List<CartItemEntry>>> purchaseListeners = new ArrayList<>();
   public final List<Function<Double, Boolean>> moneyCheckListeners = new ArrayList<>();
 
-  public ShopInterfaceActivity(String botName, String serverIp) {
+  public ShopInterfaceActivity(String botName, String serverIp, VersioningHandler versioningHandler) {
     super();
     this.botName = botName;
     this.serverIp = serverIp;
     this.shopWidget = new ShopWidget(this);
-
+    this.versioningHandler = versioningHandler;
   }
 
   @Override
@@ -61,6 +63,7 @@ public class ShopInterfaceActivity extends SimpleActivity {
     });
 
     shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.onPurchaseButtonClick(() -> {
+      if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy")) return;
       for(Consumer<List<CartItemEntry>> listener : purchaseListeners)
         listener.accept(shopWidget.cartShopWidget.getCartItems());
     });
@@ -70,7 +73,12 @@ public class ShopInterfaceActivity extends SimpleActivity {
   protected void postInitialize() {
     super.postInitialize();
 
+    shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.purchaseButton.setEnabled(versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy"));
+
+    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
     try {
+      publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
+      modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
       publicBot = publicApi.getPublicBotByLink(botName, serverIp);
 
       List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());

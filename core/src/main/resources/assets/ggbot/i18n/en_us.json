@@ -101,6 +101,11 @@
       }
     },
     "messages": {
+      "system": {
+        "title": "GGBot System Message",
+        "button": "Open",
+        "close": "Close"
+      },
       "join": {
         "prefix1": "-----------------[",
         "prefix2": "]-----------------",

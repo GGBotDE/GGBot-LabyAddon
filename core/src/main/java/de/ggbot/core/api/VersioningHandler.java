@@ -5,11 +5,28 @@ import de.ggbot.core.api.versioning.ErrorReportRequest;
 import de.ggbot.core.api.versioning.VersionCheckRequest;
 import de.ggbot.core.api.versioning.VersionCheckResponse;
 import de.ggbot.core.api.versioning.VersioningApiClient;
+import de.ggbot.core.api.versioning.response.MessageResponse;
+import de.ggbot.core.gui.MessagePopupActivity;
+import de.ggbot.core.utils.AsyncScheduler;
+import kotlin.jvm.internal.Lambda;
+import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.format.NamedTextColor;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.network.server.ServerJoinEvent;
 import net.labymod.api.models.addon.info.dependency.MavenDependency;
+import net.labymod.api.notification.Notification;
+import net.labymod.api.notification.Notification.NotificationButton;
+import net.labymod.api.notification.Notification.Type;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Handles communication with the remote versioning API.
@@ -26,6 +43,9 @@ public class VersioningHandler {
   /** Base API endpoint for the versioning service */
   private static final String BASE_URL = "https://labyversion.ggbot.de";
 
+  /** Base API endpoint for the main GGBot API */
+  public static final String API_BASE_URL = "https://api.ggbot.de/api";
+
   /** Addon identifier used by the backend */
   private static final String ADDON_SLUG = "labymod-addon";
 
@@ -41,6 +61,8 @@ public class VersioningHandler {
   /** Cached response of the version check */
   private VersionCheckResponse versionCheckResponse;
 
+  private List<String> shownMessages;
+
   /**
    * Creates a new {@link VersioningHandler}.
    * Immediately performs a version check on creation.
@@ -51,6 +73,7 @@ public class VersioningHandler {
     this.addon = addon;
     this.versioningApiClient = new VersioningApiClient(BASE_URL);
 
+    this.shownMessages = new ArrayList<>(List.of(addon.configuration().viewedSystemMessages.get().split(",")));
     checkVersion();
   }
 
@@ -265,5 +288,134 @@ public class VersioningHandler {
     versioningApiClient.reportError(ADDON_SLUG, request);
 
     return id;
+  }
+
+  /**
+   * Checks if a specific feature is enabled based on the latest version check response.
+   * @param feature the feature name to check
+   * @return true if the feature is enabled or if no version check response is available, false if the feature is explicitly disabled
+   */
+  public boolean isFeatureEnabled(String feature) {
+    if (versionCheckResponse == null)
+      return true;
+
+    if(!versionCheckResponse.isSupported())
+      return false;
+
+    if(!versionCheckResponse.getFeatures().containsKey(feature))
+      return true;
+
+    return versionCheckResponse.getFeatures().get(feature).isEnabled();
+  }
+
+  /**
+   * Retrieves the base URL for a specific feature based on the latest version check response.
+   * If the feature is not defined or the version check response is unavailable, it returns the default API base URL.
+   *
+   * @param feature the feature name to retrieve the base URL for
+   * @return the base URL for the specified feature or the default API base URL if not defined
+   */
+  public String getBaseUrlForFeature(String feature) {
+    if (versionCheckResponse == null)
+      return API_BASE_URL;
+
+    if(!versionCheckResponse.getFeatures().containsKey(feature))
+      return API_BASE_URL;
+
+    String url = versionCheckResponse.getFeatures().get(feature).getVersionCompatabilityConversionPath();
+    return url != null && !url.isEmpty() ? url : API_BASE_URL;
+  }
+
+  /** Reasons for checking messages, used to determine which messages to show based on their configuration. */
+  private enum CheckMessageReason {
+    JOIN,
+    INTERACTION,
+  }
+
+  /**
+   * Saves a message as viewed to prevent it from being shown again.
+   * @param message the message to mark as viewed
+   */
+  public void saveViewedMessage(MessageResponse message) {
+    if(shownMessages.contains(message.getUuid())) return;
+
+    shownMessages.add(message.getUuid());
+    addon.configuration().viewedSystemMessages.set(String.join(",", shownMessages));
+  }
+
+  /** Checks which messages should be shown based on the reason for checking and the message configuration.
+   * @param reason the reason for checking messages (e.g., player joined, player interaction)
+   */
+  private void checkMessages(CheckMessageReason reason) {
+    if(versionCheckResponse == null || versionCheckResponse.getMessages() == null) return;
+    for(MessageResponse message : versionCheckResponse.getMessages()) {
+
+      if(message.getEnabledUntil() != null && !message.getEnabledUntil().isEmpty() &&
+          java.time.LocalDateTime.parse(message.getEnabledUntil()).isBefore(java.time.LocalDateTime.now())) continue;
+
+      if(message.getLocale() != null && !message.getLocale().isEmpty() &&
+          !message.getLocale().equalsIgnoreCase(addon.labyAPI().minecraft().options().getCurrentLanguage())) continue;
+
+      if(message.isOnlyShowAfterInteraction() && reason == CheckMessageReason.JOIN) continue;
+      if(!message.isOnlyShowAfterInteraction() && reason == CheckMessageReason.INTERACTION) continue;
+
+      if(message.isShowOnce() && shownMessages.contains(message.getUuid())) continue;
+
+      AsyncScheduler.runLater(() -> {
+        Laby.labyAPI().minecraft().executeNextTick(() -> {
+
+          System.out.println(
+              "Showing message: " + message.getMessage() + " (Toast: " + message.isToast()
+                  + ", Popup: " + message.isPopup() + ", Link: " + message.getLink() + ")");
+          if (message.isToast()) {
+            var notification = Notification.builder()
+                .type(Type.SYSTEM)
+                .text(Component.text(message.getMessage()))
+                .title(Component.translatable("ggbot.messages.system.title", NamedTextColor.GREEN))
+                .icon(Icon.url(
+                    "https://www.ggbot.de/assets/img/logo.png")); // GGBot logo as icon (logo updates seasonally, so the url gets used)
+
+            if (message.getLink() != null && !message.getLink().isEmpty()) {
+              notification.onClick(
+                  (notification1) -> Laby.references().chatExecutor().openUrl(message.getLink()));
+              notification.addButton(
+                  NotificationButton.of(Component.translatable("ggbot.messages.system.button"),
+                      () -> Laby.references().chatExecutor().openUrl(message.getLink())));
+            }
+
+            addon.labyAPI().notificationController().push(notification.build());
+          }
+
+          if (!message.isToast() && !message.isPopup()) {
+            var component = Component.text(message.getMessage()).color(NamedTextColor.GREEN);
+
+            if (message.getLink() != null && !message.getLink().isEmpty()) {
+              component.clickEvent(
+                  net.labymod.api.client.component.event.ClickEvent.openUrl(message.getLink()));
+            }
+
+            addon.labyAPI().minecraft().chatExecutor().displayClientMessage(component);
+          }
+
+          if (message.isPopup()) {
+            var activity = new MessagePopupActivity(message.getMessage(), message.getLink());
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(activity);
+          }
+
+          saveViewedMessage(message);
+        });
+      }, message.getShowAfter()*1000L);
+    }
+  }
+
+  /** Checks which messages should be shown when the player joins a server. */
+  @Subscribe
+  private void checkMessagesOnJoin(ServerJoinEvent e) {
+    checkMessages(CheckMessageReason.JOIN);
+  }
+
+  /** Checks which messages should be shown when the player interacts with GGBot features. */
+  public void checkMessagesOnInteraction() {
+    checkMessages(CheckMessageReason.INTERACTION);
   }
 }

@@ -411,28 +411,40 @@ public class VersioningApiClient {
         return extractJsonBooleanDefault(json, key, false);
     }
 
-    /**
-     * Extracts a boolean value with a specified default.
-     *
-     * @param json         JSON object string
-     * @param key          field name
-     * @param defaultValue value to return if key is absent
-     * @return boolean value or {@code defaultValue}
-     */
-    private static boolean extractJsonBooleanDefault(String json, String key, boolean defaultValue) {
-        if (json == null) return defaultValue;
-        String search = "\"" + key + "\"";
-        int idx = json.indexOf(search);
-        if (idx < 0) return defaultValue;
-        int colon = json.indexOf(':', idx + search.length());
-        if (colon < 0) return defaultValue;
-        // Skip whitespace
-        int val = colon + 1;
-        while (val < json.length() && Character.isWhitespace(json.charAt(val))) val++;
-        if (json.startsWith("true", val)) return true;
-        if (json.startsWith("false", val)) return false;
-        return defaultValue;
+  /**
+   * Extracts a boolean value with a specified default.
+   * Supports: true/false and 1/0.
+   *
+   * @param json         JSON object string
+   * @param key          field name
+   * @param defaultValue value to return if key is absent
+   * @return boolean value or {@code defaultValue}
+   */
+  private static boolean extractJsonBooleanDefault(String json, String key, boolean defaultValue) {
+    if (json == null) return defaultValue;
+
+    String search = "\"" + key + "\"";
+    int idx = json.indexOf(search);
+    if (idx < 0) return defaultValue;
+
+    int colon = json.indexOf(':', idx + search.length());
+    if (colon < 0) return defaultValue;
+
+    // Skip whitespace
+    int val = colon + 1;
+    while (val < json.length() && Character.isWhitespace(json.charAt(val))) val++;
+
+    if (json.startsWith("true", val)) return true;
+    if (json.startsWith("false", val)) return false;
+
+    if (val < json.length()) {
+      char c = json.charAt(val);
+      if (c == '1') return true;
+      if (c == '0') return false;
     }
+
+    return defaultValue;
+  }
 
     /**
      * Extracts an integer value for the given key. Returns {@code 0} if not found.
