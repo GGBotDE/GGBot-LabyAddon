@@ -73,11 +73,44 @@
           "name": "Log Update Delay (applies after rejoin)"
         }
       },
-      "statusMinutes": {
-        "name": "Bot Status Checks Delay"
+      "shopSub": {
+        "name": "Shop",
+        "shopEnabled": {
+          "name": "Enable Shop"
+        },
+        "shopKey": {
+          "name": "Shop Key"
+        },
+        "shopRange": {
+          "name": "Bot Detection Range"
+        }
       },
-      "statsMinutes": {
-        "name": "Bot Statistic Checks Delay"
+      "statusSub": {
+        "name": "Status Updates",
+        "statusEnabled": {
+          "name": "Enable Status Updates"
+        },
+        "statusMinutes": {
+          "name": "Update Interval (minutes)"
+        }
+      },
+      "statsSub": {
+        "name": "Statistics Updates",
+        "statsEnabled": {
+          "name": "Enable Statistics Updates"
+        },
+        "statsMinutes": {
+          "name": "Update Interval (minutes)"
+        }
+      },
+      "generalSub": {
+        "name": "General Settings",
+        "checkBotEnabled": {
+          "name": "Show 'Check GGBot' in mouse wheel click menu (restart required)"
+        },
+        "joinNotificationEnabled": {
+          "name": "Show Join Notification"
+        }
       }
     },
     "hudWidget": {
@@ -149,6 +182,9 @@
       "log": {
         "time": "%s",
         "textfilter": "%s\u200B"
+      },
+      "shop": {
+        "nobot": "No GGBot found nearby."
       }
     },
     "toasts":{
