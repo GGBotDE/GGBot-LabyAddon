@@ -1,5 +1,6 @@
 package de.ggbot.core.listener;
 
+import de.ggbot.core.GGBot;
 import de.ggbot.core.gui.shop.ShopInterfaceActivity;
 import de.ggbot.core.gui.shop.widgets.cart.CartShopWidget.CartItemEntry;
 import net.labymod.api.Laby;
@@ -9,6 +10,11 @@ import net.labymod.api.event.client.input.KeyEvent;
 
 public class MovementTest {
   public boolean isInMove = false;
+  private final GGBot addon;
+
+  public MovementTest(GGBot addon) {
+    this.addon = addon;
+  }
 
   @Subscribe
   public void KeyEvent(KeyEvent e){
@@ -17,8 +23,9 @@ public class MovementTest {
     // This is just to demonstrate how to open the shop and handle purchases.
     // This will be removed in the future.
     if(e.key().equals(Key.U)) {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.shop")) return;
       Laby.labyAPI().minecraft().executeNextTick(() -> {
-        ShopInterfaceActivity activity = new ShopInterfaceActivity("GGBotDE", "griefergames.net");
+        ShopInterfaceActivity activity = new ShopInterfaceActivity("GGBotDE", "griefergames.net", addon.getVersioningHandler());
         activity.onPurchase((a) -> {
           activity.closeScreen();
           System.out.println("Purchase completed!");
@@ -32,7 +39,9 @@ public class MovementTest {
                 try {
                   Thread.sleep(3000);
                 } catch (InterruptedException ex) {
-
+                  addon.logger().error("Purchase thread interrupted: " + ex.getMessage());
+                  ex.printStackTrace();
+                  addon.getVersioningHandler().reportError(ex);
                 }
               }
             }

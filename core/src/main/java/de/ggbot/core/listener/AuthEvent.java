@@ -26,6 +26,7 @@ public class AuthEvent {
 
   @Subscribe
   public void onServerJoin(ServerJoinEvent e) throws IOException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
     authServer = new OAuthServer(addon);
     if(!GGBot.isAuth){
       Component message = Component.text()
@@ -74,10 +75,12 @@ public class AuthEvent {
 
     @Subscribe
   public void onServerDisconnect(ServerDisconnectEvent e) {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
     if(authServer != null)
       authServer.close();
   }
   public static void auth(){
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
     try {
        authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
          System.out.println("Token: " + Token);
@@ -89,11 +92,14 @@ public class AuthEvent {
         GGBot.isExpired = false;
       }));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Error during authentication", e);
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
   }
 
   public void botLoad() {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
     if(!addon.configuration().botlist.get().isEmpty()){
       // Bot ausgewählt
       String bot = addon.configuration().botlist.get();

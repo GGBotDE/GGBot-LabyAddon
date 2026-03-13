@@ -62,9 +62,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void updateBotList(GGBot addon) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) return;
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.updatebotlist"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -80,9 +81,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static String getStatus(GGBot addon) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getstatus")) return "Unknown";
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.getstatus"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -106,9 +108,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static String getName(GGBot addon) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getname")) return "Unknown";
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.getname"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -131,9 +134,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void startBot(GGBot addon) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.startbot")) return;
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.startbot"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -153,9 +157,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void stopBot(GGBot addon) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.stopbot")) return;
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.stopbot"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -176,9 +181,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static boolean isOnline(GGBot addon) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.isonline")) return false;
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.isonline"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -201,9 +207,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void sendCommand(GGBot addon, String command) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.sendcommand")) return;
     GGBot.code = addon.configuration().token.get();
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.sendcommand"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -232,11 +239,12 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void logsAsync() throws ApiException {
+    if(!GGBot.getInstance().getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.logs")) return;
     if(!GGBot.isAuth && GGBot.isExpired){
       return;
     }
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.logs"));
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken(GGBot.code);
 
@@ -250,7 +258,7 @@ public class BotRequests {
         String token = bot.getToken();
 
         Request request = new Request.Builder()
-            .url("https://api.ggbot.de/api/bot/" + token + "/logs")
+            .url(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.logs")+"/bot/" + token + "/logs")
             .addHeader("Authorization", "Bearer " + oauth2.getAccessToken())
             .build();
 
@@ -297,6 +305,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void getMoney(GGBot addon, Consumer<Double> callback) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getmoney")) {
+      callback.accept(0.0);
+      return;
+    }
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(0.0);
       return;
@@ -305,7 +317,7 @@ public class BotRequests {
     GGBot.code = addon.configuration().token.get();
 
     ApiClient client = Configuration.getDefaultApiClient();
-    client.setBasePath("https://api.ggbot.de/api");
+    client.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.getmoney"));
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
     oauth.setAccessToken(GGBot.code);
 
@@ -346,6 +358,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void getHealth(GGBot addon, Consumer<Double> callback) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.gethealth")) {
+        callback.accept(0.0);
+        return;
+      }
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(0.0);
       return;
@@ -354,7 +370,7 @@ public class BotRequests {
     GGBot.code = addon.configuration().token.get();
 
     ApiClient client = Configuration.getDefaultApiClient();
-    client.setBasePath("https://api.ggbot.de/api");
+    client.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.gethealth"));
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
     oauth.setAccessToken(GGBot.code);
 
@@ -397,6 +413,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void getCitybuild(GGBot addon, Consumer<String> callback) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getcitybuild")) {
+        callback.accept("Unknown");
+        return;
+      }
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept("Unknown");
       return;
@@ -405,7 +425,7 @@ public class BotRequests {
     GGBot.code = addon.configuration().token.get();
 
     ApiClient client = Configuration.getDefaultApiClient();
-    client.setBasePath("https://api.ggbot.de/api");
+    client.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.getcitybuild"));
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
     oauth.setAccessToken(GGBot.code);
 
@@ -447,6 +467,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void getPlot(GGBot addon, Consumer<String> callback) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.getplot")) {
+        callback.accept("Unknown");
+        return;
+      }
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept("Unknown");
       return;
@@ -455,7 +479,7 @@ public class BotRequests {
     GGBot.code = addon.configuration().token.get();
 
     ApiClient client = Configuration.getDefaultApiClient();
-    client.setBasePath("https://api.ggbot.de/api");
+    client.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.getplot"));
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
     oauth.setAccessToken(GGBot.code);
 
@@ -498,6 +522,10 @@ public class BotRequests {
    * @throws ApiException if the API request fails
    */
   public static void getTickets(GGBot addon, String statusEnum, Consumer<List<Ticket>> callback) throws ApiException {
+      if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.gettickets")) {
+        callback.accept(new ArrayList<>());
+        return;
+      }
     if (!GGBot.isAuth && GGBot.isExpired) {
       callback.accept(new ArrayList<>());
       return;
@@ -505,7 +533,7 @@ public class BotRequests {
     GGBot.code = addon.configuration().token.get();
 
     ApiClient client = Configuration.getDefaultApiClient();
-    client.setBasePath("https://api.ggbot.de/api");
+    client.setBasePath(GGBot.getInstance().getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.api.gettickets"));
     OAuth oauth = (OAuth) client.getAuthentication("oauth2");
     oauth.setAccessToken(GGBot.code);
 

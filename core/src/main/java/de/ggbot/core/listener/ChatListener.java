@@ -18,6 +18,7 @@ public class ChatListener {
   }
   @Subscribe
   public void onChat(ChatMessageSendEvent e) throws ApiException {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.console")) return;
     if(GGBot.getInstance().configuration().prefixSub.botCommands.get()){
       String message = e.getMessage();
       if(message.startsWith(GGBot.getInstance().configuration().prefixSub.prefix.get())){

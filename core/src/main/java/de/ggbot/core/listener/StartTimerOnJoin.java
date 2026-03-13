@@ -30,8 +30,11 @@ public class StartTimerOnJoin {
   private static Timer statusTimer;
   private static Timer statsTimer;
 
+  private static GGBot addon;
 
-  public StartTimerOnJoin(GGBot addon) {}
+  public StartTimerOnJoin(GGBot addon) {
+    this.addon = addon;
+  }
 
   @Subscribe
   public void onServerQuit(ServerDisconnectEvent e) {
@@ -42,6 +45,7 @@ public class StartTimerOnJoin {
 
   @Subscribe
   public void onServerJoin(ServerJoinEvent e) {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers")) return;
     long intervalLog = GGBot.getInstance().configuration().botlogSub.minutes.get() * 60 * 1000L;
     long intervalStatus = GGBot.getInstance().configuration().statusMinutes.get() * 60 * 1000L;
     long intervalStats = GGBot.getInstance().configuration().statsMinute.get() * 60 * 1000L;
@@ -56,6 +60,7 @@ public class StartTimerOnJoin {
   }
 
   public static void startLogTimer(long interval) {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.logs")) return;
     if (!GGBot.getInstance().configuration().botlogSub.botLog.get()){
       return;
     }
@@ -67,6 +72,7 @@ public class StartTimerOnJoin {
   }
 
   public static void startStatusTimer(long interval) {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.status")) return;
     statusTimer = new Timer(true);
     statusTimer.scheduleAtFixedRate(timerTask(() -> {
       if (GGBot.isAuth) {
@@ -90,6 +96,7 @@ public class StartTimerOnJoin {
   }
 
   public static void startStatsTimer(long interval) {
+    if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.stats")) return;
     statsTimer = new Timer(true);
     statsTimer.scheduleAtFixedRate(timerTask(() -> {
       if (GGBot.isAuth) {
@@ -133,7 +140,8 @@ public class StartTimerOnJoin {
                   TicketClosedAmountWidget.TicketAmount.updateAndFlush(tickets.size())
               );
           } catch (ApiException e) {
-            throw new RuntimeException(e);
+            addon.logger().error("Failed to fetch stats: " + e.getMessage());
+            addon.getVersioningHandler().reportError(e);
           }
         }
       }

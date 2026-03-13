@@ -46,7 +46,9 @@ public class TeamFetcher {
       }
 
     } catch (IOException | InterruptedException e) {
+      GGBot.getInstance().logger().error("Error fetching team data: " + e.getMessage());
       e.printStackTrace();
+      GGBot.getInstance().getVersioningHandler().reportError(e);
     }
   }
 

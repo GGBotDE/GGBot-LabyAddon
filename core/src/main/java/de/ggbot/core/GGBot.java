@@ -1,5 +1,10 @@
 package de.ggbot.core;
 
+import de.ggbot.core.api.VersioningHandler;
+import de.ggbot.core.api.versioning.VersionCheckRequest;
+import de.ggbot.core.api.versioning.VersionCheckResponse;
+import de.ggbot.core.api.versioning.VersioningApiClient;
+import de.ggbot.core.api.versioning.response.MessageResponse;
 import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.ChatListener;
 import de.ggbot.core.listener.MovementTest;
@@ -26,11 +31,13 @@ import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.widget.info.BotNameWidget;
 import de.ggbot.core.widget.info.StatusWidget;
+import net.labymod.api.models.addon.info.dependency.MavenDependency;
 
 import static de.ggbot.core.api.BotRequests.updateBotList;
 
 @AddonMain
 public class GGBot extends LabyAddon<BotConfiguration> {
+  private VersioningHandler versioningHandler;
   private HudWidgetCategory ggfeatures;
   private HudWidgetCategory ticket;
   private HudWidgetCategory ingame;
@@ -44,11 +51,13 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   @Override
   protected void enable() {
     instance = this;
+    versioningHandler = new VersioningHandler(this);
     this.registerSettingCategory();
     try {
       checkAuth(this);
     } catch (ApiException e) {
-      throw new RuntimeException(e);
+      this.logger().error("Failed to check authentication status: " + e.getMessage());
+      instance.versioningHandler.reportError(e);
     }
     registerListeners();
     registerWidgetsCategories();
@@ -99,36 +108,74 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     return instance;
   }
   public void createInteractions() {
-    labyAPI().interactionMenuRegistry().register(new CheckGGBot());
+    labyAPI().interactionMenuRegistry().register(new CheckGGBot(this));
   }
   public void registerListeners() {
+    this.registerListener(versioningHandler);
     this.registerListener(new AuthEvent(this));
     this.registerListener(new ChatListener(this));
-    this.registerListener(new SetupBotLogsChannel());
+    this.registerListener(new SetupBotLogsChannel(this));
     this.registerListener(new StartTimerOnJoin(this));
-    this.registerListener(new MovementTest());
+    this.registerListener(new MovementTest(this));
 
   }
   public void registerWidgetsCategories() {
-    labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ggfeatures = new HudWidgetCategory("botggfeatures"));
-    labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ticket = new HudWidgetCategory("botticket"));
-    labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ingame = new HudWidgetCategory("botingame"));
-    labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ingame = new HudWidgetCategory("botinfo"));
+    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.widgets")) return;
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures"))
+      labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ggfeatures = new HudWidgetCategory("botggfeatures"));
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket"))
+      labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ticket = new HudWidgetCategory("botticket"));
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame"))
+      labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ingame = new HudWidgetCategory("botingame"));
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.info"))
+      labyAPI().hudWidgetRegistry().categoryRegistry().register(this.ingame = new HudWidgetCategory("botinfo"));
   }
 
   public void registerWidgets() {
-    labyAPI().hudWidgetRegistry().register(new BotNameWidget());
-    labyAPI().hudWidgetRegistry().register(new StatusWidget());
-    labyAPI().hudWidgetRegistry().register(new BotMoneyWidget());
-    labyAPI().hudWidgetRegistry().register(new HealthWidget());
-    labyAPI().hudWidgetRegistry().register(new CitybuildWidget());
-    labyAPI().hudWidgetRegistry().register(new PlotWidget());
-    labyAPI().hudWidgetRegistry().register(new TicketAmountWidget());
-    labyAPI().hudWidgetRegistry().register(new TicketClosedAmountWidget());
-    labyAPI().hudWidgetRegistry().register(new TicketOpenAmountWidget());
+    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.widgets")) return;
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.info")) {
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.info.botname"))
+        labyAPI().hudWidgetRegistry().register(new BotNameWidget());
+
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.info.status"))
+        labyAPI().hudWidgetRegistry().register(new StatusWidget());
+    }
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures")) {
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures.money"))
+        labyAPI().hudWidgetRegistry().register(new BotMoneyWidget());
+
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures.citybuild"))
+        labyAPI().hudWidgetRegistry().register(new CitybuildWidget());
+
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures.plot"))
+        labyAPI().hudWidgetRegistry().register(new PlotWidget());
+    }
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame")) {
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.hearts"))
+        labyAPI().hudWidgetRegistry().register(new HealthWidget());
+    }
+
+    if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket")) {
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket.amount"))
+        labyAPI().hudWidgetRegistry().register(new TicketAmountWidget());
+
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket.closedamount"))
+        labyAPI().hudWidgetRegistry().register(new TicketClosedAmountWidget());
+
+      if(versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket.openamount"))
+        labyAPI().hudWidgetRegistry().register(new TicketOpenAmountWidget());
+    }
   }
 
   public void registerTags() {
+    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.nametag")) return;
     new TeamFetcher().fetch();
 
     TagRegistry tagRegistry = this.labyAPI().tagRegistry();
@@ -144,5 +191,9 @@ public class GGBot extends LabyAddon<BotConfiguration> {
         "ggbot_role",
         net.labymod.api.client.entity.player.badge.PositionType.LEFT_TO_NAME,
         new TeamNameTagIconBadge());
+  }
+
+  public VersioningHandler getVersioningHandler() {
+    return versioningHandler;
   }
 }

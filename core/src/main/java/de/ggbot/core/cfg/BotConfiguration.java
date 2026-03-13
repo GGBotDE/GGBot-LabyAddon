@@ -22,6 +22,7 @@ import de.ggbot.core.cfg.BotDropDown.BotDropDownMenu;
 import net.labymod.api.configuration.settings.Setting;
 import net.labymod.api.configuration.settings.annotation.SettingSection;
 import net.labymod.api.notification.Notification;
+import net.labymod.api.notification.Notification.Builder;
 import net.labymod.api.notification.Notification.Type;
 import net.labymod.api.util.MethodOrder;
 import java.io.IOException;
@@ -29,7 +30,12 @@ import java.io.IOException;
 @ConfigName("settings")
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
-  private boolean debug = false;
+  private final boolean debug = true;
+  private GGBot addon;
+
+  public BotConfiguration(GGBot addon) {
+    this.addon = addon;
+  }
 
   @SwitchSetting @SettingSection("Addon")
   @SpriteSlot(x = 6)
@@ -38,6 +44,8 @@ public class BotConfiguration extends AddonConfig {
   public final ConfigProperty<String> token = new ConfigProperty<>("").visibilitySupplier(() -> debug);
   @TextFieldSetting
   public final ConfigProperty<String> expiresAt = new ConfigProperty<>("").visibilitySupplier(() -> debug);
+  @TextFieldSetting
+  public final ConfigProperty<String> viewedSystemMessages = new ConfigProperty<>("").visibilitySupplier(() -> debug);
   @BotDropDownMenu
   @SpriteSlot(x = 5)
   public final ConfigProperty<String> botlist = new ConfigProperty<>("");
@@ -48,6 +56,8 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot(x = 3)
   @ButtonSetting
   public void startSelectedBot(Setting setting) throws ApiException {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.startbot")) return;
     GGBot.checkAuth(GGBot.getInstance());
     if(GGBot.isAuth){
       BotRequests.startBot(GGBot.getInstance());
@@ -57,12 +67,14 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot(x = 4)
   @ButtonSetting
   public void stopSelectedBot(Setting setting) throws ApiException {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.stopbot")) return;
     GGBot.checkAuth(GGBot.getInstance());
     if(GGBot.isAuth){
       if(BotRequests.isOnline(GGBot.getInstance())) {
         BotRequests.stopBot(GGBot.getInstance());
       }else{
-        Notification.Builder builder = Notification.builder()
+        Builder builder = Notification.builder()
             .title(Component.text("INFO", NamedTextColor.GREEN))
             .text(Component.translatable("ggbot.messages.command.stop.error.offline"))
             .type(Type.SYSTEM);
@@ -79,6 +91,8 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot(x = 1)
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.change.statsminutes")) return;
     if(!GGBot.isAuth) {
       OAuthServer authServer = new OAuthServer(GGBot.getInstance());
       try {
@@ -91,7 +105,9 @@ public class BotConfiguration extends AddonConfig {
           GGBot.isExpired = false;
         }));
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        addon.logger().error("Error during authentication", e);
+        e.printStackTrace();
+        addon.getVersioningHandler().reportError(e);
       }
       Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
     }
@@ -100,6 +116,8 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot(x = 2)
   @ButtonSetting
   public void reauth(Setting setting) throws IOException {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.reauth")) return;
     OAuthServer authServer = new OAuthServer(GGBot.getInstance());
     try {
       authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
@@ -111,7 +129,9 @@ public class BotConfiguration extends AddonConfig {
         GGBot.isExpired = false;
       }));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Error during re-authentication", e);
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
     Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
   }
@@ -120,12 +140,16 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot()
   @ButtonSetting
   public void discord(Setting setting) throws ApiException {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.discord")) return;
     Laby.references().chatExecutor().openUrl("https://discord.ggbot.de/");
   }
   @MethodOrder(after = "botlogSub")
   @SliderSetting(min = 1, max = 10)
   public final ConfigProperty<Integer> statusMinutes = new ConfigProperty<>(1)
       .addChangeListener(minutes -> {
+        this.addon.getVersioningHandler().checkMessagesOnInteraction();
+        if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.statusminutes")) return;
         if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
           StartTimerOnJoin.cancelStatusTimer();
           StartTimerOnJoin.startStatusTimer(minutes * 60 * 1000L);
@@ -135,6 +159,8 @@ public class BotConfiguration extends AddonConfig {
   @SliderSetting(min = 10, max = 30)
   public final ConfigProperty<Integer> statsMinute = new ConfigProperty<>(1)
       .addChangeListener(minutes -> {
+        this.addon.getVersioningHandler().checkMessagesOnInteraction();
+        if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.statsminutes")) return;
         if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
           StartTimerOnJoin.cancelStatsTimer();
           StartTimerOnJoin.startStatsTimer(minutes * 60 * 1000L);

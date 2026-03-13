@@ -17,6 +17,11 @@ import static net.labymod.api.client.component.format.NamedTextColor.BLUE;
 import static net.labymod.api.client.component.format.NamedTextColor.GRAY;
 
 public class CheckGGBot implements BulletPoint {
+  private final GGBot addon;
+
+  public CheckGGBot(GGBot addon) {
+    this.addon = addon;
+  }
 
   @Override
   public Component getTitle() {
@@ -30,8 +35,10 @@ public class CheckGGBot implements BulletPoint {
 
   @Override
   public void execute(Player player) {
+    this.addon.getVersioningHandler().checkMessagesOnInteraction();
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.checkbot")) return;
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://api.ggbot.de/api");
+    defaultClient.setBasePath(this.addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.checkbot"));
 
     PublicApi api = new PublicApi();
     String serverIP = GGBot.getInstance().labyAPI().serverController().getCurrentServerData().address().getHost().toLowerCase();
@@ -46,7 +53,9 @@ public class CheckGGBot implements BulletPoint {
         }
       }
     } catch (ApiException e) {
-      throw new RuntimeException(e);
+      addon.logger().error("Failed to fetch public servers: " + e.getMessage());
+      e.printStackTrace();
+      addon.getVersioningHandler().reportError(e);
     }
     try {
       PublicBot bot = api.getPublicBotByLink(player.getName(), serverIP);
