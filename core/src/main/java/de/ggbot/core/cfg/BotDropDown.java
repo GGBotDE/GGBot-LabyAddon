@@ -46,7 +46,7 @@ public class BotDropDown extends HorizontalListWidget {
         super.initialize(parent);
 
         DropdownWidget<String> dropdown = new DropdownWidget<>();
-        for (Bot bot : BotRequests.bots){
+        for (Bot bot : BotRequests.getCachedBots()){
           if(bot.getDescription() == null || Objects.equals(bot.getDescription(), "")){
             if(bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()){
               String token = bot.getToken();
@@ -82,7 +82,7 @@ public class BotDropDown extends HorizontalListWidget {
             GGBot.getInstance().getVersioningHandler().reportError(e);
           }
           dropdown.clear();
-          for (Bot bot : BotRequests.bots){
+          for (Bot bot : BotRequests.getCachedBots()){
             if(bot.getDescription() == null || Objects.equals(bot.getDescription(), "")){
               if(bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()){
                 String token = bot.getToken();

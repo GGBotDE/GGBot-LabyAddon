@@ -60,22 +60,21 @@ public class CheckGGBot implements BulletPoint {
     try {
       PublicBot bot = api.getPublicBotByLink(player.getName(), serverIP);
       if(bot.getOnline()){
-        GGBot.getInstance().displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
+        addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.isbot", GRAY)));
       }else{
-        GGBot.getInstance().displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
+        addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
             .append(Component.translatable("ggbot.messages.interaction.checkggbot.isnotbot", GRAY)));
       }
     } catch (ApiException e) {
-      GGBot.getInstance().displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
+      addon.displayMessage(Component.translatable("ggbot.messages.interaction.checkggbot.prefix1",BLUE)
           .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix2", AQUA))
           .append(Component.translatable("ggbot.messages.interaction.checkggbot.prefix3", BLUE))
           .append(Component.translatable("ggbot.messages.interaction.checkggbot.isnotbot", GRAY)));
     }
-    System.out.println();
   }
 }

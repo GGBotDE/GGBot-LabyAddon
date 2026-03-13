@@ -7,14 +7,39 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 
 public class TicketClosedAmountWidget extends TextHudWidget<TextHudWidgetConfig> {
-  public static TextLine TicketAmount;
-  public TicketClosedAmountWidget(){
-    super("closedTickets");
+
+  /** Registry ID for this widget. */
+  public static final String WIDGET_ID = "closedTickets";
+
+  private static TextLine closedTicketAmountLine;
+
+  /**
+   * Creates the closed-ticket-count HUD widget and binds it to the ticket category.
+   */
+  public TicketClosedAmountWidget() {
+    super(WIDGET_ID);
     this.bindCategory(GGBot.getInstance().labyAPI().hudWidgetRegistry().categoryRegistry().getById("botticket"));
   }
 
-  public void load(TextHudWidgetConfig config){
+  /**
+   * Initializes the text line with its label and a default placeholder value.
+   *
+   * @param config the widget configuration
+   */
+  @Override
+  public void load(TextHudWidgetConfig config) {
     super.load(config);
-    TicketAmount = createLine(Component.translatable("ggbot.widget.ticket.closed.name"), Component.translatable("ggbot.widget.unknown"));
+    closedTicketAmountLine = createLine(
+        Component.translatable("ggbot.widget.ticket.closed.name"),
+        Component.translatable("ggbot.widget.unknown"));
+  }
+
+  /**
+   * Updates the displayed closed-ticket count.
+   *
+   * @param value the new value to display
+   */
+  public static void update(Object value) {
+    if (closedTicketAmountLine != null) closedTicketAmountLine.updateAndFlush(value);
   }
 }

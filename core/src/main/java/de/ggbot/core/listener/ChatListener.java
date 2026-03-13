@@ -12,16 +12,18 @@ import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
 
 public class ChatListener {
-  private static GGBot addon;
+  private final GGBot addon;
+
   public ChatListener(GGBot addon) {
     this.addon = addon;
   }
+
   @Subscribe
   public void onChat(ChatMessageSendEvent e) throws ApiException {
     if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.console")) return;
-    if(GGBot.getInstance().configuration().prefixSub.botCommands.get()){
+    if(addon.configuration().prefixSub.botCommands.get()){
       String message = e.getMessage();
-      if(message.startsWith(GGBot.getInstance().configuration().prefixSub.prefix.get())){
+      if(message.startsWith(addon.configuration().prefixSub.prefix.get())){
         e.setCancelled(true);
         String command = "!" + message.substring(1);
         if(BotRequests.isOnline(addon)) {

@@ -16,7 +16,8 @@ import static de.ggbot.core.api.BotRequests.sentLogIds;
 
 public class SetupBotLogsChannel {
   public static IngameChatTab customTab;
-  private GGBot addon;
+  private final GGBot addon;
+
   public SetupBotLogsChannel(GGBot addon) {
     this.addon = addon;
   }
@@ -27,7 +28,7 @@ public class SetupBotLogsChannel {
   @Subscribe
   public void onServerJoin(ServerJoinEvent e) {
     if(!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.logs.tab")) return;
-    if(!GGBot.getInstance().configuration().botlogSub.botLog.get()){
+    if(!addon.configuration().botlogSub.botLog.get()){
       return;
     }
     sentLogIds.clear();

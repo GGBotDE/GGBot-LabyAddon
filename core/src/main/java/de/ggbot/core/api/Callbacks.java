@@ -7,163 +7,127 @@ import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.notification.Notification;
 import net.labymod.api.notification.Notification.Type;
+
 import java.util.List;
 import java.util.Map;
 
 import static net.labymod.api.client.component.format.NamedTextColor.RED;
 import static net.labymod.api.client.component.format.NamedTextColor.WHITE;
 
+/**
+ * Pre-built {@link ApiCallback} instances for common asynchronous bot operations.
+ * Results and errors are surfaced as LabyMod system notifications.
+ */
 public class Callbacks {
 
   /**
-   * Callback for asynchronous Bot API calls.
-   * Displays results as LabyMod notifications.
+   * Callback used when starting a bot.
+   * Displays a success or error notification depending on the outcome.
    */
-  public static ApiCallback<Void> startCallback = new ApiCallback<>() {
+  public static final ApiCallback<Void> START = new ApiCallback<>() {
 
-    /**
-     * Called when the API call fails.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE, Component.text(e.getMessage()), Component.text(statusCode)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
+          .text(Component.translatable("ggbot.toasts.error", WHITE,
+              Component.text(e.getMessage()), Component.text(statusCode)))
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called when the API call was successful.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.info", NamedTextColor.GREEN))
           .text(Component.translatable("ggbot.toasts.info.start"))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called during upload progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-      Notification.Builder builder = Notification.builder()
-          .title(Component.translatable("ggbot.toasts.status.upload", NamedTextColor.WHITE))
-          .text(Component.translatable("ggbot.toasts.upload", Component.text(bytesWritten), Component.text(contentLength)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
-    }
+    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {}
 
-    /**
-     * Called during download progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-      Notification.Builder builder = Notification.builder()
-          .title(Component.translatable("ggbot.toasts.status.download", NamedTextColor.AQUA))
-          .text(Component.translatable("ggbot.toasts.download", Component.text(bytesRead), Component.text(contentLength)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
-    }
+    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {}
   };
 
   /**
-   * Callback for asynchronous Bot API calls.
-   * Displays results as LabyMod notifications.
+   * Callback used when stopping a bot.
+   * Displays a success or error notification depending on the outcome.
    */
-  public static ApiCallback<Void> stopCallback = new ApiCallback<>() {
+  public static final ApiCallback<Void> STOP = new ApiCallback<>() {
 
-    /**
-     * Called when the API call fails.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE, Component.text(e.getMessage()), Component.text(statusCode)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
+          .text(Component.translatable("ggbot.toasts.error", WHITE,
+              Component.text(e.getMessage()), Component.text(statusCode)))
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called when the API call was successful.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.info", NamedTextColor.GREEN))
           .text(Component.translatable("ggbot.toasts.info.stop"))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called during upload progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-      Notification.Builder builder = Notification.builder()
-          .title(Component.translatable("ggbot.toasts.status.upload", NamedTextColor.WHITE))
-          .text(Component.translatable("ggbot.toasts.upload", Component.text(bytesWritten), Component.text(contentLength)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
-    }
+    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {}
 
-    /**
-     * Called during download progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-      Notification.Builder builder = Notification.builder()
-          .title(Component.translatable("ggbot.toasts.status.download", NamedTextColor.AQUA))
-          .text(Component.translatable("ggbot.toasts.download", Component.text(bytesRead), Component.text(contentLength)))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
-    }
+    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {}
   };
 
-  public static ApiCallback<Void> sendCommandCallback = new ApiCallback<>() {
+  /**
+   * Callback used when sending a command to the bot.
+   * Displays a success or error notification depending on the outcome.
+   */
+  public static final ApiCallback<Void> SEND_COMMAND = new ApiCallback<>() {
 
-    /**
-     * Called when the API call fails.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE, Component.text(e.getMessage()), Component.text(statusCode)))
-          .type(Type.SYSTEM);
-      System.out.println(e.getMessage());
-      Laby.labyAPI().notificationController().push(builder.build());
+          .text(Component.translatable("ggbot.toasts.error", WHITE,
+              Component.text(e.getMessage()), Component.text(statusCode)))
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called when the API call was successful.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onSuccess(Void result, int statusCode, Map<String, List<String>> responseHeaders) {
-      Notification.Builder builder = Notification.builder()
+      push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.info", NamedTextColor.GREEN))
           .text(Component.translatable("ggbot.toasts.info.command"))
-          .type(Type.SYSTEM);
-      Laby.labyAPI().notificationController().push(builder.build());
+          .type(Type.SYSTEM));
     }
 
-    /**
-     * Called during upload progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-    }
+    public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {}
 
-    /**
-     * Called during download progress.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-    }
+    public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {}
   };
+
+  /**
+   * Convenience helper that builds and pushes a notification.
+   *
+   * @param builder the notification builder
+   */
+  private static void push(Notification.Builder builder) {
+    Laby.labyAPI().notificationController().push(builder.build());
+  }
 }

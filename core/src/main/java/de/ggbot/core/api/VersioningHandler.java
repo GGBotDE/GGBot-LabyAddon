@@ -364,9 +364,6 @@ public class VersioningHandler {
       AsyncScheduler.runLater(() -> {
         Laby.labyAPI().minecraft().executeNextTick(() -> {
 
-          System.out.println(
-              "Showing message: " + message.getMessage() + " (Toast: " + message.isToast()
-                  + ", Popup: " + message.isPopup() + ", Link: " + message.getLink() + ")");
           if (message.isToast()) {
             var notification = Notification.builder()
                 .type(Type.SYSTEM)

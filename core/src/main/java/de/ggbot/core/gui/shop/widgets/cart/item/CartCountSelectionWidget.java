@@ -10,12 +10,22 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A numeric text field with up/down arrow buttons that controls how many units
+ * of a cart item the player wishes to purchase.
+ */
 public class CartCountSelectionWidget extends AbstractWidget<TextFieldWidget> {
   private final ShopInterfaceActivity activity;
   private final String id;
-  private List<Runnable> changeListeners = new ArrayList<>();
+  private final List<Runnable> changeListeners = new ArrayList<>();
+
+  /** The text field displaying and accepting the current quantity. */
   public TextFieldWidget countField;
 
+  /**
+   * @param activity the owning shop activity
+   * @param id       the item ID this widget controls
+   */
   public CartCountSelectionWidget(ShopInterfaceActivity activity, String id) {
     this.activity = activity;
     this.id = id;
@@ -89,6 +99,11 @@ public class CartCountSelectionWidget extends AbstractWidget<TextFieldWidget> {
     }
   }
 
+  /**
+   * Registers a listener that is called whenever the displayed quantity changes.
+   *
+   * @param listener the callback
+   */
   public void onChanged(Runnable listener) {
     changeListeners.add(listener);
   }

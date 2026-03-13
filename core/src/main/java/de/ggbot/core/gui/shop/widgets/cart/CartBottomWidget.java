@@ -9,13 +9,21 @@ import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.DivWidget;
 
+/** Bottom section of the cart showing the total price and checkout/cancel buttons. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartBottomWidget extends DivWidget {
   private final ShopInterfaceActivity activity;
+
+  /** Widget containing the Cancel and Purchase action buttons. */
   public final CartBottomButtonsWidget cartBottomButtonsWidget;
+
+  /** Label displaying the formatted cart total price. */
   public final ComponentWidget totalPriceWidget;
 
+  /**
+   * @param activity the owning shop activity
+   */
   public CartBottomWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
@@ -31,6 +39,7 @@ public class CartBottomWidget extends DivWidget {
     this.addChild(totalPriceWidget);
   }
 
+  /** Recalculates the cart total from the current items and updates the price label. */
   public void updateTotalPrice() {
     double total = 0;
     for(CartItemEntry item : activity.shopWidget.cartShopWidget.getCartItems()) {
