@@ -2,9 +2,8 @@ package de.ggbot.core.cfg;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
+import de.ggbot.core.api.versioning.ApiException;
 import de.ggbot.core.auth.OAuthServer;
-import de.ggbot.core.listener.StartTimerOnJoin;
-import de.ggbot.sdk.core.ApiException;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.component.Component;
@@ -31,9 +30,17 @@ import java.io.IOException;
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
   private final boolean debug = true;
-  private GGBot addon;
+  private transient GGBot addon;
 
-  public BotConfiguration(GGBot addon) {
+  /** Required by LabyMod's config loader — use {@link #init(GGBot)} afterwards. */
+  public BotConfiguration() {}
+
+  /**
+   * Injects the addon reference after LabyMod has deserialized this configuration.
+   *
+   * @param addon the loaded addon instance
+   */
+  public void init(GGBot addon) {
     this.addon = addon;
   }
 
@@ -55,25 +62,37 @@ public class BotConfiguration extends AddonConfig {
   @MethodOrder(after = "botlist")
   @SpriteSlot(x = 3)
   @ButtonSetting
-  public void startSelectedBot(Setting setting) throws ApiException {
+  public void startSelectedBot(Setting setting) throws de.ggbot.sdk.core.ApiException {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
-    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.startbot")) return;
-    GGBot.checkAuth(GGBot.getInstance());
-    if(GGBot.isAuth){
-      BotRequests.startBot(GGBot.getInstance());
+    if (!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.startbot")) return;
+    addon.checkAuth();
+    if (GGBot.isAuthenticated()) {
+      BotRequests.updateBotListAsync(addon, () -> {
+        try { BotRequests.startBot(addon); }
+        catch (Exception e) {
+          addon.logger().error("Failed to start bot: " + e.getMessage());
+          addon.getVersioningHandler().reportError(e);
+        }
+      });
     }
   }
   @MethodOrder(after = "startSelectedBot")
   @SpriteSlot(x = 4)
   @ButtonSetting
-  public void stopSelectedBot(Setting setting) throws ApiException {
+  public void stopSelectedBot(Setting setting) throws de.ggbot.sdk.core.ApiException {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
-    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.stopbot")) return;
-    GGBot.checkAuth(GGBot.getInstance());
-    if(GGBot.isAuth){
-      if(BotRequests.isOnline(GGBot.getInstance())) {
-        BotRequests.stopBot(GGBot.getInstance());
-      }else{
+    if (!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.stopbot")) return;
+    addon.checkAuth();
+    if (GGBot.isAuthenticated()) {
+      if (BotRequests.isOnlineCached(addon)) {
+        BotRequests.updateBotListAsync(addon, () -> {
+          try { BotRequests.stopBot(addon); }
+          catch (Exception e) {
+            addon.logger().error("Failed to stop bot: " + e.getMessage());
+            addon.getVersioningHandler().reportError(e);
+          }
+        });
+      } else {
         Builder builder = Notification.builder()
             .title(Component.text("INFO", NamedTextColor.GREEN))
             .text(Component.translatable("ggbot.messages.command.stop.error.offline"))
@@ -82,31 +101,24 @@ public class BotConfiguration extends AddonConfig {
       }
     }
   }
-  @MethodOrder(after = "stopSelectedBot")
-  public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();
-  @MethodOrder(after = "prefixSub")
-  public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
 
-  @MethodOrder(after = "statsMinute") @SettingSection("Authentication")
+  @MethodOrder(after = "stopSelectedBot") @SettingSection("Authentication")
   @SpriteSlot(x = 1)
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
     if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.change.statsminutes")) return;
-    if(!GGBot.isAuth) {
-      OAuthServer authServer = new OAuthServer(GGBot.getInstance());
+    if(!GGBot.isAuthenticated()) {
+      OAuthServer authServer = new OAuthServer(addon);
       try {
         authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
-          GGBot.getInstance().configuration().token.set(Token.get("access_token").getAsString());
-          GGBot.code = GGBot.getInstance().configuration().token.get();
-          GGBot.getInstance().configuration().expiresAt.set(String.valueOf(
+          addon.configuration().token.set(Token.get("access_token").getAsString());
+          addon.configuration().expiresAt.set(String.valueOf(
               System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));
-          GGBot.isAuth = true;
-          GGBot.isExpired = false;
+          GGBot.setAuthenticated(true);
         }));
       } catch (Exception e) {
         addon.logger().error("Error during authentication", e);
-        e.printStackTrace();
         addon.getVersioningHandler().reportError(e);
       }
       Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
@@ -118,19 +130,16 @@ public class BotConfiguration extends AddonConfig {
   public void reauth(Setting setting) throws IOException {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
     if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.reauth")) return;
-    OAuthServer authServer = new OAuthServer(GGBot.getInstance());
+    OAuthServer authServer = new OAuthServer(addon);
     try {
       authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
-        GGBot.getInstance().configuration().token.set(Token.get("access_token").getAsString());
-        GGBot.code = GGBot.getInstance().configuration().token.get();
-        GGBot.getInstance().configuration().expiresAt.set(String.valueOf(
+        addon.configuration().token.set(Token.get("access_token").getAsString());
+        addon.configuration().expiresAt.set(String.valueOf(
             System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));
-        GGBot.isAuth = true;
-        GGBot.isExpired = false;
+        GGBot.setAuthenticated(true);
       }));
     } catch (Exception e) {
       addon.logger().error("Error during re-authentication", e);
-      e.printStackTrace();
       addon.getVersioningHandler().reportError(e);
     }
     Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
@@ -144,29 +153,19 @@ public class BotConfiguration extends AddonConfig {
     if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.discord")) return;
     Laby.references().chatExecutor().openUrl("https://discord.ggbot.de/");
   }
-  @MethodOrder(after = "botlogSub")
-  @SliderSetting(min = 1, max = 10)
-  public final ConfigProperty<Integer> statusMinutes = new ConfigProperty<>(1)
-      .addChangeListener(minutes -> {
-        this.addon.getVersioningHandler().checkMessagesOnInteraction();
-        if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.statusminutes")) return;
-        if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
-          StartTimerOnJoin.cancelStatusTimer();
-          StartTimerOnJoin.startStatusTimer(minutes * 60 * 1000L);
-        }
-      });
-  @MethodOrder(after = "statusMinutes")
-  @SliderSetting(min = 10, max = 30)
-  public final ConfigProperty<Integer> statsMinute = new ConfigProperty<>(1)
-      .addChangeListener(minutes -> {
-        this.addon.getVersioningHandler().checkMessagesOnInteraction();
-        if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.statsminutes")) return;
-        if (GGBot.getInstance().labyAPI().serverController().isConnected()) {
-          StartTimerOnJoin.cancelStatsTimer();
-          StartTimerOnJoin.startStatsTimer(minutes * 60 * 1000L);
-        }
-      });
 
+  @MethodOrder(after = "discord") @SettingSection("Addon")
+  public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();
+  @MethodOrder(after = "prefixSub")
+  public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
+  @MethodOrder(after = "botlogSub")
+  public final ShopSubConfig shopSub = new ShopSubConfig();
+  @MethodOrder(after = "shopSub")
+  public final StatusSubConfig statusSub = new StatusSubConfig();
+  @MethodOrder(after = "statusSub")
+  public final StatsSubConfig statsSub = new StatsSubConfig();
+  @MethodOrder(after = "statsSub")
+  public final GeneralSubConfig generalSub = new GeneralSubConfig(addon);
 
   @Override
   public ConfigProperty<Boolean> enabled() {

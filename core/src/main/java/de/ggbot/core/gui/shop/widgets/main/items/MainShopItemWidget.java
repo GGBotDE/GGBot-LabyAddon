@@ -11,16 +11,27 @@ import net.labymod.api.client.gui.screen.widget.widgets.renderer.IconWidget;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A single clickable tile in the main shop item grid. Displays the item icon,
+ * name, lore and price. Pressing it adds the item to the cart.
+ */
 @AutoWidget
 @Link("shopgui.lss")
 public class MainShopItemWidget extends SimpleWidget {
-  private List<Runnable> clickListeners = new ArrayList<>();
+  private final List<Runnable> clickListeners = new ArrayList<>();
   private final String itemName;
   private final Icon itemIcon;
   private final String[] itemLore;
   private final float itemPrice;
   private final long itemCount;
 
+  /**
+   * @param itemName  display name
+   * @param itemIcon  resolved texture icon
+   * @param itemLore  lines of lore text (including enchantments and type info)
+   * @param itemPrice price per purchase
+   * @param itemCount items delivered per purchase (stack size)
+   */
   public MainShopItemWidget(String itemName, Icon itemIcon, String[] itemLore, float itemPrice,
       long itemCount) {
     this.itemName = itemName;
@@ -51,6 +62,11 @@ public class MainShopItemWidget extends SimpleWidget {
     });
   }
 
+  /**
+   * Registers a listener called when this item tile is clicked.
+   *
+   * @param listener the callback
+   */
   public void onClick(Runnable listener) {
     clickListeners.add(listener);
   }

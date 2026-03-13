@@ -15,15 +15,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/** Cart panel showing queued items, the top bar and checkout controls. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartShopWidget extends DivWidget {
   private final ShopInterfaceActivity activity;
-  public final CartTopBarWidget cartTopBar;
-  public final CartItemListWidget cartItemListWidget;
-  public final CartBottomWidget cartBottomWidget;
-  private List<CartItemEntry> cartItems = new ArrayList<>();
 
+  /** Top bar with the cart title, item count, and clear button. */
+  public final CartTopBarWidget cartTopBar;
+
+  /** Scrollable list of cart item rows. */
+  public final CartItemListWidget cartItemListWidget;
+
+  /** Bottom bar with price total and action buttons. */
+  public final CartBottomWidget cartBottomWidget;
+
+  private final List<CartItemEntry> cartItems = new ArrayList<>();
+
+  /**
+   * @param activity the owning shop activity
+   */
   public CartShopWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
@@ -37,6 +48,11 @@ public class CartShopWidget extends DivWidget {
     super.postInitialize();
   }
 
+  /**
+   * Adds an item to the cart. If the item is already present its quantity is incremented by one.
+   *
+   * @param item the sell item to add
+   */
   public void addCartItem(CustomSellItem item) {
     for(CartItemEntry entry : cartItems) {
       if(entry.getItem().equals(item)) {
@@ -55,10 +71,16 @@ public class CartShopWidget extends DivWidget {
     updateEnoughMoney();
   }
 
+  /** @return an unmodifiable view of all current cart entries */
   public List<CartItemEntry> getCartItems() {
     return cartItems;
   }
 
+  /**
+   * Removes a specific cart entry.
+   *
+   * @param entry the entry to remove
+   */
   public void removeCartItem(CartItemEntry entry) {
     cartItems.remove(entry);
     this.cartItemListWidget.removeChild(entry.widget);
@@ -67,6 +89,11 @@ public class CartShopWidget extends DivWidget {
     updateEnoughMoney();
   }
 
+  /**
+   * Removes the cart entry that matches the given sell item.
+   *
+   * @param item the sell item whose entry should be removed
+   */
   public void removeCartItem(CustomSellItem item) {
     CartItemEntry toRemove = null;
     for(CartItemEntry entry : cartItems) {
@@ -84,6 +111,11 @@ public class CartShopWidget extends DivWidget {
     }
   }
   
+  /**
+   * Removes the cart entry whose item has the given ID.
+   *
+   * @param id the item ID to remove
+   */
   public void removeCartItem(String id) {
     CartItemEntry toRemove = null;
     for(CartItemEntry entry : cartItems) {
@@ -101,6 +133,7 @@ public class CartShopWidget extends DivWidget {
     }
   }
 
+  /** Removes all items from the cart and resets all totals. */
   public void clearCart() {
     for(CartItemEntry entry : new ArrayList<>(cartItems)) {
       this.cartItemListWidget.removeChild(entry.widget);
@@ -111,6 +144,12 @@ public class CartShopWidget extends DivWidget {
     updateEnoughMoney();
   }
 
+  /**
+   * Looks up the cart entry for the item with the given ID.
+   *
+   * @param id the item ID to find
+   * @return the matching {@link CartItemEntry}, or {@code null} if not in the cart
+   */
   public CartItemEntry getCartItem(String id) {
     for(CartItemEntry entry : cartItems) {
       if(entry.getItem().getId().equals(id)) {
@@ -138,6 +177,10 @@ public class CartShopWidget extends DivWidget {
     this.cartTopBar.onClearCartButtonClick(this::clearCart);
   }
 
+  /**
+   * Represents a single line item in the shopping cart, pairing a {@link CustomSellItem}
+   * with the chosen purchase quantity and its UI widget.
+   */
   public class CartItemEntry {
     private final CustomSellItem item;
     private int quantity;
@@ -162,22 +205,31 @@ public class CartShopWidget extends DivWidget {
       });
     }
 
+    /** @return the sell item this entry represents */
     public CustomSellItem getItem() {
       return item;
     }
 
+    /** @return the number of purchases the user has selected */
     public int getQuantity() {
       return quantity;
     }
 
+    /** @return price multiplied by quantity (does not account for per-purchase item counts) */
     public float getTotalPrice() {
       return totalPrice;
     }
 
+    /** @return the UI widget rendering this entry in the cart list */
     public CartItemWidget getWidget() {
       return widget;
     }
 
+    /**
+     * Updates the purchase quantity and refreshes the total price label.
+     *
+     * @param quantity the new quantity (must be &ge; 1)
+     */
     public void setQuantity(int quantity) {
       this.quantity = quantity;
       this.totalPrice = item.getPrice() * quantity;

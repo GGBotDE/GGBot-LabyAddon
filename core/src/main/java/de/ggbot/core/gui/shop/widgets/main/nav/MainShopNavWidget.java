@@ -13,15 +13,23 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.CheckBoxWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalListWidget;
+import java.util.ArrayList;
 import java.util.List;
 
+/** Navigation bar at the top of the main shop panel: logo, title and search field. */
 @AutoWidget
 @Link("shopgui.lss")
 public class MainShopNavWidget extends HorizontalListWidget {
+
+  /** Search field filtering the item grid in real time. */
   public TextFieldWidget searchField;
-  private List<Runnable> searchListeners;
+
+  private final List<Runnable> searchListeners = new ArrayList<>();
   private final ShopInterfaceActivity activity;
 
+  /**
+   * @param activity the owning shop activity
+   */
   public MainShopNavWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
@@ -61,9 +69,12 @@ public class MainShopNavWidget extends HorizontalListWidget {
     return result;
   }
 
+  /**
+   * Registers a listener that is called whenever the user types in the search field.
+   *
+   * @param listener the callback
+   */
   public void onTyped(Runnable listener) {
-    if(searchListeners == null)
-      searchListeners = new java.util.ArrayList<>();
     searchListeners.add(listener);
   }
 }

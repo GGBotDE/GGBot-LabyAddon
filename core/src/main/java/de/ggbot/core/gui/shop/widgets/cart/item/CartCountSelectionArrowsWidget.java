@@ -8,10 +8,14 @@ import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalList
 import net.labymod.api.client.gui.screen.widget.widgets.renderer.IconWidget;
 import net.labymod.api.client.resources.ResourceLocation;
 
+/** Pair of up/down caret icons used inside {@link CartCountSelectionWidget}. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartCountSelectionArrowsWidget extends VerticalListWidget<IconWidget> {
+  /** Arrow icon that increments the quantity. */
   public final IconWidget upArrow = new IconWidget(Icon.texture(ResourceLocation.create("ggbot", "themes/vanilla/textures/icons/caret-big-up.png"))).addId("cart-count-selection-up-arrow", "cart-count-selection-arrow");
+
+  /** Arrow icon that decrements the quantity. */
   public final IconWidget downArrow = new IconWidget(Icon.texture(ResourceLocation.create("ggbot", "themes/vanilla/textures/icons/caret-big-down.png"))).addId("cart-count-selection-down-arrow", "cart-count-selection-arrow");
 
   @Override

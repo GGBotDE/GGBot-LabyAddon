@@ -21,6 +21,17 @@
       "plot": {
         "name": "Bot Grundstück"
       },
+      "ticket": {
+        "amount": {
+          "name": "Tickets gesamt"
+        },
+        "open": {
+          "name": "Offene Tickets"
+        },
+        "closed": {
+          "name": "Geschlossene Tickets"
+        }
+      },
       "unknown": "Unbekannt"
     },
     "settings": {
@@ -73,11 +84,44 @@
           "name": "Log Update Rate (wirkt nach Rejoin)"
         }
       },
-      "statusMinutes": {
-        "name": "Verzögerung der Bot-Statusprüfungen"
+      "shopSub": {
+        "name": "Shop",
+        "shopEnabled": {
+          "name": "Shop aktivieren"
+        },
+        "shopKey": {
+          "name": "Shop-Taste"
+        },
+        "shopRange": {
+          "name": "Bot-Erkennungsradius"
+        }
       },
-      "statsMinutes": {
-        "name": "Verzögerung der Bot-Statistikenprüfung"
+      "statusSub": {
+        "name": "Status-Updates",
+        "statusEnabled": {
+          "name": "Status-Updates aktivieren"
+        },
+        "statusMinutes": {
+          "name": "Aktualisierungsintervall (Minuten)"
+        }
+      },
+      "statsSub": {
+        "name": "Statistik-Updates",
+        "statsEnabled": {
+          "name": "Statistik-Updates aktivieren"
+        },
+        "statsMinutes": {
+          "name": "Aktualisierungsintervall (Minuten)"
+        }
+      },
+      "generalSub": {
+        "name": "Allgemeine Einstellungen",
+        "checkBotEnabled": {
+          "name": "\"Check GGBot\" im Mausradklick-Menü anzeigen (Neustart erforderlich)"
+        },
+        "joinNotificationEnabled": {
+          "name": "Beitrittsnachricht anzeigen"
+        }
       }
     },
     "hudWidget": {
@@ -98,6 +142,15 @@
       },
       "cb": {
         "name": "Bot Citybuild"
+      },
+      "tickets": {
+        "name": "Ticket-Anzahl"
+      },
+      "openedTickets": {
+        "name": "Offene Tickets"
+      },
+      "closedTickets": {
+        "name": "Geschlossene Tickets"
       }
     },
     "messages": {
@@ -149,6 +202,9 @@
       "log": {
         "time": "%s",
         "textfilter": "%s\u200B"
+      },
+      "shop": {
+        "nobot": "Kein GGBot in der Nähe gefunden."
       }
     },
     "toasts": {

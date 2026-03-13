@@ -12,15 +12,26 @@ import net.labymod.api.client.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Top bar of the cart panel, showing the title, item count, and a clear-cart button. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartTopBarWidget extends HorizontalListWidget {
   private final ShopInterfaceActivity activity;
-  public final ComponentWidget titleWidget;
-  public final ComponentWidget itemCountWidget;
-  public final ButtonWidget clearCartButton;
-  private List<Runnable> clearCartButtonClickListeners = new ArrayList<>();
 
+  /** Displays the cart section title. */
+  public final ComponentWidget titleWidget;
+
+  /** Displays the total item count currently in the cart. */
+  public final ComponentWidget itemCountWidget;
+
+  /** Button that empties the cart. */
+  public final ButtonWidget clearCartButton;
+
+  private final List<Runnable> clearCartButtonClickListeners = new ArrayList<>();
+
+  /**
+   * @param activity the owning shop activity
+   */
   public CartTopBarWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
@@ -47,6 +58,11 @@ public class CartTopBarWidget extends HorizontalListWidget {
     });
   }
 
+  /**
+   * Registers a listener called when the clear-cart button is pressed.
+   *
+   * @param listener the callback
+   */
   public void onClearCartButtonClick(Runnable listener) {
     clearCartButtonClickListeners.add(listener);
   }

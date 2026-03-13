@@ -1,7 +1,6 @@
 package de.ggbot.core.cfg;
 
 import de.ggbot.core.GGBot;
-import de.ggbot.core.listener.StartTimerOnJoin;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.Config;
@@ -20,8 +19,8 @@ public class BotLogsSubConfig extends Config {
       .addChangeListener(minutesValue -> {
         if (GGBot.getInstance().configuration().botlogSub.botLog.get()
             && GGBot.getInstance().labyAPI().serverController().isConnected()) {
-          StartTimerOnJoin.cancelLogTimer();
-          StartTimerOnJoin.startLogTimer(minutesValue * 60 * 1000L);
+          GGBot.getInstance().getTimerListener().cancelLogTimer();
+          GGBot.getInstance().getTimerListener().startLogTimer(minutesValue * 60 * 1000L);
         }
       });
 

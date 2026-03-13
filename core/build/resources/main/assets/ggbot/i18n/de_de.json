@@ -21,6 +21,17 @@
       "plot": {
         "name": "Bot Grundstück"
       },
+      "ticket": {
+        "amount": {
+          "name": "Total Tickets"
+        },
+        "open": {
+          "name": "Open Tickets"
+        },
+        "closed": {
+          "name": "Closed Tickets"
+        }
+      },
       "unknown": "Unbekannt"
     },
     "settings": {
@@ -101,6 +112,11 @@
       }
     },
     "messages": {
+      "system": {
+        "title": "GGBot System Nachricht",
+        "button": "Öffnen",
+        "close": "Schließen"
+      },
       "join": {
         "prefix1": "-----------------[",
         "prefix2": "]-----------------",

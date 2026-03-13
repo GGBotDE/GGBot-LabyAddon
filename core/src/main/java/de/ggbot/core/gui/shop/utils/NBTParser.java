@@ -8,8 +8,14 @@ import de.ggbot.core.GGBot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Lightweight parser that extracts structured data (lore, enchantments, damage) from the
+ * raw NBT JSON strings returned by the GGBot API. All public entry points are static and
+ * side-effect-free.
+ */
 public class NBTParser {
 
+  /** Immutable result of a successful {@link NBTParser#parse(String)} call. */
   public static class ParsedNBT {
     private final List<String> lore;
     private final List<Enchantment> enchantments;
@@ -21,23 +27,28 @@ public class NBTParser {
       this.damage = damage;
     }
 
+    /** @return lore lines with Minecraft § colour codes, never {@code null} */
     public List<String> getLore() {
       return lore;
     }
 
+    /** @return enchantments applied to the item, never {@code null} */
     public List<Enchantment> getEnchantments() {
       return enchantments;
     }
 
+    /** @return item damage value, or {@code null} if the item has no damage tag */
     public Integer getDamage() {
       return damage;
     }
 
+    /** @return {@code true} if a damage tag was present in the NBT */
     public boolean hasDamage() {
       return damage != null;
     }
   }
 
+  /** Represents a single enchantment tag found in an item's NBT data. */
   public static class Enchantment {
     private final String id;
     private final int level;
@@ -47,47 +58,60 @@ public class NBTParser {
       this.level = level;
     }
 
+    /** @return internal enchantment ID (e.g. {@code "sharpness"}) */
     public String getId() {
       return id;
     }
 
+    /** @return numeric enchantment level (1-based) */
     public int getLevel() {
       return level;
     }
 
+    /**
+     * @return the enchantment level as a Roman numeral (I–V), or the raw number for level &gt; 5
+     */
     public String getDisplayLevel() {
-      switch (level) {
-        case 1: return "I";
-        case 2: return "II";
-        case 3: return "III";
-        case 4: return "IV";
-        case 5: return "V";
-        default: return String.valueOf(level);
-      }
+      return switch (level) {
+        case 1 -> "I";
+        case 2 -> "II";
+        case 3 -> "III";
+        case 4 -> "IV";
+        case 5 -> "V";
+        default -> String.valueOf(level);
+      };
     }
 
+    /**
+     * @return a human-readable English name for this enchantment,
+     *         falling back to the raw ID for unknown enchantments
+     */
     public String getDisplayName() {
-      // Convert enchantment IDs to display names
-      switch (id) {
-        case "power": return "Power";
-        case "punch": return "Punch";
-        case "unbreaking": return "Unbreaking";
-        case "luck_of_the_sea": return "Luck of the Sea";
-        case "sharpness": return "Sharpness";
-        case "protection": return "Protection";
-        case "fire_aspect": return "Fire Aspect";
-        case "looting": return "Looting";
-        case "fortune": return "Fortune";
-        case "efficiency": return "Efficiency";
-        case "silk_touch": return "Silk Touch";
-        case "mending": return "Mending";
-        default: return id;
-      }
+      return switch (id) {
+        case "power" -> "Power";
+        case "punch" -> "Punch";
+        case "unbreaking" -> "Unbreaking";
+        case "luck_of_the_sea" -> "Luck of the Sea";
+        case "sharpness" -> "Sharpness";
+        case "protection" -> "Protection";
+        case "fire_aspect" -> "Fire Aspect";
+        case "looting" -> "Looting";
+        case "fortune" -> "Fortune";
+        case "efficiency" -> "Efficiency";
+        case "silk_touch" -> "Silk Touch";
+        case "mending" -> "Mending";
+        default -> id;
+      };
     }
   }
 
   /**
-   * Parse NBT string into structured data
+   * Parses an NBT JSON string into a structured {@link ParsedNBT} object.
+   * Returns an empty result (no lore, no enchantments, no damage) when
+   * {@code nbtString} is {@code null}, blank, or unparseable.
+   *
+   * @param nbtString raw NBT JSON produced by the bot API, may be {@code null}
+   * @return a {@link ParsedNBT} — never {@code null}
    */
   public static ParsedNBT parse(String nbtString) {
     if (nbtString == null || nbtString.trim().isEmpty()) {
@@ -118,7 +142,7 @@ public class NBTParser {
       return new ParsedNBT(lore, enchantments, damage);
 
     } catch (Exception e) {
-      e.printStackTrace();
+      GGBot.getInstance().logger().warn("Failed to parse NBT data", e);
       GGBot.getInstance().getVersioningHandler().reportError(e);
       return new ParsedNBT(new ArrayList<>(), new ArrayList<>(), null);
     }
@@ -244,7 +268,10 @@ public class NBTParser {
   }
 
   /**
-   * Convert Minecraft JSON text format to legacy format with § codes
+   * Converts a Minecraft JSON text component string into a legacy § colour-code string.
+   *
+   * @param jsonText JSON text component, may be {@code null} or empty
+   * @return legacy-formatted string, or the original input if parsing fails
    */
   private static String convertJsonTextToLegacy(String jsonText) {
     if (jsonText == null || jsonText.trim().isEmpty()) {
@@ -315,28 +342,40 @@ public class NBTParser {
     return codes.toString();
   }
 
+  /**
+   * Maps a Minecraft colour name to the corresponding § colour code.
+   *
+   * @param colorName lowercase or mixed-case colour name (e.g. {@code "dark_red"})
+   * @return the § colour code string, or an empty string for unknown names
+   */
   private static String getColorCode(String colorName) {
-    switch (colorName.toLowerCase()) {
-      case "black": return "§0";
-      case "dark_blue": return "§1";
-      case "dark_green": return "§2";
-      case "dark_aqua": return "§3";
-      case "dark_red": return "§4";
-      case "dark_purple": return "§5";
-      case "gold": return "§6";
-      case "gray": return "§7";
-      case "dark_gray": return "§8";
-      case "blue": return "§9";
-      case "green": return "§a";
-      case "aqua": return "§b";
-      case "red": return "§c";
-      case "light_purple": return "§d";
-      case "yellow": return "§e";
-      case "white": return "§f";
-      default: return "";
-    }
+    return switch (colorName.toLowerCase()) {
+      case "black" -> "§0";
+      case "dark_blue" -> "§1";
+      case "dark_green" -> "§2";
+      case "dark_aqua" -> "§3";
+      case "dark_red" -> "§4";
+      case "dark_purple" -> "§5";
+      case "gold" -> "§6";
+      case "gray" -> "§7";
+      case "dark_gray" -> "§8";
+      case "blue" -> "§9";
+      case "green" -> "§a";
+      case "aqua" -> "§b";
+      case "red" -> "§c";
+      case "light_purple" -> "§d";
+      case "yellow" -> "§e";
+      case "white" -> "§f";
+      default -> "";
+    };
   }
 
+  /**
+   * Extracts the custom display name (with § colour codes) from raw NBT JSON.
+   *
+   * @param nbtString raw NBT JSON string, may be {@code null}
+   * @return the display name string, or {@code null} if no custom name is set
+   */
   // Helper method to get display name with § codes
   public static String extractDisplayName(String nbtString) {
     if (nbtString == null || nbtString.trim().isEmpty()) {
@@ -374,7 +413,7 @@ public class NBTParser {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      GGBot.getInstance().logger().warn("Failed to extract display name from NBT", e);
       GGBot.getInstance().getVersioningHandler().reportError(e);
     }
 

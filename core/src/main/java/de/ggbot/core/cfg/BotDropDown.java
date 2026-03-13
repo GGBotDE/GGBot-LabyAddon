@@ -2,7 +2,6 @@ package de.ggbot.core.cfg;
 
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.GGBot;
-import de.ggbot.sdk.core.ApiException;
 import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
@@ -31,6 +30,9 @@ public class BotDropDown extends HorizontalListWidget {
     private final String initialValue;
 
     private Consumer<String> customUpdateListener;
+    /** Set to {@code true} while programmatically repopulating the dropdown
+     *  to prevent the change-listener from overwriting the saved selection. */
+    private boolean populatingDropdown = false;
 
     public BotDropDown(String customText, String initialValue) {
         this.customText = customText;
@@ -41,28 +43,32 @@ public class BotDropDown extends HorizontalListWidget {
         this.customUpdateListener = customUpdateListener;
     }
 
+    /** Populate {@code dropdown} from the current cached bot list. */
+    private void populateDropdown(DropdownWidget<String> dropdown) {
+        for (Bot bot : BotRequests.getCachedBots()) {
+            if (bot.getDescription() == null || Objects.equals(bot.getDescription(), "")) {
+                if (bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()) {
+                    String display = bot.getToken().substring(0, 3);
+                    dropdown.add(display + " (" + bot.getId() + ")");
+                } else {
+                    dropdown.add(bot.getLinkName() + " (" + bot.getId() + ")");
+                }
+            } else {
+                dropdown.add(bot.getDescription() + " (" + bot.getId() + ")");
+            }
+        }
+    }
+
     @Override
     public void initialize(Parent parent) {
         super.initialize(parent);
 
         DropdownWidget<String> dropdown = new DropdownWidget<>();
-        for (Bot bot : BotRequests.bots){
-          if(bot.getDescription() == null || Objects.equals(bot.getDescription(), "")){
-            if(bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()){
-              String token = bot.getToken();
-              String display = token.substring(0,3);
-              dropdown.add(display + " (" + bot.getId() + ")");
-            }else{
-              dropdown.add(bot.getLinkName() + " (" + bot.getId() + ")");
-            }
-          }else{
-            dropdown.add(bot.getDescription() + " (" + bot.getId() + ")");
-          }
-        }
+        populateDropdown(dropdown);
         dropdown.addId("bot-dropdown");
 
         dropdown.setChangeListener(value -> {
-            if (this.customUpdateListener != null) {
+            if (!populatingDropdown && this.customUpdateListener != null) {
                 this.customUpdateListener.accept(value);
             }
         });
@@ -73,29 +79,22 @@ public class BotDropDown extends HorizontalListWidget {
 
         this.addEntry(dropdown);
 
+        GGBot addon = GGBot.getInstance();
         ButtonWidget button = ButtonWidget.text(this.customText);
         button.setPressListener(() -> {
-          try {
-            BotRequests.updateBotList(GGBot.getInstance());
-          } catch (ApiException e) {
-            GGBot.getInstance().logger().error("Failed to update bot list: " + e.getMessage());
-            GGBot.getInstance().getVersioningHandler().reportError(e);
-          }
-          dropdown.clear();
-          for (Bot bot : BotRequests.bots){
-            if(bot.getDescription() == null || Objects.equals(bot.getDescription(), "")){
-              if(bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()){
-                String token = bot.getToken();
-                String display = token.substring(0,3);
-                dropdown.add(display + " (" + bot.getId() + ")");
-              }else{
-                dropdown.add(bot.getLinkName() + " (" + bot.getId() + ")");
-              }
-            }else{
-              dropdown.add(bot.getDescription() + " (" + bot.getId() + ")");
-            }
-          }
-          return true;
+            button.setEnabled(false);
+            String savedSelection = dropdown.getSelected();
+            BotRequests.updateBotListAsync(addon, () -> {
+                populatingDropdown = true;
+                dropdown.clear();
+                populateDropdown(dropdown);
+                if (savedSelection != null) {
+                    dropdown.setSelected(savedSelection);
+                }
+                populatingDropdown = false;
+                button.setEnabled(true);
+            });
+            return true;
         });
         button.addId("custom-button");
         this.addEntry(button);
