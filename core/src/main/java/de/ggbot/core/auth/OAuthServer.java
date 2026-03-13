@@ -100,23 +100,20 @@ public class OAuthServer {
         }
       } catch (Exception e) {
         addon.getVersioningHandler().reportError(e);
-        e.printStackTrace();
         break;
       }
     }
     return null;
   }
 
-
   /**
-   * Closes the local OAuth server.
+   * Closes the local OAuth redirect server and its executor.
    */
   public void close() {
     try {
       this.serverSocket.close();
     } catch (IOException e) {
       addon.getVersioningHandler().reportError(e);
-      e.printStackTrace();
     }
   }
 
@@ -173,7 +170,6 @@ public class OAuthServer {
         .url("https://api.ggbot.de/oauth/token")
         .body(body)
         .executeSync();
-    addon.logger().info(result.get().toString());
     return result.get();
   }
 }

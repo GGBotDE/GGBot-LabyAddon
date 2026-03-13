@@ -8,9 +8,16 @@ import net.labymod.api.client.gui.screen.widget.action.ListSession;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.ScrollWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.ScrollbarWidget;
 
+/**
+ * A standalone scrollable wrapper around a {@link CartItemListWidget}.
+ * Used when the cart scroll area is placed outside the main {@link de.ggbot.core.gui.shop.widgets.cart.CartShopWidget}.
+ */
 public class CartItemsScrollWidget extends AbstractWidget<ScrollWidget> {
   private final ShopInterfaceActivity activity;
 
+  /**
+   * @param activity the owning shop activity
+   */
   public CartItemsScrollWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;

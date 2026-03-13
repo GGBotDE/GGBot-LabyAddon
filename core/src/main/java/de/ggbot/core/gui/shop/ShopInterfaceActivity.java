@@ -23,7 +23,6 @@ import net.labymod.api.client.gui.screen.activity.types.SimpleActivity;
 import net.labymod.api.client.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,18 +30,41 @@ import java.util.function.Supplier;
 @AutoActivity
 @Link("shopgui.lss")
 public class ShopInterfaceActivity extends SimpleActivity {
+
+  /** The bot username displayed in the shop header. */
   public final String botName;
+
+  /** The server IP used to look up the public bot. */
   public final String serverIp;
+
   private final VersioningHandler versioningHandler;
+
+  /** Root widget containing the shop UI. */
   public final ShopWidget shopWidget;
+
+  /** Public bot data fetched from the API on initialization. */
   public PublicBot publicBot;
+
+  /** Public API client for fetching bot info. */
   public final PublicApi publicApi = new PublicApi();
+
+  /** Modules API client for fetching sell items. */
   public final ModulesApi modulesApi = new ModulesApi();
+
+  /** Parsed sell items available for purchase. */
   public List<CustomSellItem> customSellItems = new ArrayList<>();
+
   private final List<Runnable> cancelListeners = new ArrayList<>();
   private final List<Consumer<List<CartItemEntry>>> purchaseListeners = new ArrayList<>();
+
+  /** Registered money balance checkers invoked before purchase confirmation. */
   public final List<Function<Double, Boolean>> moneyCheckListeners = new ArrayList<>();
 
+  /**
+   * @param botName           the bot username to display
+   * @param serverIp          server IP used for public API lookups
+   * @param versioningHandler feature-flag service
+   */
   public ShopInterfaceActivity(String botName, String serverIp, VersioningHandler versioningHandler) {
     super();
     this.botName = botName;
@@ -73,36 +95,45 @@ public class ShopInterfaceActivity extends SimpleActivity {
   protected void postInitialize() {
     super.postInitialize();
 
-    shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.purchaseButton.setEnabled(versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy"));
+    shopWidget.cartShopWidget.cartBottomWidget.cartBottomButtonsWidget.purchaseButton
+        .setEnabled(versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.buy"));
 
-    if(!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
-    try {
-      publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-      modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-      publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+    if (!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
 
-      List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());
-      for(SellItem item : fetchedItems) {
-        for(SellItemPrice price : item.getPrices()) {
-          CustomSellItem customSellItem = new CustomSellItem(
-              item.getId(),
-              item.getName(),
-              item.getItemType(),
-              item.getNbt(),
-              price.getPrice(),
-              price.getAmount(),
-              item.getChestPosition()
-          );
-          customSellItems.add(customSellItem);
+    Thread loadThread = new Thread(() -> {
+      try {
+        publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
+        modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
+        publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+
+        List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());
+        List<CustomSellItem> loaded = new ArrayList<>();
+        for (SellItem item : fetchedItems) {
+          for (SellItemPrice price : item.getPrices()) {
+            loaded.add(new CustomSellItem(
+                item.getId(),
+                item.getName(),
+                item.getItemType(),
+                item.getNbt(),
+                price.getPrice(),
+                price.getAmount(),
+                item.getChestPosition()
+            ));
+          }
         }
-      }
+        customSellItems = loaded;
 
-      shopWidget.mainShopWidget.itemsWidget.refreshItems();
-    } catch (ApiException e) {
-      GGBot.getInstance().logger().error("Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
-      e.printStackTrace();
-      GGBot.getInstance().getVersioningHandler().reportError(e);
-    }
+        Laby.labyAPI().minecraft().executeOnRenderThread(
+            () -> shopWidget.mainShopWidget.itemsWidget.refreshItems());
+
+      } catch (ApiException e) {
+        GGBot.getInstance().logger().error(
+            "Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
+        GGBot.getInstance().getVersioningHandler().reportError(e);
+      }
+    }, "ggbot-shop-load");
+    loadThread.setDaemon(true);
+    loadThread.start();
   }
 
   @Override
@@ -110,14 +141,30 @@ public class ShopInterfaceActivity extends SimpleActivity {
     super.postStyleSheetLoad();
   }
 
+  /**
+   * Registers a listener that is called when the user clicks "Cancel".
+   *
+   * @param run the cancel callback
+   */
   public void onCancel(Runnable run) {
     cancelListeners.add(run);
   }
 
+  /**
+   * Registers a listener that receives the cart items when the user confirms a purchase.
+   *
+   * @param run the purchase callback
+   */
   public void onPurchase(Consumer<List<CartItemEntry>> run) {
     purchaseListeners.add(run);
   }
 
+  /**
+   * Registers a money-check function. The function receives the total cart value and
+   * should return {@code true} if the player can afford it.
+   *
+   * @param run the money-check function
+   */
   public void onMoneyCheck(Function<Double, Boolean> run) {
     moneyCheckListeners.add(run);
   }

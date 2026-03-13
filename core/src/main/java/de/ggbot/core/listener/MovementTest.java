@@ -28,7 +28,6 @@ public class MovementTest {
         ShopInterfaceActivity activity = new ShopInterfaceActivity("GGBotDE", "griefergames.net", addon.getVersioningHandler());
         activity.onPurchase((a) -> {
           activity.closeScreen();
-          System.out.println("Purchase completed!");
           new Thread(() -> {
             for(CartItemEntry entry : a) {
               for(int i = 0; i < entry.getQuantity(); i++){
@@ -50,13 +49,11 @@ public class MovementTest {
         });
 
         activity.onMoneyCheck((a -> {
-          System.out.println("Money check requested!");
           // Here you would normally check the user's balance and return true or false
           return true; // For testing purposes, we just return true
         }));
 
         activity.onCancel(() -> {
-          System.out.println("Shop canceled!");
           activity.closeScreen();
         });
 

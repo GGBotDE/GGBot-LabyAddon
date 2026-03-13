@@ -14,12 +14,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TeamFetcher {
-  private static final int refetchInterval = 24; // Fetch every 24h to also update non-restarting clients.
-  private static final String apiEndpoint = "https://msapi.ggbot.de/team";
+  /** How often the team data is re-fetched (in hours). */
+  private static final int REFETCH_INTERVAL_HOURS = 24;
+
+  /** API endpoint for team data. */
+  private static final String API_ENDPOINT = "https://msapi.ggbot.de/team";
+
+  /** The globally accessible instance set on construction. */
+  public static TeamFetcher teamInstance;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private static boolean hasFetched = false;
-  public static TeamFetcher teamInstance;
   private GGBotTeam team;
 
 
@@ -27,14 +32,18 @@ public class TeamFetcher {
     teamInstance = this;
   }
 
+  /**
+   * Fetches team data from the API and caches it locally.
+   * On the first call, also registers the periodic auto-refresh interval.
+   */
   public void fetch() {
-    if(!hasFetched) registerAutoFetchingInterval();
+    if (!hasFetched) registerAutoFetchingInterval();
     hasFetched = true;
 
     try {
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
-          .uri(URI.create(apiEndpoint))
+          .uri(URI.create(API_ENDPOINT))
           .build();
 
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -47,19 +56,29 @@ public class TeamFetcher {
 
     } catch (IOException | InterruptedException e) {
       GGBot.getInstance().logger().error("Error fetching team data: " + e.getMessage());
-      e.printStackTrace();
       GGBot.getInstance().getVersioningHandler().reportError(e);
     }
   }
 
+  /** Schedules a periodic re-fetch every {@link #REFETCH_INTERVAL_HOURS} hours. */
   private void registerAutoFetchingInterval() {
-    scheduler.scheduleAtFixedRate(this::fetch, refetchInterval, refetchInterval, TimeUnit.HOURS);
+    scheduler.scheduleAtFixedRate(this::fetch, REFETCH_INTERVAL_HOURS, REFETCH_INTERVAL_HOURS, TimeUnit.HOURS);
   }
 
+  /**
+   * Returns the most recently fetched team data.
+   *
+   * @return the {@link GGBotTeam} or {@code null} if not yet fetched
+   */
   public GGBotTeam getTeam() {
     return team;
   }
 
+  /**
+   * Returns whether team data has been successfully fetched at least once.
+   *
+   * @return {@code true} if team data is available
+   */
   public boolean isFetched() {
     return team != null;
   }

@@ -8,15 +8,38 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 
 public class CitybuildWidget extends TextHudWidget<TextHudWidgetConfig> {
 
-  public static TextLine Citybuild;
-  public CitybuildWidget(){
-    super("cb");
+  /** Registry ID for this widget. */
+  public static final String WIDGET_ID = "cb";
+
+  private static TextLine citybuildLine;
+
+  /**
+   * Creates the CityBuild HUD widget and binds it to the GGFeatures category.
+   */
+  public CitybuildWidget() {
+    super(WIDGET_ID);
     this.bindCategory(GGBot.getInstance().labyAPI().hudWidgetRegistry().categoryRegistry().getById("botggfeatures"));
   }
 
-  public void load(TextHudWidgetConfig config){
+  /**
+   * Initializes the text line with its label and a default placeholder value.
+   *
+   * @param config the widget configuration
+   */
+  @Override
+  public void load(TextHudWidgetConfig config) {
     super.load(config);
-    Citybuild = createLine(Component.translatable("ggbot.widget.citybuild.name"), Component.translatable("ggbot.widget.unknown"));
+    citybuildLine = createLine(
+        Component.translatable("ggbot.widget.citybuild.name"),
+        Component.translatable("ggbot.widget.unknown"));
+  }
 
+  /**
+   * Updates the displayed CityBuild server name.
+   *
+   * @param value the new value to display
+   */
+  public static void update(Object value) {
+    if (citybuildLine != null) citybuildLine.updateAndFlush(value);
   }
 }

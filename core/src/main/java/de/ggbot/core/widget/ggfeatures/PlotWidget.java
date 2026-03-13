@@ -8,15 +8,38 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 
 public class PlotWidget extends TextHudWidget<TextHudWidgetConfig> {
 
-  public static TextLine Plot;
-  public PlotWidget(){
-    super("plot");
+  /** Registry ID for this widget. */
+  public static final String WIDGET_ID = "plot";
+
+  private static TextLine plotLine;
+
+  /**
+   * Creates the plot HUD widget and binds it to the GGFeatures category.
+   */
+  public PlotWidget() {
+    super(WIDGET_ID);
     this.bindCategory(GGBot.getInstance().labyAPI().hudWidgetRegistry().categoryRegistry().getById("botggfeatures"));
   }
 
-  public void load(TextHudWidgetConfig config){
+  /**
+   * Initializes the text line with its label and a default placeholder value.
+   *
+   * @param config the widget configuration
+   */
+  @Override
+  public void load(TextHudWidgetConfig config) {
     super.load(config);
-    Plot = createLine(Component.translatable("ggbot.widget.plot.name"), Component.translatable("ggbot.widget.unknown"));
+    plotLine = createLine(
+        Component.translatable("ggbot.widget.plot.name"),
+        Component.translatable("ggbot.widget.unknown"));
+  }
 
+  /**
+   * Updates the displayed plot coordinates.
+   *
+   * @param value the new value to display
+   */
+  public static void update(Object value) {
+    if (plotLine != null) plotLine.updateAndFlush(value);
   }
 }

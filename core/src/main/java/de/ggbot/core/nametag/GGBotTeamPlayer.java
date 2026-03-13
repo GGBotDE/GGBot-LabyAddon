@@ -3,6 +3,7 @@ package de.ggbot.core.nametag;
 import de.ggbot.core.utils.ttlcache.TTLCache;
 import net.labymod.api.client.entity.player.Player;
 import net.labymod.api.client.gui.icon.Icon;
+import java.util.AbstractMap;
 import java.util.UUID;
 
 public class GGBotTeamPlayer {
@@ -29,41 +30,42 @@ public class GGBotTeamPlayer {
   }
 
   /**
-   * Finds the team member DTO for this player
+   * Locates both the team and the member entry for this player in a single traversal.
+   *
+   * @return a pair of (TeamDTO, MembersDTO), or {@code null} if the player is not on the team
    */
-  private GGBotTeam.TeamDTO.MembersDTO getMemberData() {
-    if (teamFetcher == null || !teamFetcher.isFetched()) {
-      return null;
-    }
-
+  private AbstractMap.SimpleEntry<GGBotTeam.TeamDTO, GGBotTeam.TeamDTO.MembersDTO> findPlayerEntry() {
+    if (teamFetcher == null || !teamFetcher.isFetched()) return null;
     GGBotTeam team = teamFetcher.getTeam();
-    if (team == null || team.getTeam() == null || team.getTeam().isEmpty()) {
-      return null;
-    }
-
+    if (team == null || team.getTeam() == null || team.getTeam().isEmpty()) return null;
     String playerUuid = normalizeUuid(uuid.toString());
-    if (playerUuid == null) {
-      return null;
-    }
-
+    if (playerUuid == null) return null;
     for (GGBotTeam.TeamDTO teamDto : team.getTeam()) {
       if (teamDto.getMembers() == null) continue;
-
       for (GGBotTeam.TeamDTO.MembersDTO member : teamDto.getMembers()) {
-        if (member.getMinecraft() != null && member.getMinecraft().getUuid() != null) {
-          String memberUuid = normalizeUuid(member.getMinecraft().getUuid());
-          if (playerUuid.equalsIgnoreCase(memberUuid)) {
-            return member;
-          }
+        if (member.getMinecraft() != null && member.getMinecraft().getUuid() != null
+            && playerUuid.equalsIgnoreCase(normalizeUuid(member.getMinecraft().getUuid()))) {
+          return new AbstractMap.SimpleEntry<>(teamDto, member);
         }
       }
     }
-
     return null;
   }
 
   /**
-   * Gets whether the player is marked as a member (isMember field)
+   * Finds the team member DTO for this player.
+   *
+   * @return the {@link GGBotTeam.TeamDTO.MembersDTO} if found, or {@code null}
+   */
+  private GGBotTeam.TeamDTO.MembersDTO getMemberData() {
+    AbstractMap.SimpleEntry<GGBotTeam.TeamDTO, GGBotTeam.TeamDTO.MembersDTO> entry = findPlayerEntry();
+    return entry != null ? entry.getValue() : null;
+  }
+
+  /**
+   * Gets whether the player is marked as a team member.
+   *
+   * @return {@code true} if the player is a team member
    */
   public boolean isTeamMember() {
     GGBotTeam.TeamDTO.MembersDTO member = getMemberData();
@@ -71,37 +73,13 @@ public class GGBotTeamPlayer {
   }
 
   /**
-   * Gets the team name the player belongs to
+   * Gets the team name the player belongs to.
+   *
+   * @return the team name, or {@code null} if not found
    */
   public String getTeamName() {
-    if (teamFetcher == null || !teamFetcher.isFetched()) {
-      return null;
-    }
-
-    GGBotTeam team = teamFetcher.getTeam();
-    if (team == null || team.getTeam() == null || team.getTeam().isEmpty()) {
-      return null;
-    }
-
-    String playerUuid = normalizeUuid(uuid.toString());
-    if (playerUuid == null) {
-      return null;
-    }
-
-    for (GGBotTeam.TeamDTO teamDto : team.getTeam()) {
-      if (teamDto.getMembers() == null) continue;
-
-      for (GGBotTeam.TeamDTO.MembersDTO member : teamDto.getMembers()) {
-        if (member.getMinecraft() != null && member.getMinecraft().getUuid() != null) {
-          String memberUuid = normalizeUuid(member.getMinecraft().getUuid());
-          if (playerUuid.equalsIgnoreCase(memberUuid)) {
-            return teamDto.getName();
-          }
-        }
-      }
-    }
-
-    return null;
+    AbstractMap.SimpleEntry<GGBotTeam.TeamDTO, GGBotTeam.TeamDTO.MembersDTO> entry = findPlayerEntry();
+    return entry != null ? entry.getKey().getName() : null;
   }
 
   /**

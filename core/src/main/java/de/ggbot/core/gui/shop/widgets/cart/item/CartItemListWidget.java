@@ -8,11 +8,15 @@ import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalListWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalListWidget;
 
+/** Vertical list that holds {@link CartItemWidget} rows inside the cart scroll area. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartItemListWidget extends VerticalListWidget<CartItemWidget> {
   private final ShopInterfaceActivity activity;
 
+  /**
+   * @param activity the owning shop activity
+   */
   public CartItemListWidget(ShopInterfaceActivity activity) {
     super();
     this.activity = activity;
