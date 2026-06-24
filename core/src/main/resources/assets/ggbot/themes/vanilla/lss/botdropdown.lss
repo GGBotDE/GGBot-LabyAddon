@@ -1,0 +1,7 @@
+.bot-dropdown {
+  max-width: 60;
+}
+
+.custom-button {
+  max-height: 16;
+}

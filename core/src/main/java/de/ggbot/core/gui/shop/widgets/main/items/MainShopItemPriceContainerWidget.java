@@ -9,18 +9,12 @@ import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalListWidget;
 import net.labymod.api.client.resources.ResourceLocation;
 
-/** Displays the price (and optional stack count) badge on a shop item tile. */
 @AutoWidget
 @Link("shopgui.lss")
 public class MainShopItemPriceContainerWidget extends HorizontalListWidget {
   private final float price;
   private final long count;
 
-  /**
-   * @param price price per purchase
-   * @param count items delivered per purchase (stack size); the count badge is
-   *              hidden when this is &le; 1
-   */
   public MainShopItemPriceContainerWidget(float price, long count) {
     this.price = price;
     this.count = count;

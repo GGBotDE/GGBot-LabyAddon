@@ -7,8 +7,10 @@ import net.labymod.api.util.io.web.request.Response;
 import de.ggbot.core.GGBot;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,17 +28,17 @@ public class OAuthServer {
   /**
    * Port on which the local redirect server listens.
    */
-  public static final int REDIRECT_PORT = 8090;
+  public static int REDIRECT_PORT = 8090;
 
   /**
    * URL that the OAuth provider redirects to after authentication.
    */
-  public static final String REDIRECT_URL = String.format("http://localhost:%s", OAuthServer.REDIRECT_PORT);
+  public static String REDIRECT_URL = String.format("http://localhost:%s", OAuthServer.REDIRECT_PORT);
 
   /**
    * Client ID of this application.
    */
-  public static final String CLIENT_ID = "ggbot_1c305ba092a14c11504291818f1b0c98";
+  public static final String CLIENT_ID = "ggbot_54ccece7ad9cbf8cd3dd59c399bde7af";
 
   /**
    * OAuth scopes requested during authorization.
@@ -44,7 +46,7 @@ public class OAuthServer {
   public static final String SCOPES = "read:bots%20write:bots%20execute:bots";
 
   private final GGBot addon;
-  private final ServerSocket serverSocket;
+  private ServerSocket serverSocket;
   private final ExecutorService executor;
 
   /**
@@ -55,8 +57,21 @@ public class OAuthServer {
    */
   public OAuthServer(GGBot addon) throws IOException {
     this.addon = addon;
-    this.serverSocket = new ServerSocket(OAuthServer.REDIRECT_PORT);
+    startServer();
     this.executor = Executors.newSingleThreadExecutor();
+  }
+
+  private void startServer() throws IOException {
+    try {
+      this.serverSocket = new ServerSocket(OAuthServer.REDIRECT_PORT);
+    } catch (BindException e) {
+      addon.logger().error("Port " + REDIRECT_PORT
+          + " is already in use. Trying to use the next available port...");
+      addon.getVersioningHandler().reportError(e);
+      REDIRECT_PORT++;
+      REDIRECT_URL = String.format("http://localhost:%s", OAuthServer.REDIRECT_PORT);
+      startServer();
+    }
   }
 
   /**
@@ -85,7 +100,8 @@ public class OAuthServer {
         printWriter.write("HTTP/1.0 200 OK\r\n");
         printWriter.write("Content-Type: text/html; charset=UTF-8\r\n");
         printWriter.write("\r\n");
-        printWriter.write("<!doctypehtml><html lang=en><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>Success</title><link href=https://ggbot.de/assets/css/globals.css rel=stylesheet><link href=https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css rel=stylesheet><div><i class=\"bx bxs-check-circle\"></i><h1>Success!</h1><p>Your operation was completed successfully.<p class=strong>You can now close this page</div><style>i{display:block;font-size:100px;color:green}div{text-align:center;background:var(--background-100);padding:2em;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px}h1{margin-bottom:.5em;font-family:Sora,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}p{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--text-600);margin:.5em 0}.strong{font-weight:600;color:var(--text-800)}</style>");
+        printWriter.write(
+            "<!doctypehtml><html lang=en><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>Success</title><link href=https://ggbot.de/assets/css/globals.css rel=stylesheet><link href=https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css rel=stylesheet><div><i class=\"bx bxs-check-circle\"></i><h1>Success!</h1><p>Your operation was completed successfully.<p class=strong>You can now close this page</div><style>i{display:block;font-size:100px;color:green}div{text-align:center;background:var(--background-100);padding:2em;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px}h1{margin-bottom:.5em;font-family:Sora,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}p{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--text-600);margin:.5em 0}.strong{font-weight:600;color:var(--text-800)}</style>");
         printWriter.flush();
 
         printWriter.close();
@@ -98,6 +114,15 @@ public class OAuthServer {
         } else if (path.contains("?error=")) {
           return null;
         }
+      }  catch (BindException e) {
+        addon.logger().error("Port " + REDIRECT_PORT
+            + " is already in use. Trying to use the next available port...");
+        addon.getVersioningHandler().reportError(e);
+        REDIRECT_PORT++;
+        return listenForCode();
+      } catch (SocketException e) {
+        // Socket closed, stop listening (and ignore the exception)
+        break;
       } catch (Exception e) {
         addon.getVersioningHandler().reportError(e);
         break;

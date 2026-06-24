@@ -23,7 +23,7 @@ public class TeamNameTagIconBadge extends BadgeRenderer {
   public void render(ScreenContext ctx, float x, float y, NetworkPlayerInfo player) {
     GGBotTeamPlayer teamPlayer = new GGBotTeamPlayer(player.profile().getUniqueId());
     if (!teamPlayer.isTeamMember() || teamPlayer.getIngameIcon() == null) return;
-    ctx.canvas().submitIcon(teamPlayer.getIngameIcon(), x, y, 9, 9);
+    ctx.canvas().submitIcon(teamPlayer.getIngameIcon(), x, y-1, 9, 9);
   }
 
   /**

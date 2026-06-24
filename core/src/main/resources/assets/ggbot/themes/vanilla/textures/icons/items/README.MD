@@ -1,0 +1,2 @@
+These resources need to exist because we use these identifiers and we cannot convert from these names to a minecraft supported format that works with every version of minecraft. These resources are used in the mod to display icons for items in the game. Each item has a corresponding texture file that is referenced by its identifier.
+All of these images where fetched from https://github.com/PrismarineJS/minecraft-assets

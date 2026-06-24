@@ -7,7 +7,9 @@ import net.labymod.api.client.gui.lss.property.PropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAlignmentXPropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAlignmentYPropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAlwaysFocusedPropertyValueAccessor;
+import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAnimationDirectionAlternatePropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAnimationDurationPropertyValueAccessor;
+import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAnimationIterationCountPropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetAnimationTimingFunctionPropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetBackgroundAlwaysDirtPropertyValueAccessor;
 import net.labymod.autogen.core.lss.properties.accessors.AbstractWidgetBackgroundColorPropertyValueAccessor;
@@ -162,6 +164,10 @@ public class AbstractWidgetDirectPropertyValueAccessor extends StyledWidgetDirec
 
   protected PropertyValueAccessor<?, ?, ?> animationTimingFunction = new AbstractWidgetAnimationTimingFunctionPropertyValueAccessor();
 
+  protected PropertyValueAccessor<?, ?, ?> animationIterationCount = new AbstractWidgetAnimationIterationCountPropertyValueAccessor();
+
+  protected PropertyValueAccessor<?, ?, ?> animationDirectionAlternate = new AbstractWidgetAnimationDirectionAlternatePropertyValueAccessor();
+
   protected PropertyValueAccessor<?, ?, ?> filter = new AbstractWidgetFilterPropertyValueAccessor();
 
   protected PropertyValueAccessor<?, ?, ?> hoverBoxDelay = new AbstractWidgetHoverBoxDelayPropertyValueAccessor();
@@ -227,6 +233,8 @@ public class AbstractWidgetDirectPropertyValueAccessor extends StyledWidgetDirec
       case "backgroundDirtType":return backgroundDirtType;
       case "fontWeight":return fontWeight;
       case "animationTimingFunction":return animationTimingFunction;
+      case "animationIterationCount":return animationIterationCount;
+      case "animationDirectionAlternate":return animationDirectionAlternate;
       case "filter":return filter;
       case "hoverBoxDelay":return hoverBoxDelay;
       case "clearDepth":return clearDepth;
@@ -289,6 +297,8 @@ public class AbstractWidgetDirectPropertyValueAccessor extends StyledWidgetDirec
       case "backgroundDirtType":return true;
       case "fontWeight":return true;
       case "animationTimingFunction":return true;
+      case "animationIterationCount":return true;
+      case "animationDirectionAlternate":return true;
       case "filter":return true;
       case "hoverBoxDelay":return true;
       case "clearDepth":return true;

@@ -11,7 +11,6 @@ import net.labymod.api.client.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Horizontal button bar at the bottom of the cart containing Cancel and Purchase buttons. */
 @AutoWidget
 @Link("shopgui.lss")
 public class CartBottomButtonsWidget extends HorizontalListWidget {
@@ -19,13 +18,9 @@ public class CartBottomButtonsWidget extends HorizontalListWidget {
   private final List<Runnable> purchaseButtonClickListeners = new ArrayList<>();
   private final List<Runnable> cancelButtonClickListeners = new ArrayList<>();
 
-  /** The cancel button. */
   public ButtonWidget cancelButton;
-
-  /** The purchase/checkout button. */
   public ButtonWidget purchaseButton;
 
-  /** {@inheritDoc} */
   @Override
   public void initialize(Parent parent) {
     super.initialize(parent);
@@ -45,30 +40,20 @@ public class CartBottomButtonsWidget extends HorizontalListWidget {
     this.addEntry(purchaseButton);
 
     cancelButton.setPressable(() -> {
-      for(Runnable listener : cancelButtonClickListeners)
+      for (Runnable listener : cancelButtonClickListeners)
         listener.run();
     });
 
     purchaseButton.setPressable(() -> {
-      for(Runnable listener : purchaseButtonClickListeners)
+      for (Runnable listener : purchaseButtonClickListeners)
         listener.run();
     });
   }
 
-  /**
-   * Registers a listener called when the cancel button is pressed.
-   *
-   * @param listener the callback
-   */
   public void onCancelButtonClick(Runnable listener) {
     cancelButtonClickListeners.add(listener);
   }
 
-  /**
-   * Registers a listener called when the purchase button is pressed.
-   *
-   * @param listener the callback
-   */
   public void onPurchaseButtonClick(Runnable listener) {
     purchaseButtonClickListeners.add(listener);
   }

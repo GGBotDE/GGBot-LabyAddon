@@ -50,7 +50,7 @@ public class VersioningHandler {
   private static final String ADDON_SLUG = "labymod-addon";
 
   /** Current API version used by the addon */
-  private static final String API_VERSION = "0.14.3";
+  private static final String API_VERSION =  "0.15.1";
 
   /** Reference to the addon instance */
   private final GGBot addon;

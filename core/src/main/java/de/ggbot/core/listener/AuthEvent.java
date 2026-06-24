@@ -1,18 +1,25 @@
 package de.ggbot.core.listener;
 
+import de.ggbot.core.utils.AsyncScheduler;
+import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.component.format.TextDecoration;
+import net.labymod.api.configuration.labymod.chat.ChatWindow;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.network.server.ServerJoinEvent;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.auth.OAuthServer;
+import net.labymod.api.util.I18n;
 
 import java.io.IOException;
 
 import static de.ggbot.core.api.BotRequests.getCachedBots;
+import static de.ggbot.core.listener.SetupBotLogsChannel.getChatWindow;
+import static net.labymod.api.client.component.format.NamedTextColor.BLUE;
+import static net.labymod.api.client.component.format.NamedTextColor.GRAY;
 
 /**
  * Listens for server connect/disconnect events to manage authentication prompts
@@ -134,6 +141,36 @@ public class AuthEvent {
     addon.displayMessage(reason);
     addon.displayMessage(action);
     addon.displayMessage(footer);
+
+    final Component finalReason = reason.copy();
+    final Component finalAction = action.copy();
+    AsyncScheduler.runLater(() -> {
+      Laby.labyAPI().minecraft().executeNextTick(() -> {
+        if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.logs"))
+          return;
+        ChatWindow mainWindow = getChatWindow();
+        if (mainWindow == null)
+          return;
+        boolean tabExists = false;
+        for (var tab : mainWindow.getTabs()) {
+          if (tab.getName().equalsIgnoreCase(I18n.getTranslation("ggbot.messages.log.tab"))) {
+            tabExists = true;
+            break;
+          }
+        }
+        if (!tabExists)
+          return;
+
+        addon.displayMessage(
+            header.append(Component.translatable("ggbot.messages.log.textfilter", GRAY, Component.empty())));
+        addon.displayMessage(
+            finalReason.append(Component.translatable("ggbot.messages.log.textfilter", GRAY, Component.empty())));
+        addon.displayMessage(
+            finalAction.append(Component.translatable("ggbot.messages.log.textfilter", GRAY, Component.empty())));
+        addon.displayMessage(
+            footer.append(Component.translatable("ggbot.messages.log.textfilter", GRAY, Component.empty())));
+      });
+    }, 100);
   }
 
   /**

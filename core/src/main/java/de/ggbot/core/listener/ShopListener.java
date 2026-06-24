@@ -1,11 +1,12 @@
 package de.ggbot.core.listener;
 
 import de.ggbot.core.GGBot;
-import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.gui.shop.ShopInterfaceActivity;
+import de.ggbot.core.utils.KeyComboTrigger;
 import de.ggbot.sdk.api.PublicApi;
 import de.ggbot.sdk.core.ApiException;
-import de.ggbot.sdk.model.Bot;
+import de.ggbot.sdk.model.GetBotsOnServer200Response;
+import de.ggbot.sdk.model.GetBotsOnServer200ResponseBotsInner;
 import de.ggbot.sdk.model.Server;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
@@ -16,7 +17,10 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.notification.Notification;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Listens for the configurable shop key and opens the {@link ShopInterfaceActivity}
@@ -29,6 +33,7 @@ import java.util.List;
 public class ShopListener {
 
   private final GGBot addon;
+  private final KeyComboTrigger comboTrigger = new KeyComboTrigger();
 
   public ShopListener(GGBot addon) {
     this.addon = addon;
@@ -38,142 +43,176 @@ public class ShopListener {
   public void onKey(KeyEvent e) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.shop")) return;
     if (!addon.configuration().shopSub.shopEnabled.get()) return;
-    if (!e.state().name().equalsIgnoreCase("PRESS")) return;
 
-    // Support multi-key combos — the pressed key must be part of the configured combo.
-    Key[] combo = addon.configuration().shopSub.shopKey.get();
-    if (combo == null || combo.length == 0) return;
-    boolean keyInCombo = false;
-    for (Key k : combo) {
-      if (e.key().equals(k)) {
-        keyInCombo = true;
-        break;
-      }
+    // Hotkeys must not trigger while a screen (chat or any menu) is open; reset the
+    // combo so the stale key state from before the screen cannot cause a re-trigger.
+    if (Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened()) {
+      comboTrigger.reset();
+      return;
     }
-    if (!keyInCombo) return;
 
-    // Ensure ALL combo keys are currently pressed
-    for (Key k : combo) {
-      if (!k.isPressed()) {
-        return; // wait until the rest are pressed
-      }
-    }
+    // Rising-edge combo detection prevents the screen-focus "toggle" bug.
+    if (!comboTrigger.test(e, addon.configuration().shopSub.shopKey.get())) return;
 
     // Entity access must happen on the tick thread; network work goes to a background thread.
     Laby.labyAPI().minecraft().executeNextTick(() -> {
-      Player bestBot = findBestNearbyBot();
-      if (bestBot == null) {
-        Notification.Builder builder = Notification.builder()
-            .title(Component.text("GGBot", NamedTextColor.RED))
-            .text(Component.translatable("ggbot.messages.shop.nobot"))
-            .type(Notification.Type.SYSTEM);
-        Laby.labyAPI().notificationController().push(builder.build());
-        addon.displayMessage(Component.translatable("ggbot.messages.shop.nobot"));
+      // Nearby player names ordered by how closely the player is looking at them.
+      List<String> candidates = findNearbyPlayerNames();
+      if (candidates.isEmpty()) {
+        notifyNoBot();
         return;
       }
-
-      String botName = bestBot.getName();
       String rawServerIp = addon.labyAPI().serverController()
           .getCurrentServerData().address().getHost().toLowerCase();
 
       Thread verifyThread = new Thread(() -> {
         String serverIp = resolveServerDomain(rawServerIp);
 
-        try {
-          PublicApi verifyApi = new PublicApi();
-          verifyApi.setCustomBaseUrl(
-              addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.shop"));
-          verifyApi.getPublicBotByLink(botName, serverIp);
-        } catch (ApiException ex) {
-          // Not a registered GGBot — abort silently.
+        // Public, unauthenticated lookup of every GGBot on this server.
+        Set<String> serverBots = fetchServerBotNames(serverIp);
+        String botName = null;
+        for (String candidate : candidates) {
+          if (serverBots.contains(candidate.toLowerCase())) {
+            botName = candidate;
+            break;
+          }
+        }
+        if (botName == null) {
+          Laby.labyAPI().minecraft().executeOnRenderThread(this::notifyNoBot);
           return;
         }
 
         final String finalServerIp = serverIp;
-        Laby.labyAPI().minecraft().executeOnRenderThread(() -> {
-          ShopInterfaceActivity activity = new ShopInterfaceActivity(
-              botName, finalServerIp, addon.getVersioningHandler());
-
-          activity.onCancel(activity::closeScreen);
-          activity.onMoneyCheck(requiredAmount -> true);
-
-          activity.onPurchase(cartItems -> {
-            activity.closeScreen();
-            Thread purchaseThread = new Thread(() -> {
-              for (var entry : cartItems) {
-                for (int i = 0; i < entry.getQuantity(); i++) {
-                  Laby.labyAPI().minecraft().executeNextTick(() ->
-                      Laby.references().chatExecutor().chat(
-                          "/pay " + botName + " " + entry.getItem().getPrice()));
-                  try {
-                    Thread.sleep(3000);
-                  } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    return;
-                  }
-                }
-              }
-            }, "ggbot-purchase");
-            purchaseThread.setDaemon(true);
-            purchaseThread.start();
-          });
-
-          Laby.labyAPI().minecraft().minecraftWindow().displayScreen(activity);
-        });
+        final String finalBotName = botName;
+        Laby.labyAPI().minecraft().executeOnRenderThread(
+            () -> openShop(finalBotName, finalServerIp));
       }, "ggbot-shop-verify");
       verifyThread.setDaemon(true);
       verifyThread.start();
     });
   }
 
+  /** Builds and shows the shop interface for the resolved bot. */
+  private void openShop(String botName, String serverIp) {
+    ShopInterfaceActivity activity = new ShopInterfaceActivity(
+        botName, serverIp, addon.getVersioningHandler());
+
+    activity.onCancel(activity::closeScreen);
+    activity.onMoneyCheck(requiredAmount -> true);
+
+    activity.onPurchase(cartItems -> {
+      activity.closeScreen();
+      Thread purchaseThread = new Thread(() -> {
+        for (var entry : cartItems) {
+          for (int i = 0; i < entry.getQuantity(); i++) {
+            Laby.labyAPI().minecraft().executeNextTick(() ->
+                Laby.references().chatExecutor().chat(
+                    "/pay " + botName + " " + entry.getItem().getPrice()));
+            try {
+              Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+              Thread.currentThread().interrupt();
+              return;
+            }
+          }
+        }
+      }, "ggbot-purchase");
+      purchaseThread.setDaemon(true);
+      purchaseThread.start();
+    });
+
+    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(activity);
+  }
+
+  private void notifyNoBot() {
+    Notification.Builder builder = Notification.builder()
+        .title(Component.text("GGBot", NamedTextColor.RED))
+        .text(Component.translatable("ggbot.messages.shop.nobot"))
+        .type(Notification.Type.SYSTEM);
+    Laby.labyAPI().notificationController().push(builder.build());
+  }
+
   /**
-   * Finds the closest GGBot player in the world, biased toward the direction
-   * the local player is looking. Returns {@code null} if no matching bot is within
-   * 64 blocks or if no bots are cached.
-   *
-   * <p>Score formula: {@code alignment * 10.0 - distanceBlocks}
-   * where {@code alignment} is the dot-product cosine of the look-vector and the
-   * direction towards the candidate (range −1 … 1). Higher score wins.
+   * Returns the public, unauthenticated set of GGBot link-names present on the
+   * given (normalized) server, via {@code getBotsOnServer}.
    */
-  private Player findBestNearbyBot() {
-    List<Bot> cached = BotRequests.getCachedBots();
-    if (cached.isEmpty()) return null;
+  private Set<String> fetchServerBotNames(String serverIp) {
+    Set<String> names = new HashSet<>();
+    try {
+      PublicApi api = new PublicApi();
+      api.setCustomBaseUrl(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.shop"));
+      GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
+      if (response != null && response.getBots() != null) {
+        for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {
+          // Only treat a player as a shoppable GGBot when it is actually online;
+          // otherwise the account could just be logged in without running GGBot.
+          if (bot.getLinkName() != null && Boolean.TRUE.equals(bot.getOnline())) {
+            names.add(bot.getLinkName().toLowerCase());
+          }
+        }
+      }
+    } catch (ApiException ex) {
+      addon.logger().error("Failed to fetch bots on server: " + ex.getMessage());
+      addon.getVersioningHandler().reportError(ex);
+    }
+    return names;
+  }
 
+  /**
+   * Returns up to 10 nearby player names ordered by how closely the local player
+   * is looking at them (within the configured shop range). Must be called on the
+   * tick thread because it reads world entities.
+   *
+   * <p>Score formula: {@code alignment * 10.0 - distanceBlocks}, where alignment is
+   * the cosine between the look vector and the direction to the candidate.
+   */
+  private List<String> findNearbyPlayerNames() {
+    List<String> result = new ArrayList<>();
     ClientPlayer local = Laby.labyAPI().minecraft().clientPlayer();
-    if (local == null) return null;
+    if (local == null || Laby.labyAPI().minecraft().clientWorld() == null) {
+      return result;
+    }
 
-    // Build unit look-vector from yaw/pitch.
-    double yawRad   = Math.toRadians(local.getRotationYaw());
+    double yawRad = Math.toRadians(local.getRotationYaw());
     double pitchRad = Math.toRadians(local.getRotationPitch());
-    double lookX =  -Math.sin(yawRad) * Math.cos(pitchRad);
-    double lookY =  -Math.sin(pitchRad);
-    double lookZ =   Math.cos(yawRad) * Math.cos(pitchRad);
+    double lookX = -Math.sin(yawRad) * Math.cos(pitchRad);
+    double lookY = -Math.sin(pitchRad);
+    double lookZ = Math.cos(yawRad) * Math.cos(pitchRad);
 
-    Player bestPlayer = null;
-    double bestScore  = Double.NEGATIVE_INFINITY;
+    class Candidate {
+      final String name;
+      final double score;
 
-    for (Player player : Laby.labyAPI().minecraft().clientWorld().getPlayers()) {
-      if (player == local) continue;
-      if (!isBotName(player.getName(), cached)) continue;
-
-      double dx   = player.position().getX() - local.position().getX();
-      double dy   = player.position().getY() - local.position().getY();
-      double dz   = player.position().getZ() - local.position().getZ();
-      double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-      if (dist > addon.configuration().shopSub.shopRange.get() || dist < 0.001) continue;
-
-      double alignment = (dx * lookX + dy * lookY + dz * lookZ) / dist;
-      double score     = alignment * 10.0 - dist;
-
-      if (score > bestScore) {
-        bestScore  = score;
-        bestPlayer = player;
+      Candidate(String name, double score) {
+        this.name = name;
+        this.score = score;
       }
     }
 
-    return bestPlayer;
+    List<Candidate> candidates = new ArrayList<>();
+    double range = addon.configuration().shopSub.shopRange.get();
+
+    for (Player player : Laby.labyAPI().minecraft().clientWorld().getPlayers()) {
+      if (player == local || player.getName() == null) continue;
+
+      double dx = player.position().getX() - local.position().getX();
+      double dy = player.position().getY() - local.position().getY();
+      double dz = player.position().getZ() - local.position().getZ();
+      double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (dist > range || dist < 0.001) continue;
+
+      double alignment = (dx * lookX + dy * lookY + dz * lookZ) / dist;
+      candidates.add(new Candidate(player.getName(), alignment * 10.0 - dist));
+    }
+
+    candidates.sort((a, b) -> Double.compare(b.score, a.score));
+    int limit = Math.min(10, candidates.size());
+    for (int i = 0; i < limit; i++) {
+      result.add(candidates.get(i).name);
+    }
+    return result;
   }
+
 
   /**
    * Normalizes a raw server hostname to its base domain by verifying against
@@ -199,11 +238,4 @@ public class ShopListener {
     return rawIp;
   }
 
-  /** Returns {@code true} if {@code name} matches the link-name of any cached bot. */
-  private static boolean isBotName(String name, List<Bot> bots) {
-    for (Bot bot : bots) {
-      if (name.equalsIgnoreCase(bot.getLinkName())) return true;
-    }
-    return false;
-  }
 }

@@ -5,6 +5,10 @@ import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.resources.ResourceLocation;
+import net.labymod.api.configuration.loader.annotation.SpriteSlot;
+import net.labymod.api.configuration.loader.annotation.SpriteTexture;
 
 public class PlotWidget extends TextHudWidget<TextHudWidgetConfig> {
 
@@ -19,6 +23,7 @@ public class PlotWidget extends TextHudWidget<TextHudWidgetConfig> {
   public PlotWidget() {
     super(WIDGET_ID);
     this.bindCategory(GGBot.getInstance().labyAPI().hudWidgetRegistry().categoryRegistry().getById("botggfeatures"));
+    this.setIcon(Icon.texture(ResourceLocation.create("ggbot", "themes/vanilla/textures/icons/items/filled_map.png")));
   }
 
   /**

@@ -3,7 +3,9 @@ import net.labymod.labygradle.common.extension.LabyModAnnotationProcessorExtensi
 dependencies {
     labyProcessor()
     api(project(":api"))
-    addonMavenDependency("de.ggbot:ggbot-sdk:0.14.3")
+
+    val sdkVersion = providers.gradleProperty("de.ggbot.sdk-version").get()
+    addonMavenDependency("de.ggbot:ggbot-sdk:"+sdkVersion)
 }
 
 labyModAnnotationProcessor {

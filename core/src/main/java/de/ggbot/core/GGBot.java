@@ -5,9 +5,14 @@ import de.ggbot.core.cfg.BotConfiguration;
 import de.ggbot.core.interactions.CheckGGBot;
 import de.ggbot.core.listener.AuthEvent;
 import de.ggbot.core.listener.ChatListener;
+import de.ggbot.core.listener.BotSelectorListener;
+import de.ggbot.core.listener.BotMenuListener;
 import de.ggbot.core.listener.ShopListener;
 import de.ggbot.core.listener.SetupBotLogsChannel;
 import de.ggbot.core.listener.StartTimerOnJoin;
+import de.ggbot.core.overlay.ChestContentRenderer;
+import de.ggbot.core.overlay.OverlayManager;
+import de.ggbot.core.overlay.OverlayRenderer;
 import de.ggbot.core.nametag.TeamFetcher;
 import de.ggbot.core.nametag.TeamNameTagIcon;
 import de.ggbot.core.nametag.TeamNameTagIconBadge;
@@ -44,6 +49,8 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   private HudWidgetCategory infoCategory;
 
   private CheckGGBot checkGGBotInteraction;
+  private OverlayRenderer overlayRenderer;
+  private de.ggbot.core.listener.OnboardingListener onboardingListener;
 
   /** Whether the user currently holds a valid authentication token. */
   private static boolean authenticated = false;
@@ -57,6 +64,8 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   @Override
   protected void enable() {
     instance = this;
+    // Make the generated SDK tolerant of backend field additions before any API call.
+    de.ggbot.core.api.SdkLeniency.apply();
     configuration().init(this);
     versioningHandler = new VersioningHandler(this);
     this.registerSettingCategory();
@@ -71,6 +80,10 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     registerWidgets();
     registerInteractions();
     registerNameTags();
+    // Show the setup guide if the addon was (re)loaded while already on a server.
+    if (onboardingListener != null) {
+      onboardingListener.showIfPendingOnServer();
+    }
     this.logger().info("GGBot addon enabled.");
   }
 
@@ -198,6 +211,17 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     timerListener = new StartTimerOnJoin(this);
     this.registerListener(timerListener);
     this.registerListener(new ShopListener(this));
+    this.registerListener(new BotSelectorListener(this));
+    this.registerListener(new BotMenuListener(this));
+    onboardingListener = new de.ggbot.core.listener.OnboardingListener(this);
+    this.registerListener(onboardingListener);
+    this.registerListener(de.ggbot.core.gui.botmenu.ControlModeManager.get());
+    this.registerCommand(new de.ggbot.core.commands.ServerBotsCommand(this));
+    overlayRenderer = new OverlayRenderer(OverlayManager.getInstance());
+    this.registerListener(overlayRenderer);
+    this.registerListener(new ChestContentRenderer());
+    this.registerListener(new de.ggbot.core.overlay.ShopHintRenderer(this));
+    this.registerListener(new de.ggbot.core.overlay.TabListBotCountRenderer(this));
   }
 
   /**
@@ -266,6 +290,12 @@ public class GGBot extends LabyAddon<BotConfiguration> {
    */
   private void registerInteractions() {
     checkGGBotInteraction = new CheckGGBot(this);
+
+    // Registered unconditionally; their isVisible() gates display by setting + module.
+    labyAPI().interactionMenuRegistry().register("de.ggbot.addon.followPlayerInteraction",
+        new de.ggbot.core.interactions.FollowPlayerInteraction(this));
+    labyAPI().interactionMenuRegistry().register("de.ggbot.addon.attackPlayerInteraction",
+        new de.ggbot.core.interactions.AttackPlayerInteraction(this));
 
     if(!this.configuration().generalSub.checkBotEnabled.get()) return;
     labyAPI().interactionMenuRegistry().register("de.ggbot.addon.checkGGBotInteraction",checkGGBotInteraction);

@@ -23,8 +23,7 @@ public class StatsSubConfig extends Config {
       .addChangeListener(enabled -> {
         if (!GGBot.getInstance().labyAPI().serverController().isConnected()) return;
         if (enabled) {
-          GGBot.getInstance().getTimerListener().startStatsTimer(
-              GGBot.getInstance().configuration().statsSub.statsMinutes.get() * 60_000L);
+          GGBot.getInstance().getTimerListener().startStatsTimer(GGBot.getInstance().configuration().statsSub.statsMinutes.get() * 60_000L);
         } else {
           GGBot.getInstance().getTimerListener().cancelStatsTimer();
         }

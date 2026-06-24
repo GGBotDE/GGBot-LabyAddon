@@ -34,6 +34,61 @@
       },
       "unknown": "Unknown"
     },
+    "onboarding": {
+      "title": "GGBot Setup Guide",
+      "welcome": {
+        "title": "Welcome to GGBot!",
+        "body": "This short guide helps you set up the addon.\nFirst, tell us how you want to use it."
+      },
+      "path": {
+        "shop": "I want to shop",
+        "owner": "I own a bot"
+      },
+      "shop": {
+        "title": "Shopping at bots",
+        "body": "You do not need a GGBot account to shop.\nWalk up to a GGBot, look at it and press the shop key (default: Ctrl + O) to open its shop.\nYou can change this key in the settings under Shop."
+      },
+      "owner": {
+        "auth": {
+          "title": "Step 1: Link your account",
+          "body": "To manage your own bots, open the addon settings and use 'Auth GGBot Account' to link your GGBot account.\nAfter linking, pick your bot under 'Available Bots'."
+        },
+        "hotkeys": {
+          "title": "Step 2: Your hotkeys",
+          "body": "Bot Selector: Ctrl + B\nBot Management Menu: Ctrl + G\nControl Mode (steer the bot): Ctrl + K\nSet Position 1 / 2: Numpad 1 / Numpad 2\nAll keys can be changed in the settings."
+        }
+      },
+      "finish": {
+        "title": "You are all set!",
+        "body": "You can reopen this guide any time from the addon settings under General Settings.",
+        "button": "Finish"
+      },
+      "back": "Back",
+      "next": "Next",
+      "cancel": "Cancel",
+      "reset": "Reset"
+    },
+    "serverbots": {
+      "title": "GGBots on this server",
+      "loading": "Loading bots...",
+      "empty": "No GGBots found on this server.",
+      "noMatch": "No bots match your filter.",
+      "copy": "Copy",
+      "close": "Close",
+      "searchPlaceholder": "Search...",
+      "notConnected": "You are not connected to a server.",
+      "filter": {
+        "all": "Show: All",
+        "online": "Show: Online"
+      },
+      "copied": {
+        "title": "Copied",
+        "text": "Copied %s to your clipboard."
+      }
+    },
+    "tablist": {
+      "online": "%s GGBots online"
+    },
     "settings": {
       "header": {
         "Addon": {
@@ -42,7 +97,7 @@
         "Bot": {
           "name": "Bot"
         },
-        "Authentication":{
+        "Authentication": {
           "name": "Authentication"
         }
       },
@@ -56,13 +111,13 @@
         "name": "Auth GGBot Account",
         "text": "Auth"
       },
-      "reauth": {
-        "name": "Re-Auth GGBot Account",
-        "text": "Re-Auth"
-      },
       "discord": {
         "name": "GGBot Discord",
         "text": "Join"
+      },
+      "setupGuide": {
+        "name": "Setup Guide",
+        "text": "Open"
       },
       "startSelectedBot": {
         "name": "Start Current Bot",
@@ -121,6 +176,81 @@
         },
         "joinNotificationEnabled": {
           "name": "Show Join Notification"
+        },
+        "botSelectorEnabled": {
+          "name": "Enable Bot Selector Shortcut"
+        },
+        "botSelectorKey": {
+          "name": "Bot Selector Key"
+        },
+        "followPlayerEnabled": {
+          "name": "Show 'Follow Player' in player menu (utils module)"
+        },
+        "attackPlayerEnabled": {
+          "name": "Show 'Attack Player' in player menu (combat module)"
+        },
+        "tabListBotCount": {
+          "name": "Show online bot count in tab list"
+        }
+      },
+      "botMenuSub": {
+        "name": "Bot Management Menu",
+        "menuEnabled": {
+          "name": "Enable Bot Menu Shortcut"
+        },
+        "menuKey": {
+          "name": "Bot Menu Key"
+        },
+        "highlightKickAreas": {
+          "name": "Highlight Kick Areas"
+        },
+        "showChestContents": {
+          "name": "Show Chest Contents When Looking"
+        },
+        "pos1Key": {
+          "name": "Set Position 1 Key"
+        },
+        "pos2Key": {
+          "name": "Set Position 2 Key"
+        },
+        "controlKey": {
+          "name": "Toggle Bot Control Mode Key"
+        }
+      },
+      "overlaySub": {
+        "name": "World Overlays",
+        "sellAreaColor": {
+          "name": "Sell Area Color"
+        },
+        "sellDropColor": {
+          "name": "Sell Drop Location Color"
+        },
+        "chestOverrideColor": {
+          "name": "Buy Chest Override Color"
+        },
+        "trashChestColor": {
+          "name": "Trash Chest Color"
+        },
+        "kickAreaColor": {
+          "name": "Kick Area Color"
+        },
+        "lineWidth": {
+          "name": "Outline Thickness"
+        },
+        "maxRenderDistance": {
+          "name": "Max Render Distance (blocks)"
+        },
+        "fillAreas": {
+          "name": "Fill Areas"
+        },
+        "fillOpacity": {
+          "name": "Fill Opacity"
+        },
+        "chestContentsX": {
+          "name": "Chest Contents X (%)"
+        },
+        "chestContentsY": {
+          "name": "Chest Contents Y (%)"
         }
       }
     },
@@ -197,17 +327,24 @@
           "isbot": "This is a Bot",
           "isnotbot": "This is not a Bot",
           "name": "Check GGBot"
+        },
+        "followplayer": {
+          "name": "Bot: Follow Player"
+        },
+        "attackplayer": {
+          "name": "Bot: Attack Player"
         }
       },
       "log": {
         "time": "%s",
-        "textfilter": "%s\u200B"
+        "textfilter": "%s​",
+        "tab": "Bot Logs"
       },
       "shop": {
         "nobot": "No GGBot found nearby."
       }
     },
-    "toasts":{
+    "toasts": {
       "status": {
         "info": "INFO",
         "error": "ERROR",
@@ -235,25 +372,152 @@
         "itemCount": "%s items",
         "item": "Item: %s",
         "search": "Search..."
+      },
+      "botselector": {
+        "title": "Bot Selector",
+        "refresh": "Refresh",
+        "select": "Select",
+        "close": "Close",
+        "start": "Start",
+        "stop": "Stop",
+        "online": "Online",
+        "offline": "Offline",
+        "empty": "No bots available. Click Refresh to load.",
+        "selected": {
+          "title": "Bot Selected",
+          "text": "Now using %s."
+        }
+      }
+    },
+    "botmenu": {
+      "noBot": "No bot selected - open the bot selector first.",
+      "start": "Start",
+      "stop": "Stop",
+      "close": "Close",
+      "changeBot": "Change Bot",
+      "on": "ON",
+      "off": "OFF",
+      "status": {
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "tab": {
+        "overview": "Overview",
+        "modules": "Modules",
+        "logs": "Logs",
+        "tools": "Tools",
+        "tickets": "Tickets"
+      },
+      "tickets": {
+        "title": "Tickets",
+        "showClosed": "Show closed tickets",
+        "loading": "Loading...",
+        "empty": "No tickets.",
+        "view": "Open",
+        "back": "Back to list",
+        "noMessages": "No messages yet.",
+        "respond": "Send",
+        "respondPlaceholder": "Type a reply...",
+        "close": "Close ticket"
+      },
+      "control": {
+        "button": "Control Bot",
+        "title": "Bot Control",
+        "started": "Control mode enabled - steer the bot with WASD + mouse.",
+        "stopped": "Control mode disabled.",
+        "offline": "The bot is offline - cannot control it.",
+        "tooFar": "The bot is out of range - get closer to control it.",
+        "outOfRange": "Control ended: the bot is out of range.",
+        "actionbar": "Controlling %s - press %s to exit"
+      },
+      "shopHint": "Shop GUI for %s available - press %s to open it",
+      "section": {
+        "command": "Send Command",
+        "overlays": "Overlays",
+        "kickAreas": "Kick Areas",
+        "itemSearch": "Item Search",
+        "logs": "Logs",
+        "tools": "WorldEdit (!pos1 / !pos2)"
+      },
+      "command": {
+        "placeholder": "e.g. /home",
+        "send": "Send"
+      },
+      "toggle": {
+        "kickAreas": "Kick Areas",
+        "chestContents": "Chest Contents"
+      },
+      "module": {
+        "sell": "Sell Module",
+        "buy": "Buy Module",
+        "ggfeatures": "GGFeatures Module",
+        "utils": "Utils Module",
+        "none": "No modules are enabled on this bot."
+      },
+      "editor": {
+        "sellAreaStart": "Sell Area Start",
+        "sellAreaEnd": "Sell Area End",
+        "sellArea": "Sell Area",
+        "sellDropLocation": "Sell Drop Location",
+        "chestOverride": "Buy Chest Override",
+        "trashChest": "Trash Chest",
+        "fromLook": "From Look",
+        "save": "Save",
+        "show": "Show",
+        "hide": "Hide",
+        "showArea": "Show Area",
+        "hideArea": "Hide Area",
+        "reset": "Reset"
+      },
+      "action": {
+        "sellScan": "Sell Chest Scan",
+        "buyScan": "Buy Chest Scan",
+        "followMe": "Follow Me",
+        "stopFollowMe": "Stop Following Me"
+      },
+      "kickAreas": {
+        "none": "(no kick areas)"
+      },
+      "search": {
+        "placeholder": "Type to search items...",
+        "none": "(no matches)",
+        "mark": "Mark"
+      },
+      "logs": {
+        "filter": "Filter logs...",
+        "refresh": "Refresh",
+        "loading": "Loading...",
+        "none": "(no log entries)"
+      },
+      "tools": {
+        "hint": "Look at a block and set a position, then send to the bot.",
+        "pos1": "Set Pos1",
+        "pos2": "Set Pos2",
+        "send": "Send to Bot",
+        "clear": "Clear Selection",
+        "disabled": "The worldedit module is not enabled on this bot."
+      },
+      "chest": {
+        "contents": "Chest contents:"
       }
     }
   },
   "labymod": {
     "hudWidgetCategory": {
       "botggfeatures": {
-        "name": "GGFeatures",
+        "name": "GGBot: GGFeatures",
         "description": "GrieferGames.net Server-Only Infos for the GGFeatures Module"
       },
       "botingame": {
-        "name": "In-Game Bot Details",
+        "name": "GGBot: In-Game Bot Details",
         "description": "Ingame Details from the Bot"
       },
       "botinfo": {
-        "name": "Bot Infos",
+        "name": "GGBot: Bot Infos",
         "description": "General Infos from the Bot"
       },
       "botticket": {
-        "name": "Ticket Details",
+        "name": "GGBot: Ticket Details",
         "description": "Infos from the Ticket Module"
       }
     }

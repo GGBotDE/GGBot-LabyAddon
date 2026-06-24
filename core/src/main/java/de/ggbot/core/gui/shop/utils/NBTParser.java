@@ -111,7 +111,7 @@ public class NBTParser {
    * {@code nbtString} is {@code null}, blank, or unparseable.
    *
    * @param nbtString raw NBT JSON produced by the bot API, may be {@code null}
-   * @return a {@link ParsedNBT} — never {@code null}
+   * @return a {@link ParsedNBT} - never {@code null}
    */
   public static ParsedNBT parse(String nbtString) {
     if (nbtString == null || nbtString.trim().isEmpty()) {

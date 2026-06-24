@@ -25,7 +25,7 @@ public class ChatListener {
     String message = e.getMessage();
     if (!message.startsWith(addon.configuration().prefixSub.prefix.get())) return;
 
-    // Cancel the event immediately on the game thread — no blocking work here.
+    // Cancel the event immediately on the game thread - no blocking work here.
     e.setCancelled(true);
     String command = "!" + message.substring(addon.configuration().prefixSub.prefix.get().length());
 
@@ -33,6 +33,14 @@ public class ChatListener {
       if (BotRequests.isOnlineCached(addon)) {
         try {
           BotRequests.sendCommand(addon, command);
+          // Pull fresh logs shortly after so the log chat tab updates instantly.
+          try {
+            Thread.sleep(800L);
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            return;
+          }
+          BotRequests.logsAsync();
         } catch (Exception ex) {
           addon.logger().error("Failed to send bot command: " + ex.getMessage());
           addon.getVersioningHandler().reportError(ex);

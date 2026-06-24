@@ -11,12 +11,14 @@ plugins {
 }
 
 val versions = providers.gradleProperty("net.labymod.minecraft-versions").get().split(";")
+val sdkVersion = providers.gradleProperty("de.ggbot.sdk-version").get()
+val addonVersionFallback = providers.gradleProperty("de.ggbot.addon-version").get()
 
 group = "de.ggbot"
-version = providers.environmentVariable("VERSION").getOrElse("1.0.0")
+version = providers.environmentVariable("VERSION").getOrElse(addonVersionFallback)
 
 labyMod {
-    defaultPackageName = "de.ggbot" //change this to your main package name (used by all modules)
+    defaultPackageName = "de.ggbot"
 
     minecraft {
         registerVersion(versions.toTypedArray()) {
@@ -32,8 +34,9 @@ labyMod {
     addonInfo {
         namespace = "ggbot"
         displayName = "GGBot Addon"
-        author = "GGBot.de"
-        description = "Keine Ahnung"
+        author = "www.GGBot.de"
+        iconUrl = "https://www.ggbot.de/assets/img/logo.png"
+        description = "A LabyMod addon for the GGBot bot hosting service. Provides various features and integrations for players using LabyMod."
         minecraftVersion = "*"
         version = rootProject.version.toString()
     }
@@ -45,6 +48,11 @@ subprojects {
 
     group = rootProject.group
     version = rootProject.version
+
+    extensions.findByType(JavaPluginExtension::class.java)?.apply {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
 
 tasks.register("removeGsonFromAddonJson") {

@@ -58,6 +58,8 @@ public class AbstractWidgetLssPropertyResetter extends StyledWidgetLssPropertyRe
       }if (((AbstractWidget)widget).backgroundDirtType() != null) {((AbstractWidget)widget).backgroundDirtType().reset();
       }if (((AbstractWidget)widget).fontWeight() != null) {((AbstractWidget)widget).fontWeight().reset();
       }if (((AbstractWidget)widget).animationTimingFunction() != null) {((AbstractWidget)widget).animationTimingFunction().reset();
+      }if (((AbstractWidget)widget).animationIterationCount() != null) {((AbstractWidget)widget).animationIterationCount().reset();
+      }if (((AbstractWidget)widget).animationDirectionAlternate() != null) {((AbstractWidget)widget).animationDirectionAlternate().reset();
       }if (((AbstractWidget)widget).filter() != null) {((AbstractWidget)widget).filter().reset();
       }if (((AbstractWidget)widget).hoverBoxDelay() != null) {((AbstractWidget)widget).hoverBoxDelay().reset();
       }if (((AbstractWidget)widget).clearDepth() != null) {((AbstractWidget)widget).clearDepth().reset();

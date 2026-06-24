@@ -29,10 +29,10 @@ import java.io.IOException;
 @ConfigName("settings")
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
-  private final boolean debug = true;
+  private final boolean debug = false;
   private transient GGBot addon;
 
-  /** Required by LabyMod's config loader — use {@link #init(GGBot)} afterwards. */
+  /** Required by LabyMod's config loader - use {@link #init(GGBot)} afterwards. */
   public BotConfiguration() {}
 
   /**
@@ -55,7 +55,14 @@ public class BotConfiguration extends AddonConfig {
   public final ConfigProperty<String> viewedSystemMessages = new ConfigProperty<>("").visibilitySupplier(() -> debug);
   @BotDropDownMenu
   @SpriteSlot(x = 5)
-  public final ConfigProperty<String> botlist = new ConfigProperty<>("");
+  public final ConfigProperty<String> botlist = new ConfigProperty<>("")
+      .addChangeListener(value -> {
+        // Refresh the HUD widgets immediately when the selected bot changes.
+        GGBot current = GGBot.getInstance();
+        if (current != null && current.getTimerListener() != null) {
+          current.getTimerListener().refreshNow();
+        }
+      });
 
 
 
@@ -107,29 +114,9 @@ public class BotConfiguration extends AddonConfig {
   @ButtonSetting
   public void auth(Setting setting) throws IOException {
     this.addon.getVersioningHandler().checkMessagesOnInteraction();
-    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.change.statsminutes")) return;
-    if(!GGBot.isAuthenticated()) {
-      OAuthServer authServer = new OAuthServer(addon);
-      try {
-        authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
-          addon.configuration().token.set(Token.get("access_token").getAsString());
-          addon.configuration().expiresAt.set(String.valueOf(
-              System.currentTimeMillis() + (Token.get("expires_in").getAsInt() * 1000L)));
-          GGBot.setAuthenticated(true);
-        }));
-      } catch (Exception e) {
-        addon.logger().error("Error during authentication", e);
-        addon.getVersioningHandler().reportError(e);
-      }
-      Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
-    }
-  }
-  @MethodOrder(after = "auth")
-  @SpriteSlot(x = 2)
-  @ButtonSetting
-  public void reauth(Setting setting) throws IOException {
-    this.addon.getVersioningHandler().checkMessagesOnInteraction();
-    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.action.reauth")) return;
+    if(!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.configuration.change.auth")) return;
+    // Always allows (re-)linking, so a single "link account" button covers both
+    // linking and switching/refreshing the linked account.
     OAuthServer authServer = new OAuthServer(addon);
     try {
       authServer.listenForCodeAsync((Code) -> authServer.getTokenAsync(Code, (Token) -> {
@@ -139,13 +126,13 @@ public class BotConfiguration extends AddonConfig {
         GGBot.setAuthenticated(true);
       }));
     } catch (Exception e) {
-      addon.logger().error("Error during re-authentication", e);
+      addon.logger().error("Error during authentication", e);
       addon.getVersioningHandler().reportError(e);
     }
     Laby.references().chatExecutor().openUrl(authServer.getStringUrl());
   }
 
-  @MethodOrder(after = "reauth")
+  @MethodOrder(after = "auth")
   @SpriteSlot()
   @ButtonSetting
   public void discord(Setting setting) throws ApiException {
@@ -154,18 +141,41 @@ public class BotConfiguration extends AddonConfig {
     Laby.references().chatExecutor().openUrl("https://discord.ggbot.de/");
   }
 
-  @MethodOrder(after = "discord") @SettingSection("Addon")
+  /** Reopens the first-time setup guide at any time. */
+  @MethodOrder(after = "discord")
+  @SettingSection("Addon")
+  @SpriteSlot(x = 6)
+  @ButtonSetting
+  public void setupGuide(Setting setting) {
+    Laby.labyAPI().minecraft().minecraftWindow()
+        .displayScreen(new de.ggbot.core.gui.onboarding.OnboardingActivity());
+  }
+
+  @MethodOrder(after = "setupGuide")
+  @SettingSection("Addon")
+  @SpriteSlot(x = 7)
   public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();
   @MethodOrder(after = "prefixSub")
+  @SpriteSlot(y = 1)
   public final BotLogsSubConfig botlogSub = new BotLogsSubConfig();
   @MethodOrder(after = "botlogSub")
+  @SpriteSlot(y = 1, x = 1)
   public final ShopSubConfig shopSub = new ShopSubConfig();
   @MethodOrder(after = "shopSub")
+  @SpriteSlot(y = 1, x = 2)
   public final StatusSubConfig statusSub = new StatusSubConfig();
   @MethodOrder(after = "statusSub")
+  @SpriteSlot(y = 1, x = 3)
   public final StatsSubConfig statsSub = new StatsSubConfig();
   @MethodOrder(after = "statsSub")
+  @SpriteSlot(y = 1, x = 4)
   public final GeneralSubConfig generalSub = new GeneralSubConfig(addon);
+  @MethodOrder(after = "generalSub")
+  @SpriteSlot(y = 1, x = 5)
+  public final BotMenuSubConfig botMenuSub = new BotMenuSubConfig();
+  @MethodOrder(after = "botMenuSub")
+  @SpriteSlot(y = 1, x = 6)
+  public final OverlaySubConfig overlaySub = new OverlaySubConfig();
 
   @Override
   public ConfigProperty<Boolean> enabled() {

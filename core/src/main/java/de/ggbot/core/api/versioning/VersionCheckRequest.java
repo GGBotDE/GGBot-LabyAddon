@@ -17,6 +17,14 @@ import java.util.List;
  *
  * <p>Fields that are not set will be serialised as {@code null} (omitted from JSON)
  * or their documented defaults.
+ *
+ * @LabyMod
+ * All the information sent below has to be sent because we need to know the environment of the user and all other
+ * information seen below to determine if the addon, or specific features within are compatible with it.
+ * We do not offer API versioning at this time, so we need to be able to disable or reroute specific features if conditions are met.
+ * Also, we want to be able to disable any features if any security issues arise on specific versions / operating systems / labymod versions / minecraft versions
+ * and so on and possibly notify the user that certain features are disabled.
+ * We do not collect any identifying information about the user.
  */
 public class VersionCheckRequest {
 

@@ -99,18 +99,21 @@ public class StartTimerOnJoin {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.status")) return;
     if (!addon.configuration().statusSub.statusEnabled.get()) return;
     statusTimer = new Timer(true);
-    statusTimer.scheduleAtFixedRate(wrapTask(() -> {
-      if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
-      // Refresh the cache first so getName/getStatus read up-to-date data.
-      try { BotRequests.updateBotList(addon); } catch (ApiException ignored) {}
-      var botNameWidget = addon.labyAPI().hudWidgetRegistry().getById(BotNameWidget.WIDGET_ID);
-      if (botNameWidget != null && botNameWidget.isEnabled())
-        BotNameWidget.update(BotRequests.getName(addon));
+    statusTimer.scheduleAtFixedRate(wrapTask(this::updateStatusWidgets), 0, intervalMs);
+  }
 
-      var statusWidget = addon.labyAPI().hudWidgetRegistry().getById(StatusWidget.WIDGET_ID);
-      if (statusWidget != null && statusWidget.isEnabled())
-        StatusWidget.update(BotRequests.getStatus(addon));
-    }), 0, intervalMs);
+  /** Refreshes the bot cache and the name/status widgets from it. */
+  private void updateStatusWidgets() {
+    if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
+    // Refresh the cache first so getName/getStatus read up-to-date data.
+    try { BotRequests.updateBotList(addon); } catch (ApiException ignored) {}
+    var botNameWidget = addon.labyAPI().hudWidgetRegistry().getById(BotNameWidget.WIDGET_ID);
+    if (botNameWidget != null && botNameWidget.isEnabled())
+      BotNameWidget.update(BotRequests.getName(addon));
+
+    var statusWidget = addon.labyAPI().hudWidgetRegistry().getById(StatusWidget.WIDGET_ID);
+    if (statusWidget != null && statusWidget.isEnabled())
+      StatusWidget.update(BotRequests.getStatus(addon));
   }
 
   /**
@@ -123,9 +126,13 @@ public class StartTimerOnJoin {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.stats")) return;
     if (!addon.configuration().statsSub.statsEnabled.get()) return;
     statsTimer = new Timer(true);
-    statsTimer.scheduleAtFixedRate(wrapTask(() -> {
-      if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
-      try {
+    statsTimer.scheduleAtFixedRate(wrapTask(this::updateStatsWidgets), 0, intervalMs);
+  }
+
+  /** Fetches and updates all enabled statistics widgets (money, health, tickets, ...). */
+  private void updateStatsWidgets() {
+    if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
+    try {
         var moneyWidget = addon.labyAPI().hudWidgetRegistry().getById(BotMoneyWidget.WIDGET_ID);
         if (moneyWidget != null && moneyWidget.isEnabled())
           BotRequests.getMoney(addon, (Consumer<Double>) money ->
@@ -165,7 +172,20 @@ public class StartTimerOnJoin {
         addon.logger().error("Failed to fetch bot statistics: " + e.getMessage());
         addon.getVersioningHandler().reportError(e);
       }
-    }), 0, intervalMs);
+  }
+
+  /**
+   * Immediately refreshes all enabled bot widgets on a background thread. Used to
+   * update the HUD instantly when the selected bot changes, instead of waiting for
+   * the next periodic timer tick.
+   */
+  public void refreshNow() {
+    Thread thread = new Thread(() -> {
+      updateStatusWidgets();
+      updateStatsWidgets();
+    }, "ggbot-widget-refresh");
+    thread.setDaemon(true);
+    thread.start();
   }
 
   /**

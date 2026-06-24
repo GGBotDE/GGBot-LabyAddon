@@ -5,6 +5,7 @@ import de.ggbot.core.GGBot;
 import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
+import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalListWidget;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 
 @AutoWidget
 @SettingWidget
+@Link("botdropdown.lss")
 public class BotDropDown extends HorizontalListWidget {
 
     private final String customText;
@@ -46,16 +48,21 @@ public class BotDropDown extends HorizontalListWidget {
     /** Populate {@code dropdown} from the current cached bot list. */
     private void populateDropdown(DropdownWidget<String> dropdown) {
         for (Bot bot : BotRequests.getCachedBots()) {
-            if (bot.getDescription() == null || Objects.equals(bot.getDescription(), "")) {
-                if (bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()) {
-                    String display = bot.getToken().substring(0, 3);
-                    dropdown.add(display + " (" + bot.getId() + ")");
-                } else {
-                    dropdown.add(bot.getLinkName() + " (" + bot.getId() + ")");
-                }
-            } else {
-                dropdown.add(bot.getDescription() + " (" + bot.getId() + ")");
-            }
+          String finalDisplayValue = "";
+          if (bot.getDescription() == null || Objects.equals(bot.getDescription(), "")) {
+              if (bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()) {
+                  String display = bot.getToken().substring(0, 3);
+                finalDisplayValue = display + " (" + bot.getId() + ")";
+              } else {
+                finalDisplayValue = bot.getLinkName() + " (" + bot.getId() + ")";
+              }
+          } else {
+            finalDisplayValue = bot.getDescription() + " (" + bot.getId() + ")";
+          }
+          dropdown.add(finalDisplayValue);
+          if(GGBot.getInstance().configuration().token.get().equals(bot.getToken())){
+              dropdown.setSelected(finalDisplayValue);
+          }
         }
     }
 

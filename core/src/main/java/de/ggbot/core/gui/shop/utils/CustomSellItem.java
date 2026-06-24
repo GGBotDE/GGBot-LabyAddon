@@ -83,17 +83,22 @@ public class CustomSellItem {
     if (typeName.contains(":")) {
       typeName = typeName.substring(typeName.indexOf(':') + 1);
     }
-    ResourceLocation resourceLocation = ResourceLocation.create(
+    // We need to find a working solution for reliably loading item textures, since the vanilla Minecraft resource location.
+    // That, currently however, does not work so for now we use manually added item textures. (The same one we use for our own webpanel.)
+    /*ResourceLocation resourceLocation = ResourceLocation.create(
         "minecraft", "textures/item/" + typeName + ".png"
     );
     if (!resourceLocation.exists()) {
       resourceLocation = ResourceLocation.create(
           "minecraft", "textures/block/" + typeName + ".png"
       );
-    }
+    }*/
+    ResourceLocation resourceLocation = ResourceLocation.create(
+        "ggbot", "themes/vanilla/textures/icons/items/" + typeName + ".png"
+    );
     if (!resourceLocation.exists()) {
       resourceLocation = ResourceLocation.create(
-          "minecraft", "textures/item/barrier.png"
+          "minecraft", "themes/vanilla/textures/icons/items/barrier.png"
       );
     }
     return Icon.texture(resourceLocation);
