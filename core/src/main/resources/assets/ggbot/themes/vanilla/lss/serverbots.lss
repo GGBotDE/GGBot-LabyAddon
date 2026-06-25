@@ -1,0 +1,121 @@
+.serverbots-panel {
+  left: 50%;
+  top: 50%;
+  alignment-x: center;
+  alignment-y: center;
+  width: 55%;
+  max-width: 340;
+  min-width: 260;
+  height: 70%;
+  max-height: 320;
+  background-color: #0a0e15;
+  border-radius: 10;
+  padding: 12;
+  space-between-entries: 6;
+}
+
+.serverbots-header {
+  width: 100%;
+  font-size: 1.0;
+  text-color: #3895ff;
+  alignment-x: center;
+  left: 50%;
+}
+
+.serverbots-controls {
+  width: 100%;
+  height: 16;
+  space-between-entries: 5;
+}
+
+.serverbots-search {
+  width: 70%;
+  height: 16;
+  background-color: #1a2230;
+  border-radius: 3;
+}
+
+.serverbots-filter {
+  height: 16;
+  right: 0;
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.6;
+  padding: 1 6 1 6;
+}
+
+.serverbots-filter:hover { background-color: #35496e; }
+
+.serverbots-scroll {
+  width: 100%;
+  height: 200;
+}
+
+.serverbots-list {
+  width: 100%;
+  height: fit-content;
+  space-between-entries: 3;
+}
+
+.serverbots-online {
+  font-size: 0.6;
+  text-color: #4caf50;
+  right: 38;
+}
+
+.serverbots-offline {
+  font-size: 0.6;
+  text-color: #b04a4a;
+  right: 38;
+}
+
+.serverbots-status {
+  width: 100%;
+  font-size: 0.75;
+  text-color: #7E97B4;
+  alignment-x: center;
+  left: 50%;
+  margin-top: 8;
+}
+
+.serverbots-row {
+  width: 100%;
+  height: 18;
+  space-between-entries: 5;
+  background-color: #141c28;
+  border-radius: 4;
+  padding: 2 5 2 5;
+}
+
+.serverbots-row:hover { background-color: #1c2636; }
+
+.serverbots-head { width: 14; height: 14; }
+
+.serverbots-name {
+  font-size: 0.75;
+  text-color: #f2f1e9;
+}
+
+.serverbots-copy {
+  height: 14;
+  right: 0;
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.6;
+  padding: 1 6 1 6;
+}
+
+.serverbots-copy:hover { background-color: #35496e; }
+
+.serverbots-close {
+  width: 100%;
+  height: 16;
+  background-color: #2a3140;
+  text-color: #ff9b9b;
+  border-radius: 4;
+  font-size: 0.65;
+}
+
+.serverbots-close:hover { background-color: #3a2330; }

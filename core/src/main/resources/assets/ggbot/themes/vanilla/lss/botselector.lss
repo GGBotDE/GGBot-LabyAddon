@@ -1,0 +1,160 @@
+.bot-selector-widget {
+  left: 50%;
+  top: 50%;
+  alignment-x: center;
+  alignment-y: center;
+  text-color: #f2f1e9;
+  background-color: #080c12;
+  width: 340;
+  height: 65%;
+  max-height: 350;
+  padding: 10;
+  border-radius: 8;
+}
+
+.bot-selector-title {
+  font-size: 1.1;
+  text-color: #3895ff;
+  left: 50%;
+  top: 0;
+  alignment-x: center;
+}
+
+.bot-list-scroll {
+  width: 100%;
+  height: calc(100% - 32);
+  top: 16;
+  left: 0;
+}
+
+.bot-list {
+  width: 100%;
+  height: fit-content;
+}
+
+BotEntry {
+  width: calc(100% - 4);
+  height: 20;
+  background-color: #101823;
+  border-radius: 4;
+  margin-bottom: 2;
+  margin-left: 2;
+}
+
+BotEntry:hover {
+  background-color: #182436;
+}
+
+.bot-entry-left {
+  left: 4;
+  top: 50%;
+  alignment-y: center;
+  height: 100%;
+  width: fit-content;
+  space-between-entries: 4;
+}
+
+.bot-entry-head {
+  width: 14;
+  height: 14;
+}
+
+.bot-entry-name {
+  font-size: 0.7;
+  text-color: #f2f1e9;
+}
+
+.bot-entry-status-online {
+  font-size: 0.6;
+  text-color: #4cff4c;
+}
+
+.bot-entry-status-offline {
+  font-size: 0.6;
+  text-color: #ff4c4c;
+}
+
+.bot-entry-right {
+  right: 4;
+  top: 50%;
+  alignment-y: center;
+  height: 100%;
+  width: fit-content;
+  space-between-entries: 2;
+}
+
+.bot-entry-start {
+  height: 12;
+  background-color: #232e25;
+  text-color: #adf7c9;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.bot-entry-stop {
+  height: 12;
+  background-color: #2e2323;
+  text-color: #f2f1e9;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.bot-entry-select {
+  height: 12;
+  background-color: #3895ff;
+  text-color: #f2f1e9;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.bot-entry-select:hover {
+  background-color: #2a7de0;
+}
+
+.bot-selector-empty {
+  font-size: 0.8;
+  text-color: #7E97B4;
+  left: 50%;
+  top: 50%;
+  alignment-x: center;
+  alignment-y: center;
+}
+
+.bot-selector-buttons {
+  width: 100%;
+  height: 14;
+  bottom: 0;
+  left: 0;
+  layout: fill;
+  space-between-entries: 6;
+}
+
+.bot-selector-refresh-button {
+  background-color: #202f46;
+  text-color: #f2f1e9;
+  border-radius: 4;
+}
+
+.bot-selector-refresh-button:hover {
+  background-color: #2f476a;
+}
+
+.bot-selector-close-button {
+  background-color: #a33636;
+  text-color: #f2f1e9;
+  border-radius: 4;
+}
+
+.bot-selector-close-button:hover {
+  background-color: #cc4444;
+}
+
+Scrollbar {
+  width: 3;
+  scroll-background-color: #101823;
+  scroll-color: #4f83bf;
+  scroll-hover-color: #3895ff;
+}

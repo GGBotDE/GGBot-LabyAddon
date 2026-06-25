@@ -1,0 +1,42 @@
+.message-widget {
+  left: 50%;
+  top: 50%;
+  alignment-x: center;
+  alignment-y: center;
+  text-color: #f2f1e9;
+  background-color: #080c12;
+  width: 50%;
+  height: fit-content;
+  padding: 12;
+  border-radius: 8;
+}
+
+.message-text {
+  font-size: .9;
+}
+
+HorizontalList {
+  spacing: 8;
+  padding: 8;
+  max-width: 50%;
+  layout: fill;
+  space-between-entries: 6;
+  height: 12;
+  alignment-x: center;
+  alignment-y: bottom;
+  padding-top: 18;
+}
+
+Component {
+  alignment-x: center;
+  alignment-y: center;
+  padding: 2;
+}
+
+.image {
+  max-width: 32;
+  height: 32;
+  object-fit: fill;
+  margin-bottom: 6;
+  alignment-x: center;
+}
