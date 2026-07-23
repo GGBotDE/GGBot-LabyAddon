@@ -1,11 +1,14 @@
 package de.ggbot.core.gui.onboarding;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.api.BotRequests;
+import de.ggbot.sdk.model.Bot;
 import net.labymod.api.Laby;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.mouse.MutableMouse;
 import net.labymod.api.client.gui.screen.Parent;
@@ -16,8 +19,11 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.gui.screen.key.MouseButton;
 import net.labymod.api.client.gui.screen.widget.Widget;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.DivWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.layout.ScrollWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalListWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalListWidget;
 import net.labymod.api.client.resources.ResourceLocation;
@@ -63,56 +69,70 @@ public class OnboardingActivity extends SimpleActivity {
     super.initialize(parent);
     de.ggbot.core.utils.GuiSounds.click();
 
-    VerticalListWidget<Widget> panel = new VerticalListWidget<>();
+    // Fixed-size, centered box (same DivWidget + absolute-layout pattern the
+    // bot selector uses): header pinned on top, a scrollable content area in
+    // the middle and a pinned button bar at the bottom. Scrolling the middle
+    // keeps the guide usable even when the window is not tall enough to show a
+    // whole step at once (which previously overflowed the box).
+    DivWidget panel = new DivWidget();
     panel.addId("onboarding-panel");
 
     ComponentWidget header = ComponentWidget.i18n("ggbot.onboarding.title");
     header.addId("onboarding-header");
-    panel.addChildInitialized(header);
+    panel.addChild(header);
 
-    buildStep(panel);
+    VerticalListWidget<Widget> content = new VerticalListWidget<>();
+    content.addId("onboarding-content");
+
+    HorizontalListWidget buttons = new HorizontalListWidget();
+    buttons.addId("onboarding-buttons");
+
+    buildStep(content, buttons);
+
+    ScrollWidget scroll = new ScrollWidget(content);
+    scroll.addId("onboarding-scroll");
+    panel.addChild(scroll);
+    panel.addChild(buttons);
 
     this.document().addChild(panel);
   }
 
-  private void buildStep(VerticalListWidget<Widget> panel) {
+  private void buildStep(VerticalListWidget<Widget> content, HorizontalListWidget buttons) {
     if (path == Path.NONE) {
-      title(panel, "ggbot.onboarding.welcome.title");
-      paragraph(panel, "ggbot.onboarding.welcome.body");
+      title(content, "ggbot.onboarding.welcome.title");
+      paragraph(content, "ggbot.onboarding.welcome.body");
       // Stacked, full-width choices (each with a single icon on the left) read more
       // clearly than two icon buttons side by side.
-      panel.addChildInitialized(pathButton("ggbot.onboarding.path.shop", "cart.png",
+      content.addChildInitialized(pathButton("ggbot.onboarding.path.shop", "cart.png",
           () -> go(Path.SHOP, 1)));
-      panel.addChildInitialized(pathButton("ggbot.onboarding.path.owner", "layers.png",
+      content.addChildInitialized(pathButton("ggbot.onboarding.path.owner", "layers.png",
           () -> go(Path.OWNER, 1)));
 
       // Privacy choices, shown to every user (logged in or not) on the very
       // first step so neither path can skip them. Both are opt-out
       // (default on) and can be changed later in the general settings.
-      title(panel, "ggbot.onboarding.privacy.title");
-      paragraph(panel, "ggbot.onboarding.privacy.body");
-      panel.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.errorReports",
+      title(content, "ggbot.onboarding.privacy.title");
+      paragraph(content, "ggbot.onboarding.privacy.body");
+      content.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.errorReports",
           GGBot.getInstance().configuration().generalSub.errorReportingEnabled));
-      panel.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.versionReport",
+      content.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.versionReport",
           GGBot.getInstance().configuration().generalSub.versionReportEnabled));
 
-      HorizontalListWidget buttons = buttonRow();
       buttons.addEntry(cancel());
-      panel.addChildInitialized(buttons);
       return;
     }
 
     if (path == Path.SHOP) {
       switch (step) {
         case 1 -> {
-          title(panel, "ggbot.onboarding.shop.title");
-          paragraph(panel, "ggbot.onboarding.shop.body");
-          keybind(panel, "ggbot.settings.shopSub.shopKey.name",
+          title(content, "ggbot.onboarding.shop.title");
+          paragraph(content, "ggbot.onboarding.shop.body");
+          keybind(content, "ggbot.settings.shopSub.shopKey.name",
               GGBot.getInstance().configuration().shopSub.shopKey,
               new Key[]{Key.L_CONTROL, Key.O});
-          navRow(panel, () -> go(Path.NONE, 0), () -> go(Path.SHOP, 2));
+          navRow(buttons, () -> go(Path.NONE, 0), () -> go(Path.SHOP, 2));
         }
-        default -> finishStep(panel);
+        default -> finishStep(content, buttons);
       }
       return;
     }
@@ -120,29 +140,119 @@ public class OnboardingActivity extends SimpleActivity {
     // OWNER
     switch (step) {
       case 1 -> {
-        title(panel, "ggbot.onboarding.owner.auth.title");
-        paragraph(panel, "ggbot.onboarding.owner.auth.body");
+        title(content, "ggbot.onboarding.owner.auth.title");
+        paragraph(content, "ggbot.onboarding.owner.auth.body");
         ButtonWidget auth = ButtonWidget.i18n("ggbot.settings.auth.name", this::runAuth);
         auth.addId("onboarding-btn-primary");
-        panel.addChildInitialized(auth);
-        navRow(panel, () -> go(Path.NONE, 0), () -> go(Path.OWNER, 2));
+        content.addChildInitialized(auth);
+        navRow(buttons, () -> go(Path.NONE, 0), () -> go(Path.OWNER, 2));
       }
       case 2 -> {
-        title(panel, "ggbot.onboarding.owner.hotkeys.title");
-        paragraph(panel, "ggbot.onboarding.owner.hotkeys.body");
-        keybind(panel, "ggbot.settings.generalSub.botSelectorKey.name",
+        title(content, "ggbot.onboarding.owner.selectbot.title");
+        paragraph(content, "ggbot.onboarding.owner.selectbot.body");
+        botSelect(content);
+        navRow(buttons, () -> go(Path.OWNER, 1), () -> go(Path.OWNER, 3));
+      }
+      case 3 -> {
+        title(content, "ggbot.onboarding.owner.hotkeys.title");
+        paragraph(content, "ggbot.onboarding.owner.hotkeys.body");
+        keybind(content, "ggbot.settings.generalSub.botSelectorKey.name",
             GGBot.getInstance().configuration().generalSub.botSelectorKey,
             new Key[]{Key.L_CONTROL, Key.B});
-        keybind(panel, "ggbot.settings.botMenuSub.menuKey.name",
+        keybind(content, "ggbot.settings.botMenuSub.menuKey.name",
             GGBot.getInstance().configuration().botMenuSub.menuKey,
             new Key[]{Key.L_CONTROL, Key.G});
-        keybind(panel, "ggbot.settings.botMenuSub.controlKey.name",
+        keybind(content, "ggbot.settings.botMenuSub.controlKey.name",
             GGBot.getInstance().configuration().botMenuSub.controlKey,
             new Key[]{Key.L_CONTROL, Key.K});
-        navRow(panel, () -> go(Path.OWNER, 1), () -> go(Path.OWNER, 3));
+        navRow(buttons, () -> go(Path.OWNER, 2), () -> go(Path.OWNER, 4));
       }
-      default -> finishStep(panel);
+      default -> finishStep(content, buttons);
     }
+  }
+
+  /**
+   * Bot-selection step (owner path, after login): lets the user pick which of
+   * their bots the addon controls, so a bot is actually set before finishing.
+   * The selection is stored in the same {@code botlist} config value the
+   * settings dropdown uses.
+   *
+   * <p>When not logged in yet, a hint points back to the linking step. When the
+   * cached bot list is still empty right after linking, it is refreshed once in
+   * the background (guarded so an account with genuinely no bots does not loop).
+   */
+  private void botSelect(VerticalListWidget<Widget> content) {
+    GGBot addon = GGBot.getInstance();
+    if (!GGBot.isAuthenticated()) {
+      ComponentWidget hint = ComponentWidget.i18n("ggbot.onboarding.owner.selectbot.login");
+      hint.addId("onboarding-line");
+      content.addChildInitialized(hint);
+      return;
+    }
+
+    List<Bot> bots = BotRequests.getCachedBots();
+    if (bots.isEmpty()) {
+      // Freshly linked accounts have no cached bots yet; pull them once and
+      // rebuild only if that actually produced bots (no loop when there are 0).
+      BotRequests.updateBotListAsync(addon, () -> {
+        if (!BotRequests.getCachedBots().isEmpty()) {
+          go(Path.OWNER, 2);
+        }
+      });
+    }
+
+    HorizontalListWidget row = new HorizontalListWidget();
+    row.addId("onboarding-botselect-row");
+
+    DropdownWidget<String> dropdown = new DropdownWidget<>();
+    dropdown.addId("onboarding-botselect");
+    String selected = addon.configuration().botlist.get();
+    for (Bot bot : bots) {
+      String display = botDisplayValue(bot);
+      dropdown.add(display);
+      if (display.equals(selected)) {
+        dropdown.setSelected(display);
+      }
+    }
+    dropdown.setChangeListener(value -> {
+      if (value != null) {
+        addon.configuration().botlist.set(value);
+      }
+    });
+    row.addEntry(dropdown);
+
+    ButtonWidget refresh = ButtonWidget.i18n("ggbot.onboarding.owner.selectbot.refresh", () -> {
+      de.ggbot.core.utils.GuiSounds.click();
+      BotRequests.updateBotListAsync(addon, () -> go(Path.OWNER, 2));
+    });
+    refresh.addId("onboarding-botselect-refresh");
+    row.addEntry(refresh);
+
+    content.addChildInitialized(row);
+
+    if (bots.isEmpty()) {
+      ComponentWidget empty = ComponentWidget.i18n("ggbot.onboarding.owner.selectbot.empty");
+      empty.addId("onboarding-line");
+      content.addChildInitialized(empty);
+    }
+  }
+
+  /**
+   * Builds the "Name (id)" display value the settings bot dropdown uses, so a
+   * selection made here is understood everywhere the selected bot is resolved.
+   */
+  private String botDisplayValue(Bot bot) {
+    String label;
+    if (bot.getDescription() == null || Objects.equals(bot.getDescription(), "")) {
+      if (bot.getLinkName() == null || bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()) {
+        label = bot.getToken().substring(0, 3);
+      } else {
+        label = bot.getLinkName();
+      }
+    } else {
+      label = bot.getDescription();
+    }
+    return label + " (" + bot.getId() + ")";
   }
 
   /**
@@ -231,24 +341,20 @@ public class OnboardingActivity extends SimpleActivity {
   }
 
   /** Renders the shared final step with a Back and a Finish button. */
-  private void finishStep(VerticalListWidget<Widget> panel) {
-    title(panel, "ggbot.onboarding.finish.title");
-    paragraph(panel, "ggbot.onboarding.finish.body");
-    HorizontalListWidget buttons = buttonRow();
+  private void finishStep(VerticalListWidget<Widget> content, HorizontalListWidget buttons) {
+    title(content, "ggbot.onboarding.finish.title");
+    paragraph(content, "ggbot.onboarding.finish.body");
     buttons.addEntry(secondary("ggbot.onboarding.back",
-        () -> go(path, path == Path.SHOP ? 1 : 2)));
+        () -> go(path, path == Path.SHOP ? 1 : 3)));
     buttons.addEntry(primary("ggbot.onboarding.finish.button", this::complete));
     buttons.addEntry(cancel());
-    panel.addChildInitialized(buttons);
   }
 
-  /** Adds a Back / Next / Cancel button row. */
-  private void navRow(VerticalListWidget<Widget> panel, Runnable back, Runnable next) {
-    HorizontalListWidget buttons = buttonRow();
+  /** Adds a Back / Next / Cancel button row to the pinned button bar. */
+  private void navRow(HorizontalListWidget buttons, Runnable back, Runnable next) {
     buttons.addEntry(secondary("ggbot.onboarding.back", back));
     buttons.addEntry(primary("ggbot.onboarding.next", next));
     buttons.addEntry(cancel());
-    panel.addChildInitialized(buttons);
   }
 
   private void title(VerticalListWidget<Widget> panel, String key) {
@@ -265,12 +371,6 @@ public class OnboardingActivity extends SimpleActivity {
       w.addId("onboarding-line");
       panel.addChildInitialized(w);
     }
-  }
-
-  private HorizontalListWidget buttonRow() {
-    HorizontalListWidget row = new HorizontalListWidget();
-    row.addId("onboarding-buttons");
-    return row;
   }
 
   private ButtonWidget primary(String key, Runnable action) {

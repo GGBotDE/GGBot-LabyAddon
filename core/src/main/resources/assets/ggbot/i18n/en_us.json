@@ -56,6 +56,13 @@
         "hotkeys": {
           "title": "Step 2: Your hotkeys",
           "body": "Bot Selector: Ctrl + B\nBot Management Menu: Ctrl + G\nControl Mode (steer the bot): Ctrl + K\nSet Position 1 / 2: Numpad 1 / Numpad 2\nAll keys can be changed in the settings."
+        },
+        "selectbot": {
+          "title": "Select your bot",
+          "body": "Pick the bot you want to control with the addon.\nYou can change this any time in the settings.",
+          "login": "Link your account in the previous step first, then come back here.",
+          "empty": "No bots found on your account yet. Use Refresh once your bot appears.",
+          "refresh": "Refresh"
         }
       },
       "finish": {

@@ -56,6 +56,13 @@
                 "hotkeys": {
                     "title": "Schritt 2: Deine Tastenkürzel",
                     "body": "Bot-Auswahl: Strg + B\nBot-Verwaltungsmenü: Strg + G\nSteuerungsmodus (Bot steuern): Strg + K\nPosition 1 / 2 setzen: Numpad 1 / Numpad 2\nAlle Tasten können in den Einstellungen geändert werden."
+                },
+                "selectbot": {
+                    "title": "Bot auswählen",
+                    "body": "Wähle den Bot, den du mit dem Addon steuern möchtest.\nDu kannst das jederzeit in den Einstellungen ändern.",
+                    "login": "Verbinde zuerst im vorherigen Schritt deinen Account und komme dann hierher zurück.",
+                    "empty": "Noch keine Bots auf deinem Account gefunden. Nutze Aktualisieren, sobald dein Bot erscheint.",
+                    "refresh": "Aktualisieren"
                 }
             },
             "finish": {
