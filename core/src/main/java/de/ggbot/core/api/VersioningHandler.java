@@ -6,6 +6,7 @@ import de.ggbot.core.api.versioning.VersionCheckRequest;
 import de.ggbot.core.api.versioning.VersionCheckResponse;
 import de.ggbot.core.api.versioning.VersioningApiClient;
 import de.ggbot.core.api.versioning.matrix.ClientRuleEngine;
+import de.ggbot.core.api.versioning.matrix.MatrixResponse;
 import de.ggbot.core.api.versioning.response.FeatureFlagResponse;
 import de.ggbot.core.api.versioning.response.IntervalConfig;
 import de.ggbot.core.api.versioning.response.MessageResponse;
@@ -87,7 +88,7 @@ public class VersioningHandler {
   private static final String ADDON_SLUG = "labymod-addon";
 
   /** Current API version used by the addon */
-  private static final String API_VERSION = "0.15.1";
+  private static final String API_VERSION = "0.15.4";
 
   /**
    * Hosts the versioning response may redirect feature API calls to. Some API
@@ -96,6 +97,15 @@ public class VersioningHandler {
    * domains (and their subdomains) over HTTPS are accepted.
    */
   private static final String[] ALLOWED_BASE_URL_DOMAINS = {"ggbot.de", "ggbot.me", "gg-bot.com", "development-server.eu"};
+
+  /**
+   * Default delay between matrix refreshes when the server does not specify
+   * one in its response.
+   */
+  private static final long DEFAULT_REFRESH_SECONDS = 600L;
+
+  /** Lower bound on the refresh delay, so a bad value cannot hammer the API. */
+  private static final long MIN_REFRESH_SECONDS = 30L;
 
   /** Reference to the addon instance */
   private final GGBot addon;
@@ -278,16 +288,38 @@ public class VersioningHandler {
    * backend for older addon builds. If the matrix cannot be fetched, the
    * response stays {@code null} and {@link #isFeatureEnabled(String)} falls
    * back to its permissive defaults.
+   *
+   * <p>After each attempt the check reschedules itself. On success the delay
+   * comes from the matrix response ({@link MatrixResponse#getRefreshSeconds()}),
+   * so the backend steers how often each client refreshes its feature flags
+   * from one response to the next; on failure it retries at the default
+   * cadence. This keeps a single refresh loop running for the whole session.
    */
   private void checkVersion() {
     versioningApiClient
         .matrix(ADDON_SLUG)
-        .thenAccept(matrix -> this.versionCheckResponse =
-            ClientRuleEngine.evaluate(matrix, buildBaseVersionCheckRequest()))
+        .thenAccept(matrix -> {
+          this.versionCheckResponse = ClientRuleEngine.evaluate(matrix, buildBaseVersionCheckRequest());
+          scheduleNextRefresh(matrix.getRefreshSeconds());
+        })
         .exceptionally(throwable -> {
           addon.logger().warn("Failed to fetch the versioning matrix: " + throwable.getMessage());
+          scheduleNextRefresh(0);
           return null;
         });
+  }
+
+  /**
+   * Schedules the next matrix refresh. Uses the server-requested delay when
+   * present and sane, otherwise the default; always clamped to a minimum so a
+   * bad value cannot turn the loop into a busy poll.
+   *
+   * @param serverRefreshSeconds the delay the server asked for, or {@code 0}
+   */
+  private void scheduleNextRefresh(int serverRefreshSeconds) {
+    long seconds = serverRefreshSeconds > 0 ? serverRefreshSeconds : DEFAULT_REFRESH_SECONDS;
+    seconds = Math.max(seconds, MIN_REFRESH_SECONDS);
+    AsyncScheduler.runLater(this::checkVersion, seconds * 1000L);
   }
 
   /**

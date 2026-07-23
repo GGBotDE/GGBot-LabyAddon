@@ -18,6 +18,14 @@ public class MatrixResponse {
   /** Matrix format version for future evolution. */
   private int matrixVersion;
 
+  /**
+   * Server-controlled delay, in seconds, after which the client should fetch
+   * the matrix again. {@code 0} or absent means the client keeps its default
+   * refresh cadence. This lets the backend steer how often each client polls
+   * from one response to the next.
+   */
+  private int refreshSeconds;
+
   /** Information about the latest available addon version. */
   private CurrentVersion currentVersion;
 
@@ -32,6 +40,12 @@ public class MatrixResponse {
 
   /** Returns the matrix format version. */
   public int getMatrixVersion() { return matrixVersion; }
+
+  /**
+   * Returns the server-requested delay until the next matrix fetch, in
+   * seconds, or {@code 0} when the server did not specify one.
+   */
+  public int getRefreshSeconds() { return refreshSeconds; }
 
   /** Returns the latest version info, or {@code null}. */
   public CurrentVersion getCurrentVersion() { return currentVersion; }
