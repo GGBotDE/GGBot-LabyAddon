@@ -50,6 +50,14 @@ public class AuthEvent {
   @Subscribe
   public void onServerJoin(ServerJoinEvent e) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
+    if (GGBot.isAuthenticated() && !GGBot.isTokenExpired()) {
+      // Already logged in: no auth flow, so no local redirect socket either.
+      loadBotData();
+      return;
+    }
+    // The localhost redirect server is only opened while an auth flow is
+    // actually pending; it is closed again on disconnect or once the code
+    // arrives.
     try {
       authServer = new OAuthServer(addon);
     } catch (IOException ioEx) {
@@ -57,14 +65,10 @@ public class AuthEvent {
       addon.getVersioningHandler().reportError(ioEx);
       return;
     }
-    if (!GGBot.isAuthenticated()) {
-      if (addon.configuration().generalSub.joinNotificationEnabled.get()) {
-        displayAuthPrompt();
-      }
-      startAuth();
-    } else {
-      loadBotData();
+    if (addon.configuration().generalSub.joinNotificationEnabled.get()) {
+      displayAuthPrompt();
     }
+    startAuth();
   }
 
   /**
