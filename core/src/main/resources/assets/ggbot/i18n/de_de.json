@@ -177,6 +177,14 @@
                 "joinNotificationEnabled": {
                     "name": "Beitrittsnachricht anzeigen"
                 },
+                "errorReportingEnabled": {
+                    "name": "Fehlerberichte senden",
+                    "description": "Sendet automatisch anonyme Fehler-/Stacktrace-Berichte an das GGBot-Team, damit Fehler behoben werden können. Wenn deaktiviert, werden Fehler nur ins lokale Log geschrieben."
+                },
+                "versionReportEnabled": {
+                    "name": "Versionsbericht senden",
+                    "description": "Sendet einmal pro Start deine Addon-/LabyMod-/Minecraft-Version, OS, Build-Hash und Abhängigkeitsliste. Hilft uns einzuschätzen, wie viele Nutzer ein fehlerhafter oder verwundbarer Build betrifft. Das Addon funktioniert auch ohne vollständig."
+                },
                 "botSelectorEnabled": {
                     "name": "Bot-Auswahl-Tastenkürzel aktivieren"
                 },

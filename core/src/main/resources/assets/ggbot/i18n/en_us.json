@@ -177,6 +177,14 @@
         "joinNotificationEnabled": {
           "name": "Show Join Notification"
         },
+        "errorReportingEnabled": {
+          "name": "Send error reports",
+          "description": "Automatically send anonymous error/stacktrace reports to the GGBot team so bugs can be fixed. When disabled, errors are only written to the local log."
+        },
+        "versionReportEnabled": {
+          "name": "Send version report",
+          "description": "Once per launch, send your addon/LabyMod/Minecraft version, OS, build hash and dependency list. Helps us judge how many users a broken or vulnerable build affects. The addon works fully without it."
+        },
         "botSelectorEnabled": {
           "name": "Enable Bot Selector Shortcut"
         },

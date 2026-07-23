@@ -23,6 +23,12 @@ public class FeatureFlagResponse {
      */
     private String versionCompatabilityConversionPath;
 
+    /**
+     * Optional server-controlled pacing for repeating features backed by this
+     * flag. May be {@code null} if the server does not restrict the interval.
+     */
+    private IntervalConfig interval;
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -68,6 +74,13 @@ public class FeatureFlagResponse {
      */
     public boolean hasVersionCompatabilityConversion() { return versionCompatabilityConversionPath != null; }
 
+    /**
+     * Returns the server-controlled interval pacing for this feature.
+     *
+     * @return the {@link IntervalConfig}, or {@code null} if none is set
+     */
+    public IntervalConfig getInterval() { return interval; }
+
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
@@ -88,6 +101,17 @@ public class FeatureFlagResponse {
      */
     public FeatureFlagResponse setVersionCompatabilityConversionPath(String path) {
         this.versionCompatabilityConversionPath = path;
+        return this;
+    }
+
+    /**
+     * Sets the server-controlled interval pacing.
+     *
+     * @param interval the {@link IntervalConfig}, or {@code null} to clear
+     * @return this instance for chaining
+     */
+    public FeatureFlagResponse setInterval(IntervalConfig interval) {
+        this.interval = interval;
         return this;
     }
 
