@@ -14,8 +14,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TeamFetcher {
-  /** How often the team data is re-fetched (in hours). */
-  private static final int REFETCH_INTERVAL_HOURS = 24;
+  /** Default delay between automatic re-fetches (24 hours, in milliseconds). */
+  private static final long REFETCH_INTERVAL_MS = 24L * 60L * 60L * 1000L;
+
+  /** Feature key used for the server-controlled refetch pacing. */
+  private static final String FEATURE = "de.ggbot.addon.nametag";
 
   /** API endpoint for team data. */
   private static final String API_ENDPOINT = "https://msapi.ggbot.de/team";
@@ -37,7 +40,7 @@ public class TeamFetcher {
    * On the first call, also registers the periodic auto-refresh interval.
    */
   public void fetch() {
-    if (!hasFetched) registerAutoFetchingInterval();
+    if (!hasFetched) scheduleNextFetch();
     hasFetched = true;
 
     try {
@@ -60,9 +63,28 @@ public class TeamFetcher {
     }
   }
 
-  /** Schedules a periodic re-fetch every {@link #REFETCH_INTERVAL_HOURS} hours. */
-  private void registerAutoFetchingInterval() {
-    scheduler.scheduleAtFixedRate(this::fetch, REFETCH_INTERVAL_HOURS, REFETCH_INTERVAL_HOURS, TimeUnit.HOURS);
+  /**
+   * Schedules the next automatic re-fetch. The delay is re-read from the
+   * server-controlled interval pacing on every hop, so the backend can adjust
+   * how often this endpoint is polled without a new addon build.
+   */
+  private void scheduleNextFetch() {
+    long delayMs = GGBot.getInstance().getVersioningHandler()
+        .clampIntervalMs(FEATURE, REFETCH_INTERVAL_MS);
+    scheduler.schedule(this::runScheduledFetch, delayMs, TimeUnit.MILLISECONDS);
+  }
+
+  /**
+   * Scheduled fetch hop. The event bus stops delivering events to disabled
+   * addons, so this scheduler would otherwise keep polling after the user
+   * disables the addon mid-session - re-check the enabled switch on every hop
+   * and only reschedule, never fetch, while disabled.
+   */
+  private void runScheduledFetch() {
+    if (Boolean.TRUE.equals(GGBot.getInstance().configuration().enabled().get())) {
+      fetch();
+    }
+    scheduleNextFetch();
   }
 
   /**
