@@ -157,6 +157,10 @@
         },
         "shopRange": {
           "name": "Bot Detection Range"
+        },
+        "payCommand": {
+          "name": "Payment Command",
+          "description": "Chat command used to pay the bot when buying. Placeholders: %bot% (bot name), %amount% (price)."
         }
       },
       "statusSub": {

@@ -157,6 +157,10 @@
                 },
                 "shopRange": {
                     "name": "Bot-Erkennungsradius"
+                },
+                "payCommand": {
+                    "name": "Bezahl-Befehl",
+                    "description": "Chat-Befehl zum Bezahlen des Bots beim Kauf. Platzhalter: %bot% (Bot-Name), %amount% (Preis)."
                 }
             },
             "statusSub": {

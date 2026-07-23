@@ -1,17 +1,11 @@
 package de.ggbot.core.gui.shop;
 
-import de.ggbot.core.GGBot;
 import de.ggbot.core.api.VersioningHandler;
 import de.ggbot.core.gui.shop.utils.CustomSellItem;
-import de.ggbot.core.gui.shop.utils.NBTParser;
+import de.ggbot.core.gui.shop.utils.ShopDataCache;
 import de.ggbot.core.gui.shop.widgets.ShopWidget;
 import de.ggbot.core.gui.shop.widgets.cart.CartShopWidget.CartItemEntry;
-import de.ggbot.sdk.api.ModulesApi;
-import de.ggbot.sdk.api.PublicApi;
-import de.ggbot.sdk.core.ApiException;
 import de.ggbot.sdk.model.PublicBot;
-import de.ggbot.sdk.model.SellItem;
-import de.ggbot.sdk.model.SellItemPrice;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
@@ -31,8 +25,6 @@ public class ShopInterfaceActivity extends SimpleActivity {
   private final VersioningHandler versioningHandler;
   public final ShopWidget shopWidget;
   public PublicBot publicBot;
-  public final PublicApi publicApi = new PublicApi();
-  public final ModulesApi modulesApi = new ModulesApi();
   public List<CustomSellItem> customSellItems = new ArrayList<>();
 
   private final List<Runnable> cancelListeners = new ArrayList<>();
@@ -75,40 +67,28 @@ public class ShopInterfaceActivity extends SimpleActivity {
 
     if (!versioningHandler.isFeatureEnabled("de.ggbot.addon.shop.fetchitems")) return;
 
-    Thread loadThread = new Thread(() -> {
-      try {
-        publicApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-        modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature("de.ggbot.addon.shop.fetchitems"));
-        publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+    // The shop hint prefetches this data as soon as a bot is nearby, so
+    // opening the GUI usually reuses the cached result and loads instantly.
+    // Entries older than the GUI validity window are refetched here (prices
+    // shown for purchase should be fresh); the hint keeps using its own,
+    // longer validity. An in-flight hint fetch is joined, never duplicated.
+    ShopDataCache.Entry cached = ShopDataCache.get(botName, serverIp, ShopDataCache.GUI_MAX_AGE_MS);
+    if (cached != null) {
+      applyShopData(cached);
+      return;
+    }
 
-        List<SellItem> fetchedItems = modulesApi.getPublicSellItems(publicBot.getToken());
-        List<CustomSellItem> loaded = new ArrayList<>();
-        for (SellItem item : fetchedItems) {
-          for (SellItemPrice price : item.getPrices()) {
-            loaded.add(new CustomSellItem(
-                item.getId(),
-                item.getName(),
-                item.getItemType(),
-                item.getNbt(),
-                price.getPrice(),
-                price.getAmount(),
-                item.getChestPosition()
-            ));
-          }
-        }
-        customSellItems = loaded;
+    ShopDataCache.fetchAsync(versioningHandler, botName, serverIp, entry -> {
+      if (entry == null) return;
+      Laby.labyAPI().minecraft().executeOnRenderThread(() -> applyShopData(entry));
+    });
+  }
 
-        Laby.labyAPI().minecraft().executeOnRenderThread(
-            () -> shopWidget.mainShopWidget.itemsWidget.refreshItems());
-
-      } catch (ApiException e) {
-        GGBot.getInstance().logger().error(
-            "Failed to fetch public bot data for bot: " + botName + " on server: " + serverIp, e);
-        GGBot.getInstance().getVersioningHandler().reportError(e);
-      }
-    }, "ggbot-shop-load");
-    loadThread.setDaemon(true);
-    loadThread.start();
+  /** Applies fetched shop data and refreshes the item grid. */
+  private void applyShopData(ShopDataCache.Entry entry) {
+    publicBot = entry.getPublicBot();
+    customSellItems = new ArrayList<>(entry.getSellItems());
+    shopWidget.mainShopWidget.itemsWidget.refreshItems();
   }
 
   public void onCancel(Runnable run) {
