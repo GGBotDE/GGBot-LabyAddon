@@ -66,7 +66,15 @@
       "back": "Back",
       "next": "Next",
       "cancel": "Cancel",
-      "reset": "Reset"
+      "reset": "Reset",
+      "privacy": {
+        "title": "Privacy",
+        "body": "Both of these are optional and can be changed any time in the General Settings.\nError reports: automatically send anonymous crash/stacktrace reports so we can fix bugs.\nVersion report: once per launch, send your addon/LabyMod/Minecraft version, OS, build hash and dependency list so we know how many users a broken or vulnerable build affects.",
+        "errorReports": "Send error reports",
+        "versionReport": "Send version report",
+        "on": "On",
+        "off": "Off"
+      }
     },
     "serverbots": {
       "title": "GGBots on this server",

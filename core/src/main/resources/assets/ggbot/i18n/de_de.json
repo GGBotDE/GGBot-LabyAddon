@@ -66,7 +66,15 @@
             "back": "Zurück",
             "next": "Weiter",
             "cancel": "Abbrechen",
-            "reset": "Zurücksetzen"
+            "reset": "Zurücksetzen",
+            "privacy": {
+                "title": "Privatsphäre",
+                "body": "Beides ist optional und kann jederzeit in den Allgemeinen Einstellungen geändert werden.\nFehlerberichte: sendet automatisch anonyme Absturz-/Stacktrace-Berichte, damit wir Fehler beheben können.\nVersionsbericht: sendet einmal pro Start deine Addon-/LabyMod-/Minecraft-Version, OS, Build-Hash und Abhängigkeitsliste, damit wir wissen, wie viele Nutzer ein fehlerhafter oder verwundbarer Build betrifft.",
+                "errorReports": "Fehlerberichte senden",
+                "versionReport": "Versionsbericht senden",
+                "on": "An",
+                "off": "Aus"
+            }
         },
         "serverbots": {
             "title": "GGBots auf diesem Server",

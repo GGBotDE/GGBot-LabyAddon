@@ -85,6 +85,17 @@ public class OnboardingActivity extends SimpleActivity {
           () -> go(Path.SHOP, 1)));
       panel.addChildInitialized(pathButton("ggbot.onboarding.path.owner", "layers.png",
           () -> go(Path.OWNER, 1)));
+
+      // Privacy choices, shown to every user (logged in or not) on the very
+      // first step so neither path can skip them. Both are opt-out
+      // (default on) and can be changed later in the general settings.
+      title(panel, "ggbot.onboarding.privacy.title");
+      paragraph(panel, "ggbot.onboarding.privacy.body");
+      panel.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.errorReports",
+          GGBot.getInstance().configuration().generalSub.errorReportingEnabled));
+      panel.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.versionReport",
+          GGBot.getInstance().configuration().generalSub.versionReportEnabled));
+
       HorizontalListWidget buttons = buttonRow();
       buttons.addEntry(cancel());
       panel.addChildInitialized(buttons);
@@ -132,6 +143,26 @@ public class OnboardingActivity extends SimpleActivity {
       }
       default -> finishStep(panel);
     }
+  }
+
+  /**
+   * A full-width on/off toggle bound to a boolean config property. Clicking it
+   * flips the property and rebuilds the step (the same recreate pattern every
+   * other step change uses), so the label always reflects the stored value.
+   */
+  private ButtonWidget privacyToggle(String labelKey, ConfigProperty<Boolean> property) {
+    boolean enabled = Boolean.TRUE.equals(property.get());
+    String state = I18n.getTranslation(enabled
+        ? "ggbot.onboarding.privacy.on" : "ggbot.onboarding.privacy.off");
+    ButtonWidget toggle = ButtonWidget.text(I18n.getTranslation(labelKey) + ": " + state);
+    toggle.setPressListener(() -> {
+      de.ggbot.core.utils.GuiSounds.click();
+      property.set(!Boolean.TRUE.equals(property.get()));
+      go(path, step);
+      return true;
+    });
+    toggle.addId(enabled ? "onboarding-toggle-on" : "onboarding-toggle-off");
+    return toggle;
   }
 
   /**
