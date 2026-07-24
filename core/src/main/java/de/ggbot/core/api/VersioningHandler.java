@@ -5,10 +5,13 @@ import de.ggbot.core.api.versioning.ErrorReportRequest;
 import de.ggbot.core.api.versioning.VersionCheckRequest;
 import de.ggbot.core.api.versioning.VersionCheckResponse;
 import de.ggbot.core.api.versioning.VersioningApiClient;
+import de.ggbot.core.api.versioning.matrix.ClientRuleEngine;
+import de.ggbot.core.api.versioning.matrix.MatrixResponse;
+import de.ggbot.core.api.versioning.response.FeatureFlagResponse;
+import de.ggbot.core.api.versioning.response.IntervalConfig;
 import de.ggbot.core.api.versioning.response.MessageResponse;
 import de.ggbot.core.gui.MessagePopupActivity;
 import de.ggbot.core.utils.AsyncScheduler;
-import kotlin.jvm.internal.Lambda;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
@@ -22,11 +25,12 @@ import net.labymod.api.notification.Notification.Type;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Handles communication with the remote versioning API.
@@ -34,9 +38,43 @@ import java.util.concurrent.ExecutionException;
  * <p>
  * Responsibilities:
  * <ul>
- *     <li>Checking if the addon version is up to date</li>
- *     <li>Sending runtime error reports to the backend</li>
+ *     <li>Fetching the server's rule matrix and evaluating it locally
+ *         (feature flags, support state, client messages, update info)</li>
+ *     <li>Sending the optional, opt-out version report</li>
+ *     <li>Sending optional, opt-out runtime error reports to the backend</li>
  * </ul>
+ *
+ * @LabyMod review team:
+ * The feature flag system is not meant to be telemetry. It is meant to disable
+ * certain features, when specific requirements are met.
+ *
+ * <p>Example: an outdated maven dependency on a specific build of the addon
+ * (possibly not distributed via Flint but as a jar directly) that on Windows
+ * 10 specifically causes a vulnerability when a feature calling that library
+ * is used - in that case exactly that feature can be deactivated completely
+ * for exactly that combination. It disables features in very specific
+ * scenarios only.
+ *
+ * <p>The previous implementation was designed to minimize network traffic by
+ * sending only the information that was actually required. This benefited both
+ * us, by reducing the amount of traffic we needed to serve, and our users, by
+ * allowing the addon to load faster on slower internet connections. Sending
+ * data for every build version, Windows version, and other possible client
+ * combinations would have resulted in a lot of unnecessary traffic. Therefore,
+ * we decided that the previous approach was the most suitable solution at the
+ * time. After you raised concerns about this method, we completely rewrote our
+ * versioning backend to send only information about what is not allowed, with
+ * corresponding rules, instead of sending definitions for every version
+ * independently.
+ *
+ * <p>Since your review, the addon no longer uploads the environment for this:
+ * it downloads the server's rule matrix ({@code GET /v1/matrix}) and evaluates
+ * it locally via {@link ClientRuleEngine}, so the mandatory startup path sends
+ * no OS/hash/dependency data at all. In addition, we added two clearly separated endpoints,
+ * opt-out (default on, toggleable in the settings and in the onboarding for every user,
+ * logged in or not): the version report (see
+ * {@link #sendVersionReportIfEnabled()}) and error reports (see
+ * {@link #reportError(String, String)}).
  */
 public class VersioningHandler {
 
@@ -50,7 +88,24 @@ public class VersioningHandler {
   private static final String ADDON_SLUG = "labymod-addon";
 
   /** Current API version used by the addon */
-  private static final String API_VERSION =  "0.15.1";
+  private static final String API_VERSION = "0.15.4";
+
+  /**
+   * Hosts the versioning response may redirect feature API calls to. Some API
+   * calls carry the user's OAuth token, so a compromised versioning backend
+   * must never be able to point them at an arbitrary URL - only our own
+   * domains (and their subdomains) over HTTPS are accepted.
+   */
+  private static final String[] ALLOWED_BASE_URL_DOMAINS = {"ggbot.de", "ggbot.me", "gg-bot.com", "development-server.eu"};
+
+  /**
+   * Default delay between matrix refreshes when the server does not specify
+   * one in its response.
+   */
+  private static final long DEFAULT_REFRESH_SECONDS = 600L;
+
+  /** Lower bound on the refresh delay, so a bad value cannot hammer the API. */
+  private static final long MIN_REFRESH_SECONDS = 30L;
 
   /** Reference to the addon instance */
   private final GGBot addon;
@@ -75,6 +130,7 @@ public class VersioningHandler {
 
     this.shownMessages = new ArrayList<>(List.of(addon.configuration().viewedSystemMessages.get().split(",")));
     checkVersion();
+    sendVersionReportIfEnabled();
   }
 
   /**
@@ -222,14 +278,98 @@ public class VersioningHandler {
   }
 
   /**
-   * Sends a version check request to the API.
+   * Performs the version/feature check: fetches the server's rule matrix (a
+   * request that carries no environment data) and evaluates it locally via
+   * {@link ClientRuleEngine}. The locally built environment context never
+   * leaves this JVM here.
+   *
+   * <p>There is deliberately no client-side fallback to the legacy
+   * {@code POST /v1/check} endpoint - that endpoint only still exists on the
+   * backend for older addon builds. If the matrix cannot be fetched, the
+   * response stays {@code null} and {@link #isFeatureEnabled(String)} falls
+   * back to its permissive defaults.
+   *
+   * <p>After each attempt the check reschedules itself. On success the delay
+   * comes from the matrix response ({@link MatrixResponse#getRefreshSeconds()}),
+   * so the backend steers how often each client refreshes its feature flags
+   * from one response to the next; on failure it retries at the default
+   * cadence. This keeps a single refresh loop running for the whole session.
    */
   private void checkVersion() {
-    VersionCheckRequest request = buildBaseVersionCheckRequest();
-
     versioningApiClient
-        .check(ADDON_SLUG, request)
-        .thenAccept(response -> this.versionCheckResponse = response);
+        .matrix(ADDON_SLUG)
+        .thenAccept(matrix -> {
+          this.versionCheckResponse = ClientRuleEngine.evaluate(matrix, buildBaseVersionCheckRequest());
+          scheduleNextRefresh(matrix.getRefreshSeconds());
+        })
+        .exceptionally(throwable -> {
+          addon.logger().warn("Failed to fetch the versioning matrix: " + throwable.getMessage());
+          scheduleNextRefresh(0);
+          return null;
+        });
+  }
+
+  /**
+   * Schedules the next matrix refresh. Uses the server-requested delay when
+   * present and sane, otherwise the default; always clamped to a minimum so a
+   * bad value cannot turn the loop into a busy poll.
+   *
+   * @param serverRefreshSeconds the delay the server asked for, or {@code 0}
+   */
+  private void scheduleNextRefresh(int serverRefreshSeconds) {
+    long seconds = serverRefreshSeconds > 0 ? serverRefreshSeconds : DEFAULT_REFRESH_SECONDS;
+    seconds = Math.max(seconds, MIN_REFRESH_SECONDS);
+    AsyncScheduler.runLater(this::checkVersion, seconds * 1000L);
+  }
+
+  /**
+   * Sends the optional version report if the user has not opted out.
+   *
+   * @LabyMod review team:
+   * The initial goal was to not have telemetry at all - the environment data
+   * used to be part of the version check only so the server could answer with
+   * exactly the feature flags and messages that apply to this client, because
+   * after a while there may be a lot of builds and version-specific
+   * messages/feature flags that we otherwise would ALL have to send to every
+   * client on every start. More on that see {@link VersioningHandler}
+   *
+   * <p>On second thought, after you raised it in the review, we determined that it is important
+   * for us to know how many users are running possibly vulnerable (possibly
+   * non-Flint, jar-distributed) versions so we can weigh how many users would
+   * be affected before hard-disabling a feature for them. The same data also
+   * helps with the messaging we send to users: we can display messages in the
+   * LabyMod client on launch/connect in SPECIFIC scenarios (e.g. "this build
+   * has a known issue on your OS, please update") and want to know how many
+   * users such a scenario actually matches.
+   *
+   * <p>That is why this exists as a separate, clearly optional, non-identifiable report:
+   * it is opt-out (default on), has its own switch in the addon settings and in the
+   * onboarding for every user (logged in or not). And it sends roughly the same version
+   * information as before.
+   */
+  private void sendVersionReportIfEnabled() {
+    if (!isVersionReportEnabled()) return;
+    versioningApiClient
+        .versionReport(ADDON_SLUG, buildBaseVersionCheckRequest())
+        .exceptionally(throwable -> null); // Old backends without the endpoint: silently skip.
+  }
+
+  /**
+   * Returns whether the user allows the optional version report.
+   *
+   * @return {@code true} if the version report may be sent
+   */
+  public boolean isVersionReportEnabled() {
+    return Boolean.TRUE.equals(addon.configuration().generalSub.versionReportEnabled.get());
+  }
+
+  /**
+   * Returns whether the user allows automatic error reports.
+   *
+   * @return {@code true} if error reports may be sent
+   */
+  public boolean isErrorReportingEnabled() {
+    return Boolean.TRUE.equals(addon.configuration().generalSub.errorReportingEnabled.get());
   }
 
   /**
@@ -273,12 +413,22 @@ public class VersioningHandler {
   /**
    * Reports an error manually.
    *
+   * <p>Error reporting is optional and opt-out (default on): when the user has
+   * disabled it in the settings or the onboarding, the error is only logged
+   * locally and nothing is sent to the backend.
+   *
    * @param error error message/title
    * @param stacktrace full stacktrace
-   * @return unique error report ID
+   * @return unique error report ID (also generated when reporting is disabled,
+   *         so callers can still reference it in local logs)
    */
   public UUID reportError(String error, String stacktrace) {
     UUID id = UUID.randomUUID();
+
+    if (!isErrorReportingEnabled()) {
+      addon.logger().warn("[" + id + "] " + error + " (error reporting disabled, not sent)");
+      return id;
+    }
 
     ErrorReportRequest request = buildBaseErrorReportRequest()
         .setId(id.toString())
@@ -312,6 +462,12 @@ public class VersioningHandler {
    * Retrieves the base URL for a specific feature based on the latest version check response.
    * If the feature is not defined or the version check response is unavailable, it returns the default API base URL.
    *
+   * <p>Redirect targets are locked to our own domains: some feature API calls
+   * carry the user's OAuth token, so even a fully compromised versioning
+   * backend must not be able to route those calls (and with them the token)
+   * to an attacker-controlled host. Any URL outside the allowlist is ignored
+   * and the default API base URL is used instead.
+   *
    * @param feature the feature name to retrieve the base URL for
    * @return the base URL for the specified feature or the default API base URL if not defined
    */
@@ -323,7 +479,55 @@ public class VersioningHandler {
       return API_BASE_URL;
 
     String url = versionCheckResponse.getFeatures().get(feature).getVersionCompatabilityConversionPath();
-    return url != null && !url.isEmpty() ? url : API_BASE_URL;
+    if (url == null || url.isEmpty()) return API_BASE_URL;
+    if (!isAllowedBaseUrl(url)) {
+      addon.logger().warn("Ignoring feature base URL outside the allowed domains: " + url);
+      return API_BASE_URL;
+    }
+    return url;
+  }
+
+  /**
+   * Returns whether a redirect base URL is HTTPS and points at one of our own
+   * domains (or a subdomain of one).
+   *
+   * @param url the URL to validate
+   * @return {@code true} if the URL may be used as an API base URL
+   */
+  private static boolean isAllowedBaseUrl(String url) {
+    URI uri;
+    try {
+      uri = new URI(url);
+    } catch (URISyntaxException e) {
+      return false;
+    }
+    if (!"https".equalsIgnoreCase(uri.getScheme())) return false;
+    String host = uri.getHost();
+    if (host == null) return false;
+    host = host.toLowerCase(Locale.ROOT);
+    for (String domain : ALLOWED_BASE_URL_DOMAINS) {
+      if (host.equals(domain) || host.endsWith("." + domain)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Applies the server-controlled pacing of a feature to a requested polling
+   * interval. User-configurable intervals stay user-configurable, but the
+   * backend can define a minimum, maximum, default and multiplier per
+   * repeating feature (anything that depends on loops/intervals), so API
+   * polling frequency can be tuned without shipping a new addon build.
+   *
+   * @param feature     the feature key the interval belongs to
+   * @param requestedMs the interval the caller wants, in milliseconds
+   * @return the effective interval in milliseconds
+   */
+  public long clampIntervalMs(String feature, long requestedMs) {
+    if (versionCheckResponse == null) return requestedMs;
+    FeatureFlagResponse flag = versionCheckResponse.getFeatures().get(feature);
+    if (flag == null) return requestedMs;
+    IntervalConfig interval = flag.getInterval();
+    return interval != null ? interval.apply(requestedMs) : requestedMs;
   }
 
   /** Reasons for checking messages, used to determine which messages to show based on their configuration. */

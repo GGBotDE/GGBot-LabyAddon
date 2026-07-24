@@ -1,5 +1,6 @@
 package de.ggbot.core.gui.shop.widgets.main.items;
 
+import de.ggbot.core.utils.MoneyFormat;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
@@ -27,7 +28,8 @@ public class MainShopItemPriceContainerWidget extends HorizontalListWidget {
     this.addEntry(ComponentWidget
         .component(Component.icon(Icon.texture(ResourceLocation.create("ggbot", "themes/vanilla/textures/icons/dollar-circle.png")))
             .append(Component.space())
-            .append(Component.text(String.format("%.2f", price))))
+            // Human readable, locale aware (e.g. "10.000,00" in German).
+            .append(Component.text(MoneyFormat.format(price))))
         .addId("main-shop-item-price"));
 
     if (count > 1) {

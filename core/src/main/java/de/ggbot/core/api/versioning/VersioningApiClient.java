@@ -1,8 +1,7 @@
 package de.ggbot.core.api.versioning;
 
-import de.ggbot.core.api.versioning.response.CurrentVersion;
-import de.ggbot.core.api.versioning.response.FeatureFlagResponse;
-import de.ggbot.core.api.versioning.response.MessageResponse;
+import com.google.gson.Gson;
+import de.ggbot.core.api.versioning.matrix.MatrixResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,11 +10,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -123,28 +117,43 @@ public class VersioningApiClient {
     // -------------------------------------------------------------------------
 
     /**
-     * Performs an async version-check request for the specified addon.
+     * Fetches the server's rule matrix via {@code GET /v1/matrix/:addonSlug}.
      *
-     * <p>Sends {@code POST /v1/check/:addonSlug} with the serialised {@code request} body
-     * and deserialises the JSON response into a {@link VersionCheckResponse}.
+     * <p>This request intentionally carries no environment data - the client
+     * evaluates the returned rules locally (see
+     * {@link de.ggbot.core.api.versioning.matrix.ClientRuleEngine}). Completes
+     * exceptionally with an {@link ApiException} on HTTP errors or network
+     * failure. There is deliberately no client-side fallback to the legacy
+     * {@code POST /v1/check} endpoint; that endpoint only remains on the
+     * backend for older addon builds.
      *
-     * <p>The future completes exceptionally with an {@link ApiException} if:
-     * <ul>
-     *   <li>The HTTP status code is not 2xx</li>
-     *   <li>A network or I/O error occurs</li>
-     * </ul>
-     *
-     * @param addonSlug the addon's URL slug, e.g. {@code "my-addon"}
-     * @param request   the populated version-check request
-     * @return a {@link CompletableFuture} that completes with the parsed response
+     * @param addonSlug the addon's URL slug
+     * @return a {@link CompletableFuture} that completes with the parsed matrix
      */
-    public CompletableFuture<VersionCheckResponse> check(String addonSlug, VersionCheckRequest request) {
-        String url = baseUrl + "/v1/check/" + addonSlug;
-        String body = request.toJson();
+    public CompletableFuture<MatrixResponse> matrix(String addonSlug) {
+        String url = baseUrl + "/v1/matrix/" + addonSlug;
         return CompletableFuture.supplyAsync(() -> {
-            String json = doPost(url, body);
-            return parseVersionCheckResponse(json);
+            String json = doGet(url);
+            return new Gson().fromJson(json, MatrixResponse.class);
         }, executor);
+    }
+
+    /**
+     * Sends the optional, opt-out version report via
+     * {@code POST /v1/versionreport/:addonSlug}, fire-and-forget style.
+     *
+     * <p>Callers must gate this on the user's version report setting; the
+     * request body carries the full environment context that the mandatory
+     * matrix request deliberately no longer sends.
+     *
+     * @param addonSlug the addon's URL slug
+     * @param request   the populated environment report
+     * @return a {@link CompletableFuture} completing when the report was sent
+     */
+    public CompletableFuture<Void> versionReport(String addonSlug, VersionCheckRequest request) {
+        String url = baseUrl + "/v1/versionreport/" + addonSlug;
+        String body = request.toJson();
+        return CompletableFuture.runAsync(() -> doPost(url, body), executor);
     }
 
     /**
@@ -225,6 +234,42 @@ public class VersioningApiClient {
     }
 
     /**
+     * Sends a GET request and returns the response body as a string.
+     * Throws {@link ApiException} for non-2xx responses or I/O errors.
+     *
+     * @param urlString the full URL to GET
+     * @return response body as a UTF-8 string
+     * @throws ApiException if the server returns a non-2xx status or an I/O error occurs
+     */
+    private String doGet(String urlString) {
+        HttpURLConnection conn = null;
+        try {
+            conn = openConnection(urlString, "GET");
+            int status = conn.getResponseCode();
+
+            InputStream is = (status >= 200 && status < 300)
+                    ? conn.getInputStream()
+                    : conn.getErrorStream();
+            String responseBody = is != null ? readStream(is) : "";
+
+            if (status < 200 || status >= 300) {
+                throw new ApiException(
+                        "API request failed with HTTP " + status + " for URL: " + urlString,
+                        status, responseBody
+                );
+            }
+            return responseBody;
+
+        } catch (ApiException e) {
+            throw e;
+        } catch (IOException e) {
+            throw new ApiException("Network error during GET to: " + urlString, e);
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
+    /**
      * Sends a POST request with a JSON body and returns the response body as a string.
      * Throws {@link ApiException} for non-2xx responses or I/O errors.
      *
@@ -289,86 +334,6 @@ public class VersioningApiClient {
     }
 
     // -------------------------------------------------------------------------
-    // JSON parsing (minimal, no external libraries)
-    // -------------------------------------------------------------------------
-
-    /**
-     * Parses a {@link VersionCheckResponse} from a raw JSON string.
-     *
-     * <p><b>Note:</b> This is a minimal, hand-written JSON parser sufficient for the
-     * known API response structure. It handles nested objects and arrays but is
-     * intentionally simple – for complex or deeply nested responses consider
-     * integrating a proper JSON library (e.g. Gson or Jackson) once available.
-     *
-     * @param json raw JSON string from the API
-     * @return parsed {@link VersionCheckResponse}
-     */
-    private static VersionCheckResponse parseVersionCheckResponse(String json) {
-        VersionCheckResponse resp = new VersionCheckResponse();
-
-        resp.setSupported(extractJsonBoolean(json, "supported"));
-        resp.setMessage(extractJsonString(json, "message"));
-
-        // --- currentVersion ---
-        String cvBlock = extractJsonObject(json, "currentVersion");
-        if (cvBlock != null) {
-            CurrentVersion cv = new CurrentVersion();
-            cv.setVersion(extractJsonString(cvBlock, "version"));
-            cv.setFileHash(extractJsonString(cvBlock, "fileHash"));
-            cv.setManualDownload(extractJsonString(cvBlock, "manualDownload"));
-            cv.setManualDownloadDirect(extractJsonString(cvBlock, "manualDownloadDirect"));
-            cv.setOfficiallyReleased(extractJsonBoolean(cvBlock, "isOfficiallyReleased"));
-            cv.setFlintReleased(extractJsonBoolean(cvBlock, "isFlintReleased"));
-            cv.setWillBeFlintReleased(extractJsonBoolean(cvBlock, "willBeFlintReleased"));
-            resp.setCurrentVersion(cv);
-        }
-
-        // --- features ---
-        String featuresBlock = extractJsonObject(json, "features");
-        if (featuresBlock != null) {
-            Map<String, FeatureFlagResponse> features = new HashMap<>();
-            // Each key is a feature flag name; values are objects with "enabled" and optional "versionCompatabilityConversion"
-            List<String[]> pairs = extractJsonObjectEntries(featuresBlock);
-            for (String[] pair : pairs) {
-                String key = pair[0];
-                String value = pair[1];
-                FeatureFlagResponse ff = new FeatureFlagResponse();
-                ff.setEnabled(extractJsonBoolean(value, "enabled"));
-                String compatBlock = extractJsonObject(value, "versionCompatabilityConversion");
-                if (compatBlock != null) {
-                    ff.setVersionCompatabilityConversionPath(extractJsonString(compatBlock, "path"));
-                }
-                features.put(key, ff);
-            }
-            resp.setFeatures(features);
-        }
-
-        // --- messages ---
-        String messagesArray = extractJsonArray(json, "messages");
-        if (messagesArray != null) {
-            List<MessageResponse> messages = new ArrayList<>();
-            List<String> items = splitJsonArray(messagesArray);
-            for (String item : items) {
-                MessageResponse msg = new MessageResponse();
-                msg.setEnabledUntil(extractJsonString(item, "enabledUntil"));
-                msg.setUuid(extractJsonString(item, "uuid"));
-                msg.setLocale(extractJsonString(item, "locale"));
-                msg.setMessage(extractJsonString(item, "message"));
-                msg.setLink(extractJsonString(item, "link"));
-                msg.setShowAfter(extractJsonInt(item, "showAfter"));
-                msg.setShowOnce(extractJsonBoolean(item, "showOnce"));
-                msg.setOnlyShowAfterInteraction(extractJsonBoolean(item, "onlyShowAfterInteraction"));
-                msg.setToast(extractJsonBoolean(item, "isToast"));
-                msg.setPopup(extractJsonBooleanDefault(item, "isPopup", true));
-                messages.add(msg);
-            }
-            resp.setMessages(messages);
-        }
-
-        return resp;
-    }
-
-    // -------------------------------------------------------------------------
     // Minimal JSON extraction utilities (private static)
     // -------------------------------------------------------------------------
 
@@ -397,247 +362,6 @@ public class VersioningApiClient {
             end++;
         }
         return unescape(json.substring(start + 1, end));
-    }
-
-    /**
-     * Extracts a boolean value for the given key from a flat JSON object string.
-     * Returns {@code false} if the key is not found.
-     *
-     * @param json JSON object string
-     * @param key  field name
-     * @return boolean value
-     */
-    private static boolean extractJsonBoolean(String json, String key) {
-        return extractJsonBooleanDefault(json, key, false);
-    }
-
-  /**
-   * Extracts a boolean value with a specified default.
-   * Supports: true/false and 1/0.
-   *
-   * @param json         JSON object string
-   * @param key          field name
-   * @param defaultValue value to return if key is absent
-   * @return boolean value or {@code defaultValue}
-   */
-  private static boolean extractJsonBooleanDefault(String json, String key, boolean defaultValue) {
-    if (json == null) return defaultValue;
-
-    String search = "\"" + key + "\"";
-    int idx = json.indexOf(search);
-    if (idx < 0) return defaultValue;
-
-    int colon = json.indexOf(':', idx + search.length());
-    if (colon < 0) return defaultValue;
-
-    // Skip whitespace
-    int val = colon + 1;
-    while (val < json.length() && Character.isWhitespace(json.charAt(val))) val++;
-
-    if (json.startsWith("true", val)) return true;
-    if (json.startsWith("false", val)) return false;
-
-    if (val < json.length()) {
-      char c = json.charAt(val);
-      if (c == '1') return true;
-      if (c == '0') return false;
-    }
-
-    return defaultValue;
-  }
-
-    /**
-     * Extracts an integer value for the given key. Returns {@code 0} if not found.
-     *
-     * @param json JSON object string
-     * @param key  field name
-     * @return integer value or {@code 0}
-     */
-    private static int extractJsonInt(String json, String key) {
-        if (json == null) return 0;
-        String search = "\"" + key + "\"";
-        int idx = json.indexOf(search);
-        if (idx < 0) return 0;
-        int colon = json.indexOf(':', idx + search.length());
-        if (colon < 0) return 0;
-        int val = colon + 1;
-        while (val < json.length() && Character.isWhitespace(json.charAt(val))) val++;
-        int end = val;
-        while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-')) end++;
-        try {
-            return Integer.parseInt(json.substring(val, end));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Extracts the raw content of a nested JSON object for the given key.
-     * Returns the inner content string (without outer braces) or {@code null} if not found.
-     *
-     * @param json JSON string
-     * @param key  field name
-     * @return nested object string content, or {@code null}
-     */
-    private static String extractJsonObject(String json, String key) {
-        if (json == null) return null;
-        String search = "\"" + key + "\"";
-        int idx = json.indexOf(search);
-        if (idx < 0) return null;
-        int colon = json.indexOf(':', idx + search.length());
-        if (colon < 0) return null;
-        int brace = json.indexOf('{', colon + 1);
-        if (brace < 0) return null;
-        return extractBalanced(json, brace, '{', '}');
-    }
-
-    /**
-     * Extracts the content of a JSON array for the given key.
-     * Returns the raw array content (without outer brackets) or {@code null}.
-     *
-     * @param json JSON string
-     * @param key  field name
-     * @return array content string, or {@code null}
-     */
-    private static String extractJsonArray(String json, String key) {
-        if (json == null) return null;
-        String search = "\"" + key + "\"";
-        int idx = json.indexOf(search);
-        if (idx < 0) return null;
-        int colon = json.indexOf(':', idx + search.length());
-        if (colon < 0) return null;
-        int bracket = json.indexOf('[', colon + 1);
-        if (bracket < 0) return null;
-        return extractBalanced(json, bracket, '[', ']');
-    }
-
-    /**
-     * Extracts a balanced-bracketed substring starting at {@code startIdx}.
-     * Handles nesting and quoted strings (skips brackets inside strings).
-     *
-     * @param json     source string
-     * @param startIdx index of the opening bracket/brace
-     * @param open     opening character
-     * @param close    closing character
-     * @return full balanced substring including outer delimiters, or {@code null}
-     */
-    private static String extractBalanced(String json, int startIdx, char open, char close) {
-        int depth = 0;
-        boolean inString = false;
-        for (int i = startIdx; i < json.length(); i++) {
-            char c = json.charAt(i);
-            if (inString) {
-                if (c == '\\') { i++; continue; } // skip escaped char
-                if (c == '"') inString = false;
-            } else {
-                if (c == '"') { inString = true; continue; }
-                if (c == open) depth++;
-                else if (c == close) {
-                    depth--;
-                    if (depth == 0) return json.substring(startIdx, i + 1);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Splits a JSON array string (including outer brackets) into individual element strings.
-     * Handles nested objects/arrays and string values.
-     *
-     * @param arrayJson full array JSON string, e.g. {@code "[{...},{...}]"}
-     * @return list of element string tokens
-     */
-    private static List<String> splitJsonArray(String arrayJson) {
-        List<String> items = new ArrayList<>();
-        if (arrayJson == null || arrayJson.length() < 2) return items;
-        String inner = arrayJson.substring(1, arrayJson.length() - 1).trim();
-        if (inner.isEmpty()) return items;
-
-        int depth = 0;
-        boolean inString = false;
-        int start = 0;
-        for (int i = 0; i < inner.length(); i++) {
-            char c = inner.charAt(i);
-            if (inString) {
-                if (c == '\\') { i++; continue; }
-                if (c == '"') inString = false;
-            } else {
-                if (c == '"') inString = true;
-                else if (c == '{' || c == '[') depth++;
-                else if (c == '}' || c == ']') depth--;
-                else if (c == ',' && depth == 0) {
-                    items.add(inner.substring(start, i).trim());
-                    start = i + 1;
-                }
-            }
-        }
-        String last = inner.substring(start).trim();
-        if (!last.isEmpty()) items.add(last);
-        return items;
-    }
-
-    /**
-     * Extracts all key-value pairs from a flat JSON object string.
-     * Values are returned as raw JSON tokens (string, number, boolean, object, or array).
-     *
-     * @param objectJson full JSON object including outer braces
-     * @return list of {@code String[2]} arrays where {@code [0]} is the key and {@code [1]} is the raw value
-     */
-    private static List<String[]> extractJsonObjectEntries(String objectJson) {
-        List<String[]> entries = new ArrayList<>();
-        if (objectJson == null || objectJson.length() < 2) return entries;
-        String inner = objectJson.substring(1, objectJson.length() - 1).trim();
-        if (inner.isEmpty()) return entries;
-
-        int i = 0;
-        while (i < inner.length()) {
-            // Skip whitespace and commas
-            while (i < inner.length() && (Character.isWhitespace(inner.charAt(i)) || inner.charAt(i) == ',')) i++;
-            if (i >= inner.length()) break;
-
-            // Read key (must be a quoted string)
-            if (inner.charAt(i) != '"') break;
-            int keyStart = i + 1;
-            i++;
-            while (i < inner.length() && inner.charAt(i) != '"') {
-                if (inner.charAt(i) == '\\') i++;
-                i++;
-            }
-            String key = inner.substring(keyStart, i);
-            i++; // skip closing quote
-
-            // Skip colon
-            while (i < inner.length() && (Character.isWhitespace(inner.charAt(i)) || inner.charAt(i) == ':')) i++;
-
-            // Read value
-            String value;
-            if (i >= inner.length()) break;
-            char vc = inner.charAt(i);
-            if (vc == '{' || vc == '[') {
-                char closeChar = vc == '{' ? '}' : ']';
-                value = extractBalanced(inner, i, vc, closeChar);
-                if (value == null) break;
-                i += value.length();
-            } else if (vc == '"') {
-                int vs = i;
-                i++;
-                while (i < inner.length()) {
-                    char c = inner.charAt(i);
-                    if (c == '\\') { i += 2; continue; }
-                    if (c == '"') { i++; break; }
-                    i++;
-                }
-                value = inner.substring(vs, i);
-            } else {
-                // Number, boolean, null
-                int vs = i;
-                while (i < inner.length() && inner.charAt(i) != ',' && inner.charAt(i) != '}') i++;
-                value = inner.substring(vs, i).trim();
-            }
-            entries.add(new String[]{key, value});
-        }
-        return entries;
     }
 
     /**

@@ -1,6 +1,7 @@
 package de.ggbot.core.overlay;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.gui.shop.utils.ShopDataCache;
 import de.ggbot.sdk.api.PublicApi;
 import de.ggbot.sdk.core.ApiException;
 import de.ggbot.sdk.model.GetBotsOnServer200Response;
@@ -47,6 +48,9 @@ public class ShopHintRenderer {
   private long lastFetchMs = 0L;
   private volatile boolean fetching = false;
 
+  /** Normalized server host from the last bot-list fetch, for the sell-item cache. */
+  private volatile String resolvedServerIp = null;
+
   public ShopHintRenderer(GGBot addon) {
     this.addon = addon;
   }
@@ -62,7 +66,10 @@ public class ShopHintRenderer {
     if (!addon.configuration().shopSub.shopEnabled.get()) return;
 
     long now = System.currentTimeMillis();
-    if (!fetching && now - lastFetchMs >= FETCH_INTERVAL_MS) {
+    // The backend can pace this repeating fetch via the feature's interval config.
+    long fetchIntervalMs = addon.getVersioningHandler()
+        .clampIntervalMs(FEATURE, FETCH_INTERVAL_MS);
+    if (!fetching && now - lastFetchMs >= fetchIntervalMs) {
       lastFetchMs = now;
       fetchServerBots();
     }
@@ -111,6 +118,20 @@ public class ShopHintRenderer {
   private Component computeHint() {
     String botName = nearestBotName();
     if (botName == null) return null;
+
+    // Prefetch the bot's sell items early: a bot without sell items gets no
+    // hint at all, and by the time the user presses the key the shop GUI can
+    // reuse the cached result instead of re-doing the request.
+    String serverIp = resolvedServerIp;
+    if (serverIp == null) return null;
+    ShopDataCache.Entry shopData =
+        ShopDataCache.get(botName, serverIp, ShopDataCache.HINT_MAX_AGE_MS);
+    if (shopData == null) {
+      ShopDataCache.fetchAsync(addon.getVersioningHandler(), botName, serverIp, null);
+      return null;
+    }
+    if (shopData.getSellItems().isEmpty()) return null;
+
     String keyCombo = formatCombo(addon.configuration().shopSub.shopKey.get());
     return Component.translatable("ggbot.botmenu.shopHint",
         NamedTextColor.AQUA,
@@ -173,6 +194,7 @@ public class ShopHintRenderer {
         PublicApi api = new PublicApi();
         api.setCustomBaseUrl(addon.getVersioningHandler().getBaseUrlForFeature(FEATURE));
         String serverIp = resolveServerDomain(api);
+        resolvedServerIp = serverIp;
         GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
         if (response != null && response.getBots() != null) {
           for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {

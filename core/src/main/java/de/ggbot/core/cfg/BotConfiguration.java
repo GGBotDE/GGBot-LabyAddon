@@ -46,7 +46,17 @@ public class BotConfiguration extends AddonConfig {
 
   @SwitchSetting @SettingSection("Addon")
   @SpriteSlot(x = 6)
-  private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
+  private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true)
+      .addChangeListener(value -> {
+        // The event bus stops delivering events to disabled addons, so the
+        // disconnect listener that normally cancels the polling timers never
+        // fires once the addon is disabled mid-session. Cancel them here (the
+        // timer bodies also re-check this switch as a fallback).
+        GGBot current = GGBot.getInstance();
+        if (Boolean.FALSE.equals(value) && current != null && current.getTimerListener() != null) {
+          current.getTimerListener().cancelAllTimers();
+        }
+      });
   @TextFieldSetting @SettingSection("Bot")
   public final ConfigProperty<String> token = new ConfigProperty<>("").visibilitySupplier(() -> debug);
   @TextFieldSetting

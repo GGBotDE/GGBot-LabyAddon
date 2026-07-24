@@ -4,10 +4,24 @@ import de.ggbot.core.utils.ttlcache.TTLCache;
 import net.labymod.api.client.entity.player.Player;
 import net.labymod.api.client.gui.icon.Icon;
 import java.util.AbstractMap;
+import java.util.Optional;
 import java.util.UUID;
 
 public class GGBotTeamPlayer {
   private static final TTLCache<UUID, Icon> cache = new TTLCache<>();
+
+  /**
+   * Combined membership + icon lookup cache for the tab-list badge. The badge
+   * renderer runs per tab-list entry per frame; without this cache every call
+   * would walk the whole team list and build new strings for the UUID
+   * comparison. An empty {@link Optional} caches the "not a team member /
+   * no icon" result so non-members are cheap too.
+   */
+  private static final TTLCache<UUID, Optional<Icon>> badgeIconCache = new TTLCache<>();
+
+  /** How long a badge lookup result stays valid, in milliseconds. */
+  private static final long BADGE_ICON_CACHE_TTL_MS = 60_000L;
+
   private final TeamFetcher teamFetcher;
   private final UUID uuid;
 
@@ -112,6 +126,26 @@ public class GGBotTeamPlayer {
 
     Icon icon = Icon.url(url);
     cache.put(playerUUID, icon, 3600);
+    return icon;
+  }
+
+  /**
+   * Returns the tab-list badge icon for a player, or {@code null} when the
+   * player is not a team member or has no in-game icon. Results (including
+   * negative ones) are cached for {@value #BADGE_ICON_CACHE_TTL_MS} ms so the
+   * per-frame badge renderer does not walk the team list.
+   *
+   * @param uuid the player's UUID
+   * @return the badge icon, or {@code null}
+   */
+  public static Icon getBadgeIcon(UUID uuid) {
+    Optional<Icon> cached = badgeIconCache.get(uuid);
+    if (cached != null) {
+      return cached.orElse(null);
+    }
+    GGBotTeamPlayer teamPlayer = new GGBotTeamPlayer(uuid);
+    Icon icon = teamPlayer.isTeamMember() ? teamPlayer.getIngameIcon() : null;
+    badgeIconCache.put(uuid, Optional.ofNullable(icon), BADGE_ICON_CACHE_TTL_MS);
     return icon;
   }
 

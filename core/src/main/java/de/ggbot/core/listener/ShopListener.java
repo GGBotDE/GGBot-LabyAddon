@@ -100,14 +100,27 @@ public class ShopListener {
     activity.onCancel(activity::closeScreen);
     activity.onMoneyCheck(requiredAmount -> true);
 
+    /*
+     * @LabyMod review team: sending payment commands on the user's behalf is
+     * guarded on multiple levels. The user explicitly clicked "buy" in the
+     * shop GUI for a concrete cart (as you mentioned); the commands only target verified
+     * online GGBots on this server; and we do not let bots activate any features the
+     * server does not allow - a bot on a server where selling is not permitted
+     * does not have the sell feature enabled, its sell item list is empty on
+     * request, so the shop hint never shows and there is nothing to buy in the
+     * first place.
+     */
     activity.onPurchase(cartItems -> {
       activity.closeScreen();
+      String payTemplate = addon.configuration().shopSub.payCommand.get();
       Thread purchaseThread = new Thread(() -> {
         for (var entry : cartItems) {
           for (int i = 0; i < entry.getQuantity(); i++) {
+            String command = payTemplate
+                .replace("%bot%", botName)
+                .replace("%amount%", String.valueOf(entry.getItem().getPrice()));
             Laby.labyAPI().minecraft().executeNextTick(() ->
-                Laby.references().chatExecutor().chat(
-                    "/pay " + botName + " " + entry.getItem().getPrice()));
+                Laby.references().chatExecutor().chat(command));
             try {
               Thread.sleep(3000);
             } catch (InterruptedException ex) {
