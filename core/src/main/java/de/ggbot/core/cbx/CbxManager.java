@@ -78,6 +78,13 @@ public final class CbxManager {
   private int reconnectAttempt = 0;
   private ScheduledFuture<?> pendingConnect;
 
+  /**
+   * Whether the current "cannot connect" episode was already logged. Keeps the
+   * log to one line per episode instead of one per retry, since every retry
+   * failing is expected and harmless (the HTTP endpoints cover everything).
+   */
+  private boolean loggedConnectFailure = false;
+
   private CbxManager() {
   }
 
@@ -108,8 +115,7 @@ public final class CbxManager {
   /** Called after the user started the selected bot. */
   public void onBotStarted() {
     if (!eagerAllowed()) return;
-    desired = true;
-    scheduleConnect(BOT_START_CONNECT_DELAY_MS);
+    startAttempt(BOT_START_CONNECT_DELAY_MS);
   }
 
   /**
@@ -130,10 +136,13 @@ public final class CbxManager {
       return;
     }
     if ((previous == null || !previous) && eagerAllowed()) {
-      desired = true;
-      scheduleConnect(0);
-    } else if (desired && !isConnected()) {
-      scheduleConnect(0);
+      // Offline -> online: a fresh, prompt connect attempt.
+      startAttempt(0);
+    } else if (desired && !isConnected() && !hasPendingAttempt()) {
+      // A wanted connection whose retry loop has gone idle (e.g. after a
+      // transient prerequisite miss): resume it without resetting the backoff,
+      // so this frequent hook cannot turn into a fast retry storm.
+      scheduleReconnect();
     }
   }
 
@@ -153,11 +162,11 @@ public final class CbxManager {
   public void onControlStarted() {
     controlActive = true;
     if (!cbxAllowed()) return;
-    desired = true;
     if (isConnected()) {
+      desired = true;
       subscribeMovement();
     } else {
-      scheduleConnect(0);
+      startAttempt(0);
     }
   }
 
@@ -237,8 +246,7 @@ public final class CbxManager {
 
   private void requestEagerConnect() {
     if (!eagerAllowed()) return;
-    desired = true;
-    scheduleConnect(0);
+    startAttempt(0);
   }
 
   /** Whether connecting makes sense right now. */
@@ -253,14 +261,36 @@ public final class CbxManager {
     return bot != null && Boolean.TRUE.equals(bot.getOnline());
   }
 
-  private synchronized void scheduleConnect(long delayMs) {
-    if (pendingConnect != null && !pendingConnect.isDone()) {
-      // An immediate request (fresh lifecycle signal) overrides a pending
-      // slow backoff attempt; otherwise keep the existing schedule.
-      if (delayMs > 0) return;
+  /**
+   * Starts a fresh connect episode: marks the connection as wanted, resets the
+   * backoff and allows one failure log again. Used by lifecycle signals (join,
+   * bot start, offline-to-online, control start) that legitimately warrant a
+   * prompt attempt.
+   */
+  private synchronized void startAttempt(long delayMs) {
+    desired = true;
+    reconnectAttempt = 0;
+    loggedConnectFailure = false;
+    scheduleAttempt(delayMs);
+  }
+
+  /**
+   * Schedules exactly one pending connect attempt, cancelling any previously
+   * scheduled one first. This is the single choke point that guarantees there
+   * is never more than one reconnect loop in flight (the earlier duplicate
+   * scheduling caused the rapid "connect failed" retry storm in the log).
+   */
+  private synchronized void scheduleAttempt(long delayMs) {
+    if (!desired) return;
+    if (pendingConnect != null) {
       pendingConnect.cancel(false);
     }
     pendingConnect = executor.schedule(this::connectNow, delayMs, TimeUnit.MILLISECONDS);
+  }
+
+  /** Whether a connect attempt is already scheduled and not yet run. */
+  private synchronized boolean hasPendingAttempt() {
+    return pendingConnect != null && !pendingConnect.isDone();
   }
 
   private void connectNow() {
@@ -283,6 +313,7 @@ public final class CbxManager {
       this.client = newClient;
       this.connectedBotToken = bot.getToken();
       this.reconnectAttempt = 0;
+      this.loggedConnectFailure = false;
       addon.logger().info("[CBX] Connected for bot " + bot.getLinkName());
 
       // hudElements pushes start once a client sends its first packet on the
@@ -298,8 +329,12 @@ public final class CbxManager {
 
   private void onConnectFailed(String reason) {
     GGBot addon = GGBot.getInstance();
-    if (addon != null) {
-      addon.logger().info("[CBX] Connect failed (" + reason + "), endpoints remain in use");
+    // One line per episode, not per retry: further retries fail silently and
+    // grow the backoff, and the HTTP endpoints keep everything working.
+    if (addon != null && !loggedConnectFailure) {
+      loggedConnectFailure = true;
+      addon.logger().info("[CBX] Connect failed (" + reason
+          + "); staying on HTTP endpoints and retrying quietly in the background");
     }
     scheduleReconnect();
   }
@@ -312,29 +347,30 @@ public final class CbxManager {
     }
     this.client = null;
     this.connectedBotToken = null;
+    // A real disconnect starts a new episode, so allow one failure log again.
+    this.loggedConnectFailure = false;
     scheduleReconnect();
   }
 
   /**
-   * Schedules the next reconnect with incrementally growing delay. Safe to be
-   * slow: every consumer has the HTTP endpoint fallback while disconnected.
+   * Schedules the next reconnect with an incrementally growing delay (capped at
+   * {@link #BACKOFF_MAX_MS}), replacing any pending attempt so only one loop
+   * ever runs. Safe to be slow: every consumer has the HTTP endpoint fallback
+   * while disconnected.
    */
   private synchronized void scheduleReconnect() {
     if (!desired) return;
     reconnectAttempt++;
     long delay = (long) (BACKOFF_INITIAL_MS * Math.pow(BACKOFF_FACTOR, reconnectAttempt - 1));
     delay = Math.min(delay, BACKOFF_MAX_MS);
-    GGBot addon = GGBot.getInstance();
-    if (addon != null) {
-      addon.logger().info("[CBX] Next reconnect attempt in " + (delay / 1000) + "s");
-    }
-    pendingConnect = executor.schedule(this::connectNow, delay, TimeUnit.MILLISECONDS);
+    scheduleAttempt(delay);
   }
 
   /** Deliberate teardown; no reconnect until a new lifecycle event wants one. */
   private synchronized void stopConnection(String reason) {
     desired = false;
     reconnectAttempt = 0;
+    loggedConnectFailure = false;
     if (pendingConnect != null) {
       pendingConnect.cancel(false);
       pendingConnect = null;
