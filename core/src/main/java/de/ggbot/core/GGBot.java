@@ -216,6 +216,9 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     onboardingListener = new de.ggbot.core.listener.OnboardingListener(this);
     this.registerListener(onboardingListener);
     this.registerListener(de.ggbot.core.gui.botmenu.ControlModeManager.get());
+    // CBX lifecycle: eager connect on server join when the feature flag
+    // allows it, teardown on disconnect (see CbxManager for the full policy).
+    this.registerListener(de.ggbot.core.cbx.CbxManager.get());
     this.registerCommand(new de.ggbot.core.commands.ServerBotsCommand(this));
     overlayRenderer = new OverlayRenderer(OverlayManager.getInstance());
     this.registerListener(overlayRenderer);
