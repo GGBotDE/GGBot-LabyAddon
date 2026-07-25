@@ -185,8 +185,23 @@ public final class CbxManager {
 
   /** Returns whether a session for the given bot is currently open. */
   public boolean isConnectedFor(Bot bot) {
-    return bot != null && bot.getToken() != null
-        && bot.getToken().equals(connectedBotToken) && isConnected();
+    return clientFor(bot) != null;
+  }
+
+  /**
+   * Returns the open client of the given bot's session, or {@code null} when
+   * there is none. Callers must send on the returned reference instead of on
+   * the field, since a concurrent disconnect or teardown clears the field at
+   * any point.
+   */
+  private CbxClient clientFor(Bot bot) {
+    CbxClient current = client;
+    if (current == null || !current.isOpen()) return null;
+    if (bot == null || bot.getToken() == null
+        || !bot.getToken().equals(connectedBotToken)) {
+      return null;
+    }
+    return current;
   }
 
   /**
@@ -195,11 +210,12 @@ public final class CbxManager {
    * @return {@code true} when sent; {@code false} means "use the endpoint"
    */
   public boolean trySetControlState(Bot bot, String control, boolean state) {
-    if (!isConnectedFor(bot)) return false;
+    CbxClient current = clientFor(bot);
+    if (current == null) return false;
     JsonObject data = new JsonObject();
     data.addProperty("control", control);
     data.addProperty("state", state);
-    return client.send("movement", "setControlState", data);
+    return current.send("movement", "setControlState", data);
   }
 
   /**
@@ -209,11 +225,12 @@ public final class CbxManager {
    * @return {@code true} when sent; {@code false} means "use the endpoint"
    */
   public boolean tryRotateBot(Bot bot, float yaw, float pitch) {
-    if (!isConnectedFor(bot)) return false;
+    CbxClient current = clientFor(bot);
+    if (current == null) return false;
     JsonObject data = new JsonObject();
     data.addProperty("yaw", yaw);
     data.addProperty("pitch", pitch);
-    return client.send("movement", "setLook", data);
+    return current.send("movement", "setLook", data);
   }
 
   /**
@@ -310,10 +327,23 @@ public final class CbxManager {
       CbxClient newClient = new CbxClient(this::handlePacket, this::onDisconnected);
       newClient.connect(connectUri).get(15, TimeUnit.SECONDS);
 
-      this.client = newClient;
-      this.connectedBotToken = bot.getToken();
-      this.reconnectAttempt = 0;
-      this.loggedConnectFailure = false;
+      // The handshake takes a while; a teardown in the meantime means nobody
+      // wants this connection anymore, so it must not be published (it would
+      // stay open with no lifecycle event ever closing it again).
+      if (!desired || !prerequisitesMet()) {
+        newClient.close();
+        return;
+      }
+      synchronized (this) {
+        if (!desired) {
+          newClient.close();
+          return;
+        }
+        this.client = newClient;
+        this.connectedBotToken = bot.getToken();
+        this.reconnectAttempt = 0;
+        this.loggedConnectFailure = false;
+      }
       addon.logger().info("[CBX] Connected for bot " + bot.getLinkName());
 
       // hudElements pushes start once a client sends its first packet on the
