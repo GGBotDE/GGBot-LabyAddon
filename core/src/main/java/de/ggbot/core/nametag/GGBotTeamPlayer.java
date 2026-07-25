@@ -145,7 +145,13 @@ public class GGBotTeamPlayer {
     }
     GGBotTeamPlayer teamPlayer = new GGBotTeamPlayer(uuid);
     Icon icon = teamPlayer.isTeamMember() ? teamPlayer.getIngameIcon() : null;
-    badgeIconCache.put(uuid, Optional.ofNullable(icon), BADGE_ICON_CACHE_TTL_MS);
+    // Before the team data has arrived every player looks like a non-member;
+    // caching that would hide the badges for a whole TTL. The lookup is cheap
+    // in that state anyway, since it bails out without walking any list.
+    TeamFetcher fetcher = TeamFetcher.teamInstance;
+    if (fetcher != null && fetcher.isFetched()) {
+      badgeIconCache.put(uuid, Optional.ofNullable(icon), BADGE_ICON_CACHE_TTL_MS);
+    }
     return icon;
   }
 
