@@ -65,8 +65,16 @@ public final class ShopDataCache {
     public long ageMs() { return System.currentTimeMillis() - fetchedAtMs; }
   }
 
+  /**
+   * How long a failed fetch blocks further attempts for the same key. The shop
+   * hint re-asks on every frame, so without this a permanently failing bot
+   * would result in one request after the other.
+   */
+  private static final long FAILURE_COOLDOWN_MS = 30_000L;
+
   private static final Map<String, Entry> entries = new HashMap<>();
   private static final Map<String, List<Consumer<Entry>>> pendingCallbacks = new HashMap<>();
+  private static final Map<String, Long> lastFailureMs = new HashMap<>();
 
   private ShopDataCache() {
   }
@@ -110,6 +118,7 @@ public final class ShopDataCache {
     }
 
     String key = key(botName, serverIp);
+    boolean inCooldown = false;
     synchronized (ShopDataCache.class) {
       List<Consumer<Entry>> callbacks = pendingCallbacks.get(key);
       if (callbacks != null) {
@@ -117,21 +126,46 @@ public final class ShopDataCache {
         if (callback != null) callbacks.add(callback);
         return;
       }
-      callbacks = new ArrayList<>();
-      if (callback != null) callbacks.add(callback);
-      pendingCallbacks.put(key, callbacks);
+      Long failedAt = lastFailureMs.get(key);
+      if (failedAt != null && System.currentTimeMillis() - failedAt < FAILURE_COOLDOWN_MS) {
+        inCooldown = true;
+      } else {
+        lastFailureMs.remove(key);
+        callbacks = new ArrayList<>();
+        if (callback != null) callbacks.add(callback);
+        pendingCallbacks.put(key, callbacks);
+      }
+    }
+    if (inCooldown) {
+      if (callback != null) callback.accept(null);
+      return;
     }
 
     Thread thread = new Thread(() -> {
-      Entry entry = doFetch(versioningHandler, botName, serverIp);
-      List<Consumer<Entry>> callbacks;
-      synchronized (ShopDataCache.class) {
-        if (entry != null) entries.put(key, entry);
-        callbacks = pendingCallbacks.remove(key);
-      }
-      if (callbacks != null) {
-        for (Consumer<Entry> queued : callbacks) {
-          queued.accept(entry);
+      Entry entry = null;
+      try {
+        entry = doFetch(versioningHandler, botName, serverIp);
+      } catch (RuntimeException e) {
+        GGBot.getInstance().logger().error(
+            "Failed to fetch shop data for bot: " + botName + " on server: " + serverIp, e);
+        GGBot.getInstance().getVersioningHandler().reportError(e);
+      } finally {
+        // Always hand the queued callers a result: a fetch that leaves its
+        // entry in the pending map would block every later fetch for this key.
+        List<Consumer<Entry>> callbacks;
+        synchronized (ShopDataCache.class) {
+          if (entry != null) {
+            entries.put(key, entry);
+            lastFailureMs.remove(key);
+          } else {
+            lastFailureMs.put(key, System.currentTimeMillis());
+          }
+          callbacks = pendingCallbacks.remove(key);
+        }
+        if (callbacks != null) {
+          for (Consumer<Entry> queued : callbacks) {
+            queued.accept(entry);
+          }
         }
       }
     }, "ggbot-shop-data-fetch");
@@ -150,6 +184,7 @@ public final class ShopDataCache {
       modulesApi.setCustomBaseUrl(baseUrl);
 
       PublicBot publicBot = publicApi.getPublicBotByLink(botName, serverIp);
+      if (publicBot == null || publicBot.getToken() == null) return null;
 
       List<CustomSellItem> sellItems = new ArrayList<>();
       for (SellItem item : modulesApi.getPublicSellItems(publicBot.getToken())) {
