@@ -56,6 +56,13 @@
                 "hotkeys": {
                     "title": "Schritt 2: Deine Tastenkürzel",
                     "body": "Bot-Auswahl: Strg + B\nBot-Verwaltungsmenü: Strg + G\nSteuerungsmodus (Bot steuern): Strg + K\nPosition 1 / 2 setzen: Numpad 1 / Numpad 2\nAlle Tasten können in den Einstellungen geändert werden."
+                },
+                "selectbot": {
+                    "title": "Bot auswählen",
+                    "body": "Wähle den Bot, den du mit dem Addon steuern möchtest.\nDu kannst das jederzeit in den Einstellungen ändern.",
+                    "login": "Verbinde zuerst im vorherigen Schritt deinen Account und komme dann hierher zurück.",
+                    "empty": "Noch keine Bots auf deinem Account gefunden. Nutze Aktualisieren, sobald dein Bot erscheint.",
+                    "refresh": "Aktualisieren"
                 }
             },
             "finish": {
@@ -66,7 +73,15 @@
             "back": "Zurück",
             "next": "Weiter",
             "cancel": "Abbrechen",
-            "reset": "Zurücksetzen"
+            "reset": "Zurücksetzen",
+            "privacy": {
+                "title": "Privatsphäre",
+                "body": "Beides ist optional und kann jederzeit in den Allgemeinen Einstellungen geändert werden.\nFehlerberichte: sendet automatisch anonyme Absturz-/Stacktrace-Berichte, damit wir Fehler beheben können.\nVersionsbericht: sendet einmal pro Start deine Addon-/LabyMod-/Minecraft-Version, OS, Build-Hash und Abhängigkeitsliste, damit wir wissen, wie viele Nutzer ein fehlerhafter oder verwundbarer Build betrifft.",
+                "errorReports": "Fehlerberichte senden",
+                "versionReport": "Versionsbericht senden",
+                "on": "An",
+                "off": "Aus"
+            }
         },
         "serverbots": {
             "title": "GGBots auf diesem Server",
@@ -149,6 +164,10 @@
                 },
                 "shopRange": {
                     "name": "Bot-Erkennungsradius"
+                },
+                "payCommand": {
+                    "name": "Bezahl-Befehl",
+                    "description": "Chat-Befehl zum Bezahlen des Bots beim Kauf. Platzhalter: %bot% (Bot-Name), %amount% (Preis)."
                 }
             },
             "statusSub": {
@@ -176,6 +195,14 @@
                 },
                 "joinNotificationEnabled": {
                     "name": "Beitrittsnachricht anzeigen"
+                },
+                "errorReportingEnabled": {
+                    "name": "Fehlerberichte senden",
+                    "description": "Sendet automatisch anonyme Fehler-/Stacktrace-Berichte an das GGBot-Team, damit Fehler behoben werden können. Wenn deaktiviert, werden Fehler nur ins lokale Log geschrieben."
+                },
+                "versionReportEnabled": {
+                    "name": "Versionsbericht senden",
+                    "description": "Sendet einmal pro Start deine Addon-/LabyMod-/Minecraft-Version, OS, Build-Hash und Abhängigkeitsliste. Hilft uns einzuschätzen, wie viele Nutzer ein fehlerhafter oder verwundbarer Build betrifft. Das Addon funktioniert auch ohne vollständig."
                 },
                 "botSelectorEnabled": {
                     "name": "Bot-Auswahl-Tastenkürzel aktivieren"

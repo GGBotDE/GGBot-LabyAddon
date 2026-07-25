@@ -9,22 +9,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents the full response returned by {@code POST /v1/check/:addonSlug}.
+ * The locally evaluated version/feature-check result.
  *
  * <p>Instances of this class are created by
- * {@link VersioningApiClient#check(String, VersionCheckRequest)} after deserialising
- * the JSON response body.
+ * {@link de.ggbot.core.api.versioning.matrix.ClientRuleEngine#evaluate} after
+ * evaluating the server's rule matrix against the local environment. The shape
+ * matches what the legacy {@code POST /v1/check} endpoint used to return, so
+ * every consumer of feature flags, messages and update info works unchanged.
  *
  * <p>Example usage:
  * <pre>{@code
- * client.check("my-addon", req).thenAccept(resp -> {
- *     if (!resp.isSupported()) {
- *         System.out.println("Addon not supported: " + resp.getMessage());
- *     }
- *     if (resp.isUpdateAvailable(req.getAddonVersion())) {
- *         System.out.println("Update to " + resp.getCurrentVersion().getVersion());
- *     }
- * });
+ * VersionCheckResponse resp = ClientRuleEngine.evaluate(matrix, env);
+ * if (!resp.isSupported()) {
+ *     System.out.println("Addon not supported: " + resp.getMessage());
+ * }
+ * if (resp.isUpdateAvailable(env.getAddonVersion())) {
+ *     System.out.println("Update to " + resp.getCurrentVersion().getVersion());
+ * }
  * }</pre>
  */
 public class VersionCheckResponse {

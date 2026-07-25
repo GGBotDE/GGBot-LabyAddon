@@ -127,6 +127,13 @@ public final class ControlModeManager {
     this.rotationDirty = false;
     this.actionBar = buildActionBar(name);
 
+    // Prefer the live CBX connection for the control inputs: connect lazily
+    // when allowed (with the on-login flag disabled this is where CBX starts)
+    // and subscribe to the movement data. Every send in sendStates falls back
+    // to the HTTP endpoints while CBX is unavailable, so control works
+    // identically whether the connection is up, still connecting or disabled.
+    de.ggbot.core.cbx.CbxManager.get().onControlStarted();
+
     this.task = executor.scheduleAtFixedRate(this::sendStates, 0, 100, TimeUnit.MILLISECONDS);
     notify("ggbot.botmenu.control.started");
   }
@@ -146,6 +153,8 @@ public final class ControlModeManager {
       task.cancel(false);
       task = null;
     }
+    // Drop the movement subscription; the CBX connection itself may stay.
+    de.ggbot.core.cbx.CbxManager.get().onControlStopped();
 
     // Release every movement key so the bot actually stops moving.
     Bot b = this.bot;

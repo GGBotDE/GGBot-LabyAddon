@@ -86,7 +86,7 @@ public class StartTimerOnJoin {
     logTimer.scheduleAtFixedRate(wrapTask(() -> {
       try { BotRequests.logsAsync(); }
       catch (ApiException ignored) {}
-    }), 0, intervalMs);
+    }), 0, addon.getVersioningHandler().clampIntervalMs("de.ggbot.addon.timers.logs", intervalMs));
   }
 
   /**
@@ -99,7 +99,8 @@ public class StartTimerOnJoin {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.status")) return;
     if (!addon.configuration().statusSub.statusEnabled.get()) return;
     statusTimer = new Timer(true);
-    statusTimer.scheduleAtFixedRate(wrapTask(this::updateStatusWidgets), 0, intervalMs);
+    statusTimer.scheduleAtFixedRate(wrapTask(this::updateStatusWidgets), 0,
+        addon.getVersioningHandler().clampIntervalMs("de.ggbot.addon.timers.status", intervalMs));
   }
 
   /** Refreshes the bot cache and the name/status widgets from it. */
@@ -126,7 +127,8 @@ public class StartTimerOnJoin {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.timers.stats")) return;
     if (!addon.configuration().statsSub.statsEnabled.get()) return;
     statsTimer = new Timer(true);
-    statsTimer.scheduleAtFixedRate(wrapTask(this::updateStatsWidgets), 0, intervalMs);
+    statsTimer.scheduleAtFixedRate(wrapTask(this::updateStatsWidgets), 0,
+        addon.getVersioningHandler().clampIntervalMs("de.ggbot.addon.timers.stats", intervalMs));
   }
 
   /** Fetches and updates all enabled statistics widgets (money, health, tickets, ...). */
@@ -210,15 +212,37 @@ public class StartTimerOnJoin {
   }
 
   /**
+   * Cancels every running timer at once. Used when the addon is disabled
+   * mid-session.
+   */
+  public void cancelAllTimers() {
+    cancelLogTimer();
+    cancelStatusTimer();
+    cancelStatsTimer();
+  }
+
+  /**
    * Wraps a {@link Runnable} in a {@link TimerTask} for use with
    * {@link Timer#scheduleAtFixedRate}.
+   *
+   * <p>The event bus stops delivering events to disabled addons, so the
+   * {@link ServerDisconnectEvent} that normally cancels these timers never
+   * arrives once the user disables the addon mid-session. Each tick therefore
+   * re-checks the enabled switch itself and shuts every timer down instead of
+   * polling the API until the game closes.
    *
    * @param runnable the task body
    * @return a {@link TimerTask} that delegates to the runnable
    */
-  private static TimerTask wrapTask(Runnable runnable) {
+  private TimerTask wrapTask(Runnable runnable) {
     return new TimerTask() {
-      @Override public void run() { runnable.run(); }
+      @Override public void run() {
+        if (!Boolean.TRUE.equals(addon.configuration().enabled().get())) {
+          cancelAllTimers();
+          return;
+        }
+        runnable.run();
+      }
     };
   }
 }

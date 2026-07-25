@@ -78,3 +78,13 @@ access_widener_index.json
 
 # Don't ignore libraries
 !libs/*.jar
+
+# IntelliJ
+.idea/libraries/
+.idea/workspace.xml
+.idea/shelf/
+.idea/tasks.xml
+.idea/caches/
+
+# Ignore all of IntelliJ
+.idea/

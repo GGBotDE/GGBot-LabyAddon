@@ -44,6 +44,23 @@ public class GeneralSubConfig extends Config {
   @SwitchSetting
   public final ConfigProperty<Boolean> joinNotificationEnabled = new ConfigProperty<>(true);
 
+  /**
+   * Whether runtime errors may be reported to the GGBot backend automatically.
+   * Opt-out (default on); also toggleable in the onboarding for every user.
+   * When disabled, errors are only written to the local log.
+   */
+  @SwitchSetting
+  public final ConfigProperty<Boolean> errorReportingEnabled = new ConfigProperty<>(true);
+
+  /**
+   * Whether the optional version report (addon/LabyMod/Minecraft version, OS,
+   * file hash, release channel, dependency list) may be sent once per launch.
+   * Opt-out (default on); also toggleable in the onboarding for every user.
+   * See VersioningHandler#sendVersionReportIfEnabled() for why it exists.
+   */
+  @SwitchSetting
+  public final ConfigProperty<Boolean> versionReportEnabled = new ConfigProperty<>(true);
+
   @SwitchSetting
   public final ConfigProperty<Boolean> botSelectorEnabled = new ConfigProperty<>(true);
 

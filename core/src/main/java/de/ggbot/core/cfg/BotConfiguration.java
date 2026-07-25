@@ -46,7 +46,24 @@ public class BotConfiguration extends AddonConfig {
 
   @SwitchSetting @SettingSection("Addon")
   @SpriteSlot(x = 6)
-  private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
+  private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true)
+      .addChangeListener(value -> {
+        // The event bus stops delivering events to disabled addons, so the
+        // disconnect listener that normally cancels the polling timers never
+        // fires once the addon is disabled mid-session. Cancel them here (the
+        // timer bodies also re-check this switch as a fallback). The CBX
+        // connection follows the same switch: disconnect on disable and
+        // reconnect (policy permitting) on enable.
+        GGBot current = GGBot.getInstance();
+        if (Boolean.FALSE.equals(value)) {
+          if (current != null && current.getTimerListener() != null) {
+            current.getTimerListener().cancelAllTimers();
+          }
+          de.ggbot.core.cbx.CbxManager.get().onAddonDisabled();
+        } else if (Boolean.TRUE.equals(value)) {
+          de.ggbot.core.cbx.CbxManager.get().onAddonEnabled();
+        }
+      });
   @TextFieldSetting @SettingSection("Bot")
   public final ConfigProperty<String> token = new ConfigProperty<>("").visibilitySupplier(() -> debug);
   @TextFieldSetting
@@ -57,11 +74,13 @@ public class BotConfiguration extends AddonConfig {
   @SpriteSlot(x = 5)
   public final ConfigProperty<String> botlist = new ConfigProperty<>("")
       .addChangeListener(value -> {
-        // Refresh the HUD widgets immediately when the selected bot changes.
+        // Refresh the HUD widgets immediately when the selected bot changes,
+        // and move the CBX session over to the newly selected bot.
         GGBot current = GGBot.getInstance();
         if (current != null && current.getTimerListener() != null) {
           current.getTimerListener().refreshNow();
         }
+        de.ggbot.core.cbx.CbxManager.get().onSelectedBotChanged();
       });
 
 

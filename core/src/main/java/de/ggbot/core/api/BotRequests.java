@@ -179,6 +179,9 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) return;
     cachedBots = new ArrayList<>(new BotsApi(
         createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots());
+    // Let the CBX react to online-state changes (connect on offline-to-online,
+    // tear down when the bot went offline).
+    de.ggbot.core.cbx.CbxManager.get().onBotStatusRefresh();
   }
 
   /**
@@ -218,6 +221,8 @@ public class BotRequests {
     if (bot == null) return;
     new BotsApi(createApiClient(addon, "de.ggbot.addon.api.startbot"))
         .startBotAsync(bot.getToken(), Callbacks.START);
+    // A freshly started bot has no CBX session yet; give it time to log in.
+    de.ggbot.core.cbx.CbxManager.get().onBotStarted();
   }
 
   /**
@@ -231,6 +236,8 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.startbot")) return;
     new BotsApi(createApiClient(addon, "de.ggbot.addon.api.startbot"))
         .startBotAsync(bot.getToken(), Callbacks.START);
+    // A freshly started bot has no CBX session yet; give it time to log in.
+    de.ggbot.core.cbx.CbxManager.get().onBotStarted();
   }
 
   /**
@@ -288,6 +295,7 @@ public class BotRequests {
   private static final String F_SET_CONTROL_STATE = "de.ggbot.addon.api.setcontrolstate";
   private static final String F_ROTATE_BOT = "de.ggbot.addon.api.rotatebot";
   private static final String F_GET_BOT_LOCATION = "de.ggbot.addon.api.getbotlocation";
+  private static final String F_CBX = "de.ggbot.addon.cbx";
 
   /** Runs {@code work} on a daemon thread, then {@code onResult} on the render thread. */
   private static <T> void async(GGBot addon, ThrowingSupplier<T> work, Consumer<T> onResult, T fallback) {
@@ -515,26 +523,53 @@ public class BotRequests {
   }
 
   // ---- control-mode (synchronous; called from a dedicated control thread) ----
+  // Every control call prefers the live CBX connection and transparently
+  // falls back to the HTTP endpoint whenever CBX is disabled, disconnected
+  // or mid-reconnect, so control keeps working in every scenario.
 
-  /** Sets a single movement control state on the bot. */
+  /** Sets a single movement control state on the bot (CBX first, endpoint fallback). */
   public static void setControlState(GGBot addon, Bot bot, String control, boolean state)
       throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled(F_SET_CONTROL_STATE)) return;
+    if (de.ggbot.core.cbx.CbxManager.get().trySetControlState(bot, control, state)) return;
     new IngameApi(createApiClient(addon, F_SET_CONTROL_STATE)).setControlState(bot.getToken(),
         new de.ggbot.sdk.model.ControlStateRequest()
             .control(de.ggbot.sdk.model.ControlStateRequest.ControlEnum.fromValue(control))
             .state(state));
   }
 
-  /** Rotates the bot's view. */
+  /** Rotates the bot's view (CBX first, endpoint fallback). */
   public static void rotateBot(GGBot addon, Bot bot, float yaw, float pitch) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled(F_ROTATE_BOT)) return;
+    if (de.ggbot.core.cbx.CbxManager.get().tryRotateBot(bot, yaw, pitch)) return;
     new BotsApi(createApiClient(addon, F_ROTATE_BOT)).rotateBot(bot.getToken(), yaw, pitch);
   }
 
-  /** Returns the bot's current world position, or {@code null} on failure. */
+  /**
+   * Creates a CBX (Client Bot Exchange) session for the given bot via the SDK.
+   * Returns the session details (connection token and where to connect to), or
+   * {@code null} when the feature is disabled.
+   *
+   * @param addon the addon instance
+   * @param bot   the bot to open a session for
+   * @return the CBX session, or {@code null}
+   * @throws ApiException if the API request fails (e.g. the bot is offline)
+   */
+  public static de.ggbot.sdk.model.CbxSession createCbxSession(GGBot addon, Bot bot)
+      throws ApiException {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_CBX)) return null;
+    return new IngameApi(createApiClient(addon, F_CBX)).createCbxSession(bot.getToken());
+  }
+
+  /**
+   * Returns the bot's current world position, or {@code null} on failure.
+   * Served from the live CBX movement subscription when fresh data is
+   * available, otherwise from the HTTP endpoint.
+   */
   public static de.ggbot.sdk.model.Position getBotLocation(GGBot addon, Bot bot) {
     if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_BOT_LOCATION)) return null;
+    de.ggbot.sdk.model.Position live = de.ggbot.core.cbx.CbxManager.get().getLiveLocation(bot);
+    if (live != null) return live;
     try {
       var resp = new IngameApi(createApiClient(addon, F_GET_BOT_LOCATION)).getBotLocation(bot.getToken());
       return resp != null ? resp.getData() : null;

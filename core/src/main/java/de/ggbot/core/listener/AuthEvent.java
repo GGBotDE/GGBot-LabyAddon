@@ -50,21 +50,33 @@ public class AuthEvent {
   @Subscribe
   public void onServerJoin(ServerJoinEvent e) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
+    if (GGBot.isAuthenticated() && !GGBot.isTokenExpired()) {
+      // Already logged in: no auth flow, so no local redirect socket either.
+      loadBotData();
+      return;
+    }
+    // The localhost redirect server is only opened while an auth flow is
+    // actually pending; it is closed again on disconnect or once the code
+    // arrives. A still-open server from an earlier join is closed first, so
+    // its socket is released instead of forcing the replacement onto another
+    // port.
+    if (authServer != null) {
+      authServer.close();
+      authServer = null;
+    }
+    OAuthServer server;
     try {
-      authServer = new OAuthServer(addon);
+      server = new OAuthServer(addon);
     } catch (IOException ioEx) {
       addon.logger().error("Failed to start OAuth server: " + ioEx.getMessage());
       addon.getVersioningHandler().reportError(ioEx);
       return;
     }
-    if (!GGBot.isAuthenticated()) {
-      if (addon.configuration().generalSub.joinNotificationEnabled.get()) {
-        displayAuthPrompt();
-      }
-      startAuth();
-    } else {
-      loadBotData();
+    authServer = server;
+    if (addon.configuration().generalSub.joinNotificationEnabled.get()) {
+      displayAuthPrompt();
     }
+    startAuth(server);
   }
 
   /**
@@ -176,12 +188,15 @@ public class AuthEvent {
   /**
    * Begins the asynchronous OAuth flow: listens for the redirect code and
    * exchanges it for an access token, then persists the token to configuration.
+   *
+   * @param server the server this flow belongs to; the callbacks stay bound to
+   *               it even when a later join replaces the field
    */
-  private void startAuth() {
+  private void startAuth(OAuthServer server) {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.base")) return;
     try {
-      authServer.listenForCodeAsync(code ->
-          authServer.getTokenAsync(code, token -> {
+      server.listenForCodeAsync(code ->
+          server.getTokenAsync(code, token -> {
             addon.configuration().token.set(token.get("access_token").getAsString());
             addon.configuration().expiresAt.set(String.valueOf(
                 System.currentTimeMillis() + (token.get("expires_in").getAsInt() * 1000L)));

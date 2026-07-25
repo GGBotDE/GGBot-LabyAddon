@@ -56,6 +56,13 @@
         "hotkeys": {
           "title": "Step 2: Your hotkeys",
           "body": "Bot Selector: Ctrl + B\nBot Management Menu: Ctrl + G\nControl Mode (steer the bot): Ctrl + K\nSet Position 1 / 2: Numpad 1 / Numpad 2\nAll keys can be changed in the settings."
+        },
+        "selectbot": {
+          "title": "Select your bot",
+          "body": "Pick the bot you want to control with the addon.\nYou can change this any time in the settings.",
+          "login": "Link your account in the previous step first, then come back here.",
+          "empty": "No bots found on your account yet. Use Refresh once your bot appears.",
+          "refresh": "Refresh"
         }
       },
       "finish": {
@@ -66,7 +73,15 @@
       "back": "Back",
       "next": "Next",
       "cancel": "Cancel",
-      "reset": "Reset"
+      "reset": "Reset",
+      "privacy": {
+        "title": "Privacy",
+        "body": "Both of these are optional and can be changed any time in the General Settings.\nError reports: automatically send anonymous crash/stacktrace reports so we can fix bugs.\nVersion report: once per launch, send your addon/LabyMod/Minecraft version, OS, build hash and dependency list so we know how many users a broken or vulnerable build affects.",
+        "errorReports": "Send error reports",
+        "versionReport": "Send version report",
+        "on": "On",
+        "off": "Off"
+      }
     },
     "serverbots": {
       "title": "GGBots on this server",
@@ -149,6 +164,10 @@
         },
         "shopRange": {
           "name": "Bot Detection Range"
+        },
+        "payCommand": {
+          "name": "Payment Command",
+          "description": "Chat command used to pay the bot when buying. Placeholders: %bot% (bot name), %amount% (price)."
         }
       },
       "statusSub": {
@@ -176,6 +195,14 @@
         },
         "joinNotificationEnabled": {
           "name": "Show Join Notification"
+        },
+        "errorReportingEnabled": {
+          "name": "Send error reports",
+          "description": "Automatically send anonymous error/stacktrace reports to the GGBot team so bugs can be fixed. When disabled, errors are only written to the local log."
+        },
+        "versionReportEnabled": {
+          "name": "Send version report",
+          "description": "Once per launch, send your addon/LabyMod/Minecraft version, OS, build hash and dependency list. Helps us judge how many users a broken or vulnerable build affects. The addon works fully without it."
         },
         "botSelectorEnabled": {
           "name": "Enable Bot Selector Shortcut"

@@ -6,7 +6,7 @@ package de.ggbot.core.api.versioning;
  *
  * <p>Example usage:
  * <pre>{@code
- * client.check("my-addon", req).exceptionally(ex -> {
+ * client.matrix("my-addon").exceptionally(ex -> {
  *     if (ex.getCause() instanceof ApiException apiEx) {
  *         System.err.println("HTTP " + apiEx.getStatusCode() + ": " + apiEx.getResponseBody());
  *     }
