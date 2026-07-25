@@ -113,8 +113,12 @@ public class VersioningHandler {
   /** Client responsible for performing API requests */
   private final VersioningApiClient versioningApiClient;
 
-  /** Cached response of the version check */
-  private VersionCheckResponse versionCheckResponse;
+  /**
+   * Cached response of the version check. Written from the asynchronous matrix
+   * refresh and read from every thread that checks a feature flag, so the
+   * field is volatile to make each refresh immediately visible.
+   */
+  private volatile VersionCheckResponse versionCheckResponse;
 
   private List<String> shownMessages;
 

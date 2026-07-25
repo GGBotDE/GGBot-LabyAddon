@@ -530,8 +530,8 @@ public class BotRequests {
   /** Sets a single movement control state on the bot (CBX first, endpoint fallback). */
   public static void setControlState(GGBot addon, Bot bot, String control, boolean state)
       throws ApiException {
-    if (de.ggbot.core.cbx.CbxManager.get().trySetControlState(bot, control, state)) return;
     if (!addon.getVersioningHandler().isFeatureEnabled(F_SET_CONTROL_STATE)) return;
+    if (de.ggbot.core.cbx.CbxManager.get().trySetControlState(bot, control, state)) return;
     new IngameApi(createApiClient(addon, F_SET_CONTROL_STATE)).setControlState(bot.getToken(),
         new de.ggbot.sdk.model.ControlStateRequest()
             .control(de.ggbot.sdk.model.ControlStateRequest.ControlEnum.fromValue(control))
@@ -540,8 +540,8 @@ public class BotRequests {
 
   /** Rotates the bot's view (CBX first, endpoint fallback). */
   public static void rotateBot(GGBot addon, Bot bot, float yaw, float pitch) throws ApiException {
-    if (de.ggbot.core.cbx.CbxManager.get().tryRotateBot(bot, yaw, pitch)) return;
     if (!addon.getVersioningHandler().isFeatureEnabled(F_ROTATE_BOT)) return;
+    if (de.ggbot.core.cbx.CbxManager.get().tryRotateBot(bot, yaw, pitch)) return;
     new BotsApi(createApiClient(addon, F_ROTATE_BOT)).rotateBot(bot.getToken(), yaw, pitch);
   }
 
@@ -567,9 +567,9 @@ public class BotRequests {
    * available, otherwise from the HTTP endpoint.
    */
   public static de.ggbot.sdk.model.Position getBotLocation(GGBot addon, Bot bot) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_BOT_LOCATION)) return null;
     de.ggbot.sdk.model.Position live = de.ggbot.core.cbx.CbxManager.get().getLiveLocation(bot);
     if (live != null) return live;
-    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_BOT_LOCATION)) return null;
     try {
       var resp = new IngameApi(createApiClient(addon, F_GET_BOT_LOCATION)).getBotLocation(bot.getToken());
       return resp != null ? resp.getData() : null;
