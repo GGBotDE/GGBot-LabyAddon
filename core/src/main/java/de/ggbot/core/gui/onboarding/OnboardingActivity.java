@@ -55,6 +55,13 @@ public class OnboardingActivity extends SimpleActivity {
   private final int step;
   private final List<MultiKeybindWidget> keybindWidgets = new ArrayList<>();
 
+  /**
+   * Set once the guide was finished or cancelled. Bot list refreshes complete
+   * asynchronously and rebuild the step when they do, which would otherwise
+   * pop the closed guide back open.
+   */
+  private volatile boolean dismissed = false;
+
   public OnboardingActivity() {
     this(Path.NONE, 0);
   }
@@ -409,12 +416,14 @@ public class OnboardingActivity extends SimpleActivity {
   }
 
   private void go(Path newPath, int newStep) {
+    if (dismissed) return;
     Laby.labyAPI().minecraft().minecraftWindow()
         .displayScreen(new OnboardingActivity(newPath, newStep));
   }
 
   /** Marks onboarding done (so it does not reappear) and closes the guide. */
   private void complete() {
+    dismissed = true;
     GGBot.getInstance().configuration().generalSub.onboardingCompleted.set(true);
     closeScreen();
   }
