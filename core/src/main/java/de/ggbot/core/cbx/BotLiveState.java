@@ -20,6 +20,15 @@ public final class BotLiveState {
   private volatile double health = -1;
   private volatile long healthUpdatedAt;
 
+  private volatile double food = -1;
+  private volatile long foodUpdatedAt;
+
+  private volatile int level = -1;
+  private volatile long levelUpdatedAt;
+
+  private volatile int playerCount = -1;
+  private volatile long playerCountUpdatedAt;
+
   /** Applies a movement snapshot ({@code movement}/{@code update} packet). */
   void applyMovement(JsonObject data) {
     JsonObject position = data.has("position") && data.get("position").isJsonObject()
@@ -40,6 +49,26 @@ public final class BotLiveState {
       this.health = player.get("health").getAsDouble();
       this.healthUpdatedAt = System.currentTimeMillis();
     }
+    if (player.has("food") && player.get("food").isJsonPrimitive()) {
+      this.food = player.get("food").getAsDouble();
+      this.foodUpdatedAt = System.currentTimeMillis();
+    }
+    if (player.has("level") && player.get("level").isJsonPrimitive()) {
+      this.level = player.get("level").getAsInt();
+      this.levelUpdatedAt = System.currentTimeMillis();
+    }
+  }
+
+  /**
+   * Extracts player count from the HUD tablist data.
+   *
+   * @param tablist The JSON object containing HUD tablist data
+   */
+  void applyTablist(JsonObject tablist) {
+    if (tablist.has("players") && tablist.get("players").isJsonArray()) {
+      this.playerCount = tablist.getAsJsonArray("players").size();
+      this.playerCountUpdatedAt = System.currentTimeMillis();
+    }
   }
 
   private static double doubleOr(JsonObject json, String key, double fallback) {
@@ -57,6 +86,36 @@ public final class BotLiveState {
   public double getFreshHealth() {
     if (System.currentTimeMillis() - healthUpdatedAt > FRESHNESS_MS) return -1;
     return health;
+  }
+
+  /**
+   * Provides the current food level, or -1 if the data is stale.
+   *
+   * @return The food level as a double value, or -1 if no fresh data is available
+   */
+  public double getFreshFood() {
+    if (System.currentTimeMillis() - foodUpdatedAt > FRESHNESS_MS) return -1;
+    return food;
+  }
+
+  /**
+   * Provides the current experience level, or -1 if the data is stale.
+   *
+   * @return The experience level as an integer value, or -1 if no fresh data is available
+   */
+  public int getFreshLevel() {
+    if (System.currentTimeMillis() - levelUpdatedAt > FRESHNESS_MS) return -1;
+    return level;
+  }
+
+  /**
+   * Provides the current player count from the tablist, or -1 if the data is stale.
+   *
+   * @return The player count as an integer value, or -1 if no fresh data is available
+   */
+  public int getFreshPlayerCount() {
+    if (System.currentTimeMillis() - playerCountUpdatedAt > FRESHNESS_MS) return -1;
+    return playerCount;
   }
 
   /** Returns the live yaw (radians, bot convention). */

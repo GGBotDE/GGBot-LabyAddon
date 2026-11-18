@@ -74,6 +74,19 @@ public final class CbxClient implements WebSocket.Listener {
    * @return {@code true} when the packet was handed to the transport
    */
   public boolean send(String endpoint, String action, JsonObject data) {
+    return send(endpoint, action, data, null);
+  }
+
+  /**
+   * Sends a packet to the CBX endpoint with the specified action and data.
+   *
+   * @param endpoint The CBX endpoint name to target
+   * @param action The action to perform at the endpoint
+   * @param data The data payload to include with the request
+   * @param requestId An optional identifier to track the request response
+   * @return true if the packet was successfully sent to the transport
+   */
+  public boolean send(String endpoint, String action, JsonObject data, String requestId) {
     WebSocket ws = this.webSocket;
     if (ws == null || closed) return false;
 
@@ -81,6 +94,7 @@ public final class CbxClient implements WebSocket.Listener {
     packet.addProperty("endpoint", endpoint);
     packet.addProperty("action", action);
     if (data != null) packet.add("data", data);
+    if (requestId != null) packet.addProperty("requestId", requestId);
     try {
       ws.sendText(packet.toString(), true);
       return true;

@@ -1,0 +1,223 @@
+.afkfleets-panel {
+  left: 50%;
+  top: 50%;
+  alignment-x: center;
+  alignment-y: center;
+  width: 70%;
+  max-width: 420;
+  height: 80%;
+  max-height: 360;
+  background-color: #0a0e15;
+  border-radius: 10;
+  padding: 10;
+}
+
+.afkfleets-header {
+  top: 0;
+  left: 50%;
+  alignment-x: center;
+  font-size: 1.0;
+  text-color: #3895ff;
+}
+
+.afkfleets-controls {
+  top: 14;
+  left: 0;
+  width: 100%;
+  height: 16;
+}
+
+.afkfleets-search {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 16;
+  background-color: #1a2230;
+  border-radius: 3;
+}
+
+.afkfleets-input {
+  top: 0;
+  left: 0;
+  width: calc(100% - 44);
+  height: 16;
+  background-color: #1a2230;
+  border-radius: 3;
+}
+
+.afkfleets-send {
+  top: 0;
+  right: 0;
+  width: 40;
+  height: 16;
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.6;
+}
+
+.afkfleets-send:hover { background-color: #35496e; }
+
+.afkfleets-scroll {
+  top: 34;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 54);
+}
+
+.afkfleets-list {
+  width: 100%;
+  height: fit-content;
+  space-between-entries: 3;
+}
+
+.afkfleets-status {
+  width: 100%;
+  font-size: 0.75;
+  text-color: #7E97B4;
+  alignment-x: center;
+  left: 50%;
+  margin-top: 8;
+}
+
+.afkfleets-bot-entry {
+  width: 100%;
+  height: fit-content;
+  space-between-entries: 1;
+}
+
+.afkfleets-row {
+  width: 100%;
+  height: 18;
+  space-between-entries: 5;
+  background-color: #141c28;
+  border-radius: 4;
+  padding: 2 5 2 5;
+}
+
+.afkfleets-row:hover { background-color: #1c2636; }
+
+.afkfleets-head { width: 14; height: 14; }
+
+.afkfleets-pick { width: 14; height: 14; }
+
+.afkfleets-name {
+  font-size: 0.75;
+  text-color: #f2f1e9;
+}
+
+.afkfleets-server {
+  font-size: 0.6;
+  text-color: #7E97B4;
+}
+
+.afkfleets-details {
+  font-size: 0.6;
+  text-color: #7E97B4;
+  margin-left: 5;
+}
+
+.afkfleets-online {
+  font-size: 0.6;
+  text-color: #4caf50;
+}
+
+.afkfleets-offline {
+  font-size: 0.6;
+  text-color: #b04a4a;
+}
+
+.afkfleets-actions {
+  right: 0;
+  height: 14;
+  width: fit-content;
+  space-between-entries: 2;
+}
+
+.afkfleets-start {
+  height: 14;
+  background-color: #232e25;
+  text-color: #adf7c9;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.afkfleets-stop {
+  height: 14;
+  background-color: #2e2323;
+  text-color: #f2f1e9;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.afkfleets-open {
+  height: 14;
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.55;
+  padding: 1 4 1 4;
+}
+
+.afkfleets-open:hover { background-color: #35496e; }
+
+.afkfleets-pad {
+  width: 100%;
+  height: 16;
+  layout: fill;
+  space-between-entries: 3;
+}
+
+.afkfleets-pad-button {
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.6;
+}
+
+.afkfleets-pad-button:hover { background-color: #35496e; }
+
+.afkfleets-buttons {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 16;
+  layout: fill;
+  space-between-entries: 6;
+}
+
+.afkfleets-back {
+  background-color: #202f46;
+  text-color: #f2f1e9;
+  border-radius: 4;
+  font-size: 0.65;
+}
+
+.afkfleets-back:hover { background-color: #2f476a; }
+
+.afkfleets-refresh {
+  background-color: #202f46;
+  text-color: #f2f1e9;
+  border-radius: 4;
+  font-size: 0.65;
+}
+
+.afkfleets-refresh:hover { background-color: #2f476a; }
+
+.afkfleets-close {
+  background-color: #2a3140;
+  text-color: #ff9b9b;
+  border-radius: 4;
+  font-size: 0.65;
+}
+
+.afkfleets-close:hover { background-color: #3a2330; }
+
+Scrollbar {
+  width: 3;
+  scroll-background-color: #101823;
+  scroll-color: #4f83bf;
+  scroll-hover-color: #3895ff;
+}
