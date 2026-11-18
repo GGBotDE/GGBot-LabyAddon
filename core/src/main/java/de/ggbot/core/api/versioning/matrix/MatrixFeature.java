@@ -1,7 +1,6 @@
 package de.ggbot.core.api.versioning.matrix;
 
 import de.ggbot.core.api.versioning.response.IntervalConfig;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,6 +33,9 @@ public class MatrixFeature {
   /** The rules deciding the effective state; may be empty. */
   private List<MatrixRule> rules;
 
+  /** Rules with a server condition, kept apart so older builds never apply them anywhere. */
+  private List<MatrixRule> serverRules;
+
   /** Returns the feature flag key. */
   public String getKey() { return key; }
 
@@ -46,8 +48,8 @@ public class MatrixFeature {
   /** Returns the interval pacing config, or {@code null}. */
   public IntervalConfig getInterval() { return interval; }
 
-  /** Returns the rules for this feature (never {@code null}). */
+  /** Returns the rules for this feature, server rules included (never {@code null}). */
   public List<MatrixRule> getRules() {
-    return rules != null ? rules : Collections.emptyList();
+    return MatrixResponse.join(rules, serverRules);
   }
 }

@@ -1,6 +1,7 @@
 package de.ggbot.core.api.versioning.matrix;
 
 import de.ggbot.core.api.versioning.response.CurrentVersion;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,11 +33,17 @@ public class MatrixResponse {
   /** Rules deciding whether the addon as a whole is supported. */
   private List<MatrixRule> supportRules;
 
+  /** Support rules with a server condition, see {@link MatrixFeature}. */
+  private List<MatrixRule> serverSupportRules;
+
   /** All feature flags with their rules. */
   private List<MatrixFeature> features;
 
   /** All client messages with their targeting conditions. */
   private List<MatrixMessage> messages;
+
+  /** Messages targeting a server, see {@link MatrixFeature}. */
+  private List<MatrixMessage> serverMessages;
 
   /** Returns the matrix format version. */
   public int getMatrixVersion() { return matrixVersion; }
@@ -52,7 +59,7 @@ public class MatrixResponse {
 
   /** Returns the addon support rules (never {@code null}). */
   public List<MatrixRule> getSupportRules() {
-    return supportRules != null ? supportRules : Collections.emptyList();
+    return join(supportRules, serverSupportRules);
   }
 
   /** Returns the feature flag entries (never {@code null}). */
@@ -62,6 +69,13 @@ public class MatrixResponse {
 
   /** Returns the message entries (never {@code null}). */
   public List<MatrixMessage> getMessages() {
-    return messages != null ? messages : Collections.emptyList();
+    return join(messages, serverMessages);
+  }
+
+  static <T> List<T> join(List<T> first, List<T> second) {
+    if (second == null || second.isEmpty()) return first != null ? first : Collections.emptyList();
+    List<T> joined = new ArrayList<>(first != null ? first : Collections.emptyList());
+    joined.addAll(second);
+    return joined;
   }
 }

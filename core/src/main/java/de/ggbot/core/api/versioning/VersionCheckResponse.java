@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * <p>Example usage:
  * <pre>{@code
- * VersionCheckResponse resp = ClientRuleEngine.evaluate(matrix, env);
+ * VersionCheckResponse resp = ClientRuleEngine.evaluate(matrix, env, server);
  * if (!resp.isSupported()) {
  *     System.out.println("Addon not supported: " + resp.getMessage());
  * }

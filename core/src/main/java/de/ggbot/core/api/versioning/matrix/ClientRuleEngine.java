@@ -51,12 +51,14 @@ public final class ClientRuleEngine {
    *
    * @param matrix the rule matrix from the server
    * @param env    the local environment (never sent anywhere by this engine)
+   * @param server the host of the server the player is on, empty when on none
    * @return the locally computed version check response
    */
-  public static VersionCheckResponse evaluate(MatrixResponse matrix, VersionCheckRequest env) {
+  public static VersionCheckResponse evaluate(MatrixResponse matrix, VersionCheckRequest env,
+      String server) {
     VersionCheckResponse response = new VersionCheckResponse();
 
-    RuleResult support = evaluateRules(matrix.getSupportRules(), env, true);
+    RuleResult support = evaluateRules(matrix.getSupportRules(), env, server, true);
     response.setSupported(support.enabled);
     if (support.message != null) response.setMessage(support.message);
 
@@ -64,7 +66,8 @@ public final class ClientRuleEngine {
 
     Map<String, FeatureFlagResponse> features = new HashMap<>();
     for (MatrixFeature feature : matrix.getFeatures()) {
-      RuleResult result = evaluateRules(feature.getRules(), env, feature.isEnabledDefault());
+      RuleResult result = evaluateRules(feature.getRules(), env, server,
+          feature.isEnabledDefault());
 
       FeatureFlagResponse flag = new FeatureFlagResponse();
       flag.setEnabled(result.enabled);
@@ -84,7 +87,7 @@ public final class ClientRuleEngine {
 
     List<MessageResponse> messages = new ArrayList<>();
     for (MatrixMessage message : matrix.getMessages()) {
-      if (messageMatches(message, env)) {
+      if (messageMatches(message, env, server)) {
         messages.add(message.toMessageResponse());
       }
     }
@@ -97,11 +100,11 @@ public final class ClientRuleEngine {
    * Evaluates a rule list: highest priority first, first match wins.
    */
   private static RuleResult evaluateRules(List<MatrixRule> rules, VersionCheckRequest env,
-      boolean defaultEnabled) {
+      String server, boolean defaultEnabled) {
     List<MatrixRule> sorted = new ArrayList<>(rules);
     sorted.sort(Comparator.comparingInt(MatrixRule::getPriority).reversed());
     for (MatrixRule rule : sorted) {
-      if (ruleMatches(rule, env)) {
+      if (ruleMatches(rule, env, server)) {
         return new RuleResult(true, rule.isResultEnabled(), rule.getResultMessage(),
             rule.getResultVersionCompatConversionUrl());
       }
@@ -110,9 +113,9 @@ public final class ClientRuleEngine {
   }
 
   /** All conditions in a rule must match (AND logic). */
-  private static boolean ruleMatches(MatrixRule rule, VersionCheckRequest env) {
+  private static boolean ruleMatches(MatrixRule rule, VersionCheckRequest env, String server) {
     for (MatrixCondition condition : rule.getConditions()) {
-      if (!conditionMatches(condition, env)) return false;
+      if (!conditionMatches(condition, env, server)) return false;
     }
     return true;
   }
@@ -121,15 +124,17 @@ public final class ClientRuleEngine {
    * Message targeting: all conditions must match (AND logic); a message
    * without conditions is shown to everyone. Mirrors the backend.
    */
-  private static boolean messageMatches(MatrixMessage message, VersionCheckRequest env) {
+  private static boolean messageMatches(MatrixMessage message, VersionCheckRequest env,
+      String server) {
     for (MatrixCondition condition : message.getRules()) {
-      if (!conditionMatches(condition, env)) return false;
+      if (!conditionMatches(condition, env, server)) return false;
     }
     return true;
   }
 
   /** Evaluates a single condition against the local environment. */
-  private static boolean conditionMatches(MatrixCondition condition, VersionCheckRequest env) {
+  private static boolean conditionMatches(MatrixCondition condition, VersionCheckRequest env,
+      String server) {
     String type = condition.getConditionType();
     String operator = condition.getOperator();
     String value = condition.getValue();
@@ -159,6 +164,8 @@ public final class ClientRuleEngine {
         return evalBoolean(env.isCurrentOsSupported(), operator, value);
       case "maven_dep":
         return evalMavenDep(env.getMavenDependencies(), operator, value);
+      case "server":
+        return evalString(nullToEmpty(server), operator, value.toLowerCase(Locale.ROOT));
       case "resolved":
         // IP-based condition, already evaluated by the server for this
         // connection; value is the literal outcome.
@@ -183,11 +190,11 @@ public final class ClientRuleEngine {
   private static boolean evalMavenDep(List<String> deps, String operator, String value) {
     switch (operator) {
       case "contains":
-        return deps.stream().anyMatch(d -> d.contains(value));
+        return containsSubstring(deps, value);
       case "eq":
         return deps.contains(value);
       case "not_contains":
-        return deps.stream().noneMatch(d -> d.contains(value));
+        return !containsSubstring(deps, value);
       case "not_in":
         return !deps.contains(value);
       case "in":
@@ -198,6 +205,13 @@ public final class ClientRuleEngine {
       default:
         return false;
     }
+  }
+
+  private static boolean containsSubstring(List<String> deps, String value) {
+    for (String dep : deps) {
+      if (dep.contains(value)) return true;
+    }
+    return false;
   }
 
   private static boolean evalString(String ctxValue, String operator, String value) {
@@ -214,6 +228,8 @@ public final class ClientRuleEngine {
         return parseJsonStringArray(value).contains(ctxValue);
       case "not_in":
         return !parseJsonStringArray(value).contains(ctxValue);
+      case "domain":
+        return !ctxValue.isEmpty() && (ctxValue.equals(value) || ctxValue.endsWith("." + value));
       case "semver_range":
         return SemverLite.satisfies(ctxValue, value);
       case "lt":
