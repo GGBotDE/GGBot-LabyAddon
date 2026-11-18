@@ -31,7 +31,7 @@ public class Callbacks {
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
       push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE,
+          .text(Component.translatable("ggbot.toasts.error.text", WHITE,
               Component.text(e.getMessage()), Component.text(statusCode)))
           .type(Type.SYSTEM));
     }
@@ -65,7 +65,7 @@ public class Callbacks {
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
       push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE,
+          .text(Component.translatable("ggbot.toasts.error.text", WHITE,
               Component.text(e.getMessage()), Component.text(statusCode)))
           .type(Type.SYSTEM));
     }
@@ -99,7 +99,7 @@ public class Callbacks {
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
       push(Notification.builder()
           .title(Component.translatable("ggbot.toasts.status.error", RED))
-          .text(Component.translatable("ggbot.toasts.error", WHITE,
+          .text(Component.translatable("ggbot.toasts.error.text", WHITE,
               Component.text(e.getMessage()), Component.text(statusCode)))
           .type(Type.SYSTEM));
     }

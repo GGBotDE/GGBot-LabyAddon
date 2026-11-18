@@ -1,14 +1,20 @@
 package de.ggbot.core.nametag;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonParseException;
 import de.ggbot.core.GGBot;
-import net.labymod.api.Laby;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,16 +26,34 @@ public class TeamFetcher {
   /** Feature key used for the server-controlled refetch pacing. */
   private static final String FEATURE = "de.ggbot.addon.nametag";
 
-  /** API endpoint for team data. */
-  private static final String API_ENDPOINT = "https://msapi.ggbot.de/team";
+  /**
+   * Provides the API endpoint for fetching in-game tag data.
+   */
+  private static final String API_ENDPOINT = "https://msapi.ggbot.de/all";
+
+  /**
+   * Defines the default team tag color when no specific color is set.
+   */
+  private static final String DEFAULT_TEAM_COLOR = "#2ecc71";
+
+  /**
+   * Ensures compatibility with plain strings for tags without translations.
+   */
+  private static final Gson GSON = new GsonBuilder()
+      .registerTypeAdapter(GGBotTeam.LocalizedText.class,
+          (JsonDeserializer<GGBotTeam.LocalizedText>) (json, type, context) ->
+              json.isJsonPrimitive()
+                  ? new GGBotTeam.LocalizedText(json.getAsString())
+                  : new Gson().fromJson(json, GGBotTeam.LocalizedText.class))
+      .create();
 
   /** The globally accessible instance set on construction. */
   public static TeamFetcher teamInstance;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private static boolean hasFetched = false;
-  private GGBotTeam team;
-
+  private volatile GGBotTeam team;
+  private volatile Map<String, GGBotTag> tags = new HashMap<>();
 
   public TeamFetcher() {
     teamInstance = this;
@@ -51,16 +75,65 @@ public class TeamFetcher {
 
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
       if (response.statusCode() == 200) {
-        String jsonString = response.body();
-        this.team = new Gson().fromJson(jsonString, GGBotTeam.class);
+        GGBotTeam parsed = GSON.fromJson(response.body(), GGBotTeam.class);
+        this.tags = buildTags(parsed);
+        this.team = parsed;
       } else {
         GGBot.getInstance().logger().error("Failed to fetch data. Response code: " + response.statusCode());
       }
 
-    } catch (IOException | InterruptedException e) {
+    } catch (IOException | InterruptedException | JsonParseException e) {
       GGBot.getInstance().logger().error("Error fetching team data: " + e.getMessage());
       GGBot.getInstance().getVersioningHandler().reportError(e);
     }
+  }
+
+  /**
+   * Indexes all tagged players by their UUID, prioritizing team data over group data.
+   *
+   * @param data the team data used to build the tag index
+   * @return a map of player UUIDs to their corresponding tag information
+   */
+  private static Map<String, GGBotTag> buildTags(GGBotTeam data) {
+    Map<String, GGBotTag> result = new HashMap<>();
+    if (data.getGroups() != null) {
+      for (GGBotTeam.GroupDTO group : data.getGroups()) {
+        addMembers(result, group.getMembers(), group.getTag(), group.getTagColor(),
+            group.getIngameIcon());
+      }
+    }
+    GGBotTeam.TeamDTO team = data.getTeam();
+    if (team != null && team.getDepartments() != null) {
+      for (GGBotTeam.DepartmentDTO department : team.getDepartments()) {
+        addMembers(result, department.getMembers(), team.getTag(),
+            first(department.getTagColor(), team.getTagColor(), DEFAULT_TEAM_COLOR),
+            first(department.getIngameIcon(), team.getIngameIcon()));
+      }
+    }
+    return result;
+  }
+
+  private static void addMembers(Map<String, GGBotTag> result, List<GGBotTeam.MemberDTO> members,
+      GGBotTeam.LocalizedText tag, String color, String icon) {
+    if (members == null) return;
+    for (GGBotTeam.MemberDTO member : members) {
+      if (member.getMinecraft() == null || member.getMinecraft().getUuid() == null) continue;
+      result.put(normalize(member.getMinecraft().getUuid()), new GGBotTag(
+          member.getTag() != null ? member.getTag() : tag,
+          first(member.getTagColor(), color),
+          first(member.getIngameIcon(), icon)));
+    }
+  }
+
+  private static String first(String... values) {
+    for (String value : values) {
+      if (value != null && !value.isEmpty()) return value;
+    }
+    return null;
+  }
+
+  private static String normalize(String uuid) {
+    return uuid.replace("-", "").toLowerCase(Locale.ROOT);
   }
 
   /**
@@ -88,12 +161,36 @@ public class TeamFetcher {
   }
 
   /**
-   * Returns the most recently fetched team data.
+   * Provides access to the most recently fetched team data.
    *
-   * @return the {@link GGBotTeam} or {@code null} if not yet fetched
+   * @return the GGBotTeam or null if not yet fetched
    */
   public GGBotTeam getTeam() {
     return team;
+  }
+
+  /**
+   * Retrieves the tag associated with a player.
+   *
+   * @param uuid the player's UUID
+   * @return the tag, or {@code null} if the player has none
+   */
+  public GGBotTag getTag(UUID uuid) {
+    return tags.get(normalize(uuid.toString()));
+  }
+
+  /**
+   * Provides the tag displayed on GGBots.
+   *
+   * @return the tag, or {@code null} if bot tags are disabled
+   */
+  public GGBotTag getBotTag() {
+    GGBotTeam data = team;
+    if (data == null || data.getBots() == null
+        || !Boolean.TRUE.equals(data.getBots().getEnabled())) {
+      return null;
+    }
+    return new GGBotTag(null, data.getBots().getColor(), data.getBots().getIcon());
   }
 
   /**

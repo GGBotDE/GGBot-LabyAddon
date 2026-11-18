@@ -2,16 +2,24 @@ package de.ggbot.core.listener;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
+import de.ggbot.core.gui.botmenu.BotMenuState;
+import de.ggbot.core.widget.afk.AfkBotsWidget;
+import de.ggbot.core.widget.afk.AfkFleetsWidget;
 import de.ggbot.core.widget.ggfeatures.BotMoneyWidget;
 import de.ggbot.core.widget.ggfeatures.CitybuildWidget;
 import de.ggbot.core.widget.ggfeatures.PlotWidget;
+import de.ggbot.core.widget.ingame.FoodWidget;
 import de.ggbot.core.widget.ingame.HealthWidget;
+import de.ggbot.core.widget.ingame.LevelWidget;
+import de.ggbot.core.widget.ingame.PositionWidget;
 import de.ggbot.core.widget.info.BotNameWidget;
 import de.ggbot.core.widget.info.StatusWidget;
 import de.ggbot.core.widget.ticket.TicketAmountWidget;
 import de.ggbot.core.widget.ticket.TicketClosedAmountWidget;
 import de.ggbot.core.widget.ticket.TicketOpenAmountWidget;
 import de.ggbot.sdk.core.ApiException;
+import de.ggbot.sdk.model.Bot;
+import de.ggbot.sdk.model.Position;
 import de.ggbot.sdk.model.Ticket;
 import de.ggbot.sdk.model.Ticket.StatusEnum;
 import net.labymod.api.client.component.Component;
@@ -33,6 +41,11 @@ import java.util.function.Consumer;
 public class StartTimerOnJoin {
 
   private final GGBot addon;
+
+  /**
+   * Delays log start to allow chat tabs to settle after joining.
+   */
+  private static final long LOG_START_DELAY_MS = 5_000L;
 
   private Timer logTimer;
   private Timer statusTimer;
@@ -86,7 +99,8 @@ public class StartTimerOnJoin {
     logTimer.scheduleAtFixedRate(wrapTask(() -> {
       try { BotRequests.logsAsync(); }
       catch (ApiException ignored) {}
-    }), 0, addon.getVersioningHandler().clampIntervalMs("de.ggbot.addon.timers.logs", intervalMs));
+    }), LOG_START_DELAY_MS,
+        addon.getVersioningHandler().clampIntervalMs("de.ggbot.addon.timers.logs", intervalMs));
   }
 
   /**
@@ -135,8 +149,11 @@ public class StartTimerOnJoin {
   private void updateStatsWidgets() {
     if (!GGBot.isAuthenticated() || !addon.labyAPI().serverController().isConnected()) return;
     try {
+        boolean ggfeatures = BotMenuState.get().isModuleAvailable("ggfeatures");
+        boolean ticketsActive = BotMenuState.get().isModuleAvailable("tickets");
+
         var moneyWidget = addon.labyAPI().hudWidgetRegistry().getById(BotMoneyWidget.WIDGET_ID);
-        if (moneyWidget != null && moneyWidget.isEnabled())
+        if (ggfeatures && moneyWidget != null && moneyWidget.isEnabled())
           BotRequests.getMoney(addon, (Consumer<Double>) money ->
               BotMoneyWidget.update(Component.text(money)
                   .append(Component.translatable("ggbot.widget.money.unit"))));
@@ -148,27 +165,32 @@ public class StartTimerOnJoin {
                   .append(Component.translatable("ggbot.widget.health.unit"))));
 
         var cbWidget = addon.labyAPI().hudWidgetRegistry().getById(CitybuildWidget.WIDGET_ID);
-        if (cbWidget != null && cbWidget.isEnabled())
+        if (ggfeatures && cbWidget != null && cbWidget.isEnabled())
           BotRequests.getCitybuild(addon, CitybuildWidget::update);
 
         var plotWidget = addon.labyAPI().hudWidgetRegistry().getById(PlotWidget.WIDGET_ID);
-        if (plotWidget != null && plotWidget.isEnabled())
+        if (ggfeatures && plotWidget != null && plotWidget.isEnabled())
           BotRequests.getPlot(addon, PlotWidget::update);
 
         var ticketWidget = addon.labyAPI().hudWidgetRegistry().getById(TicketAmountWidget.WIDGET_ID);
-        if (ticketWidget != null && ticketWidget.isEnabled())
+        if (ticketsActive && ticketWidget != null && ticketWidget.isEnabled())
           BotRequests.getTickets(addon, "", (Consumer<List<Ticket>>) tickets ->
               TicketAmountWidget.update(tickets.size()));
 
         var openWidget = addon.labyAPI().hudWidgetRegistry().getById(TicketOpenAmountWidget.WIDGET_ID);
-        if (openWidget != null && openWidget.isEnabled())
+        if (ticketsActive && openWidget != null && openWidget.isEnabled())
           BotRequests.getTickets(addon, StatusEnum.OPEN.getValue(), (Consumer<List<Ticket>>) tickets ->
               TicketOpenAmountWidget.update(tickets.size()));
 
         var closedWidget = addon.labyAPI().hudWidgetRegistry().getById(TicketClosedAmountWidget.WIDGET_ID);
-        if (closedWidget != null && closedWidget.isEnabled())
+        if (ticketsActive && closedWidget != null && closedWidget.isEnabled())
           BotRequests.getTickets(addon, StatusEnum.CLOSED.getValue(), (Consumer<List<Ticket>>) tickets ->
               TicketClosedAmountWidget.update(tickets.size()));
+
+        updateIngameWidgets();
+
+        if (isWidgetEnabled(AfkBotsWidget.WIDGET_ID) || isWidgetEnabled(AfkFleetsWidget.WIDGET_ID))
+          BotRequests.refreshAfkWidgets(addon);
 
       } catch (ApiException e) {
         addon.logger().error("Failed to fetch bot statistics: " + e.getMessage());
@@ -177,11 +199,40 @@ public class StartTimerOnJoin {
   }
 
   /**
+   * Updates in-game widgets with live data to avoid unnecessary API calls.
+   */
+  private void updateIngameWidgets() {
+    Bot bot = BotRequests.getBotFromCache(addon);
+    if (bot == null) return;
+
+    if (isWidgetEnabled(FoodWidget.WIDGET_ID)) {
+      Double food = BotRequests.getFood(addon, bot);
+      if (food != null) FoodWidget.update(FoodWidget.format(food));
+    }
+
+    if (isWidgetEnabled(LevelWidget.WIDGET_ID)) {
+      Integer level = BotRequests.getLevel(addon, bot);
+      if (level != null) LevelWidget.update(level);
+    }
+
+    if (isWidgetEnabled(PositionWidget.WIDGET_ID)) {
+      Position position = BotRequests.getBotLocation(addon, bot);
+      if (position != null) PositionWidget.update(PositionWidget.format(position));
+    }
+  }
+
+  private boolean isWidgetEnabled(String id) {
+    var widget = addon.labyAPI().hudWidgetRegistry().getById(id);
+    return widget != null && widget.isEnabled();
+  }
+
+  /**
    * Immediately refreshes all enabled bot widgets on a background thread. Used to
    * update the HUD instantly when the selected bot changes, instead of waiting for
    * the next periodic timer tick.
    */
   public void refreshNow() {
+    BotRequests.onSelectedBotChanged(addon);
     Thread thread = new Thread(() -> {
       updateStatusWidgets();
       updateStatsWidgets();

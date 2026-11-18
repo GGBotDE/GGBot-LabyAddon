@@ -40,6 +40,9 @@ This addon works for two kinds of players:
 
 - Walk up to a GGBot, look at it, and open its shop with a hotkey. The shop GUI
   lets you browse and buy items from bots that run the Sell Module.
+- Shop items are drawn by the game itself, so resource packs, server packs and
+  mods apply. Items the game does not know use the textures of the addon, and
+  then the GGBot item renderer, whose images are only kept in memory.
 - A hint appears near an online GGBot telling you the shop is available and which
   key opens it.
 - `Check GGBot` entry in the player interaction menu to confirm whether a nearby
@@ -54,6 +57,10 @@ This addon works for two kinds of players:
 
 - Link your GGBot account through LabyMod and pick which bot you are working with.
 - A bot management menu with tabs for overview, modules, logs, tools, and tickets.
+  Sections and tabs of modules that are not enabled on the bot stay hidden.
+- An AFK fleets screen to start and stop fleets and bots. A whole fleet, ticked
+  bots or a single bot can send messages and commands and be walked, and each
+  bot can be inspected.
 - Start and stop bots from the menu or the bot selector.
 - View live status, statistics, and logs. Logs refresh right after you send a
   command, both from the in game menu and the chat prefix.
@@ -130,6 +137,8 @@ All keys can be changed in the settings.
 Commands:
 
 - `/ggbots` (alias `/serverbots`) opens the list of GGBots on the current server.
+- `/afkfleets` (alias `/fleets`) opens the AFK fleets screen. With `list`,
+  `start <fleet>`, `stop <fleet>` or `say <fleet> <message>` it works from chat.
 
 Hotkeys do not fire while chat or any menu is open.
 

@@ -3,6 +3,7 @@ package de.ggbot.core.gui.botmenu;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.sdk.model.Bot;
+import de.ggbot.sdk.model.Position;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,23 +33,25 @@ import net.labymod.api.util.math.vector.DoubleVector3;
  *
  * <p>How each part is done without mixins / version-specific code:
  * <ul>
- *   <li><b>Camera position</b>: the camera entity's position is set to the bot's
- *       position every tick, which relocates the viewpoint onto the bot. This is the
- *       version-independent way to actually move the view (there is no camera
- *       position setter on the camera itself).</li>
- *   <li><b>Look</b>: the real camera yaw/pitch (driven by your mouse) is read and
- *       sent to the bot as an absolute rotation, so the bot turns to look exactly
- *       where you look. The rotation API sets an absolute yaw/pitch, so the camera's
- *       absolute angles are sent directly (sending deltas was the long-standing pitch
- *       bug - tiny deltas were interpreted as absolute angles).</li>
+ *   <li><b>Camera positioning</b>: The camera entity is moved to the bot's
+ *       position every tick, transferring the viewpoint to the bot. This approach
+ *       works across versions because the camera itself does not expose a method
+ *       for directly changing its position.</li>
+ *   <li><b>Rotation</b>: The camera's current yaw and pitch are read from mouse
+ *       input and applied directly to the bot as absolute rotation values. This
+ *       ensures both viewpoints remain synchronized. Using relative rotation
+ *       values caused the previous pitch issue, as the API expects absolute angles
+ *       rather than rotation differences.</li>
  *   <li><b>Hiding the bot</b>: the bot's player model render is cancelled so its body
  *       does not block the camera that now sits inside it.</li>
  *   <li><b>Movement</b>: your movement/jump/sneak/sprint keys are suppressed for your
  *       own character and forwarded to the bot instead.</li>
  * </ul>
  *
- * <p>Only starts when the bot is online and within render distance; auto-stops and
- * clears every control state when the bot leaves range or the mode is toggled off.
+ * <p>Only starts when the bot is online, within render distance and really is the
+ * nearby player: the same account can be on another server under a different bot.
+ * Control is automatically disabled and all input states are reset when the bot
+ * moves out of range or the mode is turned off.
  */
 public final class ControlModeManager {
 
@@ -68,7 +71,13 @@ public final class ControlModeManager {
         return t;
       });
 
+  /**
+   * Manages the control mode for steering a selected bot with mouse and movement keys.
+   */
+  private static final double MAX_POSITION_OFFSET = 8.0;
+
   private volatile boolean active = false;
+  private volatile boolean starting = false;
   private Bot bot;
   private String botName;
   private ScheduledFuture<?> task;
@@ -99,7 +108,7 @@ public final class ControlModeManager {
   }
 
   public synchronized void start(Bot bot) {
-    if (active || bot == null) {
+    if (active || starting || bot == null) {
       return;
     }
     if (!Boolean.TRUE.equals(bot.getOnline())) {
@@ -114,6 +123,28 @@ public final class ControlModeManager {
     // its presence is a reliable, version-independent "in range" check.
     if (name == null || entity.isEmpty() || self == null) {
       notify("ggbot.botmenu.control.tooFar");
+      return;
+    }
+
+    starting = true;
+    executor.execute(() -> {
+      Position position = BotRequests.getBotLocation(GGBot.getInstance(), bot);
+      Laby.labyAPI().minecraft().executeOnRenderThread(() -> finishStart(bot, name, position));
+    });
+  }
+
+  /**
+   * Manages the control mode for steering a selected bot with mouse and movement keys.
+   */
+  private synchronized void finishStart(Bot bot, String name, Position position) {
+    starting = false;
+    Optional<Player> entity = findBotEntity(name);
+    if (active || entity.isEmpty()) {
+      return;
+    }
+    DoubleVector3 entityPosition = entity.get().position().toDoubleVector3();
+    if (!isSamePlace(position, entityPosition.getX(), entityPosition.getY(), entityPosition.getZ())) {
+      notify("ggbot.botmenu.control.otherServer");
       return;
     }
 
@@ -288,6 +319,20 @@ public final class ControlModeManager {
         (float) (camPos.getX() - botX),
         (float) (camEyeY - botEyeY),
         (float) (camPos.getZ() - botZ));
+  }
+
+  /**
+   * Manages the control mode for steering a selected bot with mouse and movement keys.
+   */
+  public static boolean isSamePlace(Position position, double x, double y, double z) {
+    if (position == null || position.getX() == null || position.getY() == null
+        || position.getZ() == null) {
+      return false;
+    }
+    double dx = position.getX() - x;
+    double dy = position.getY() - y;
+    double dz = position.getZ() - z;
+    return dx * dx + dy * dy + dz * dz <= MAX_POSITION_OFFSET * MAX_POSITION_OFFSET;
   }
 
   /** Whether this Minecraft version (<= 1.12.2) needs the entity-position camera. */

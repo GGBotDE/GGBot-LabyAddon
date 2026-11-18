@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Lightweight parser that extracts structured data (lore, enchantments, damage) from the
- * raw NBT JSON strings returned by the GGBot API. All public entry points are static and
- * side-effect-free.
+ * Provides a lightweight parser for extracting structured item information,
+ * including lore, enchantments and damage values, from raw NBT JSON data
+ * returned by the GGBot API. All public methods are static and operate
+ * without modifying external state.
+ *
+ * <p>Item names and lore retain their original legacy color codes because
+ * this is the format used by servers and cannot be reliably converted
+ * into modern text components.
  */
 public class NBTParser {
 

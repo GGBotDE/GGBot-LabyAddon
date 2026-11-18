@@ -6,12 +6,13 @@ import net.labymod.api.client.gui.screen.ScreenContext;
 import net.labymod.api.client.network.NetworkPlayerInfo;
 
 /**
- * Badge renderer that displays the GGBot team in-game icon next to a player's
- * entry in the tab list.
+ * Renders the GGBot team icon alongside a player's entry in the in-game
+ * tab list.
  *
- * <p>Both render() and {@link #isVisible} run per tab-list entry per
- * frame, so they only hit the TTL-cached lookup in
- * {@link GGBotTeamPlayer#getBadgeIcon} instead of walking the team list.
+ * <p>Both {@code render()} and {@link #isVisible} are called for every
+ * tab-list entry on each frame. To avoid repeatedly traversing the team
+ * list, both methods rely on the TTL-cached lookup provided by
+ * {@link GGBotTeamPlayer#getTeamIcon}.
  */
 public class TeamNameTagIconBadge extends BadgeRenderer {
 
@@ -25,7 +26,8 @@ public class TeamNameTagIconBadge extends BadgeRenderer {
    */
   @Override
   public void render(ScreenContext ctx, float x, float y, NetworkPlayerInfo player) {
-    Icon icon = GGBotTeamPlayer.getBadgeIcon(player.profile().getUniqueId());
+    Icon icon = GGBotTeamPlayer.getTeamIcon(player.profile().getUniqueId(),
+        player.profile().getUsername());
     if (icon == null) return;
     ctx.canvas().submitIcon(icon, x, y - 1, 9, 9);
   }
@@ -38,6 +40,7 @@ public class TeamNameTagIconBadge extends BadgeRenderer {
    */
   @Override
   protected boolean isVisible(NetworkPlayerInfo player) {
-    return GGBotTeamPlayer.getBadgeIcon(player.profile().getUniqueId()) != null;
+    return GGBotTeamPlayer.getTeamIcon(player.profile().getUniqueId(),
+        player.profile().getUsername()) != null;
   }
 }

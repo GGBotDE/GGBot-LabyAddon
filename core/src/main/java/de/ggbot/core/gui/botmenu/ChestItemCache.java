@@ -1,6 +1,7 @@
 package de.ggbot.core.gui.botmenu;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.api.ApiParsers;
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.utils.TextUtil;
 import de.ggbot.sdk.model.BlockPosition;
@@ -10,61 +11,99 @@ import de.ggbot.sdk.model.SellItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
- * Caches the selected bot's buy/sell items together with their chest positions,
- * so the chest-contents overlay and item search can resolve item to chest without
- * hitting the API every frame. Populated directly from the SDK item models.
+ * Stores the buy and sell items of the displayed bots along with their
+ * corresponding chest positions. This allows the chest overlay and item
+ * search to locate items without making repeated API requests every frame.
+ * Cache entries are populated directly from the SDK item models.
  */
 public final class ChestItemCache {
 
-  /** A single item entry tied to a chest block position. */
-  public record Entry(String name, String shop, String itemType, int x, int y, int z) {}
+  /**
+   * Describes a bot's item entry tied to a chest block's location.
+   */
+  public record Entry(Long botId, String bot, String name, String shop, String itemType, String nbt,
+      int x, int y, int z) {}
 
   private static final List<Entry> ENTRIES = new ArrayList<>();
 
+  /**
+   * Tracks cache version changes for per-frame readers.
+   */
+  private static volatile int version;
+
   private ChestItemCache() {}
 
-  /** Refreshes the cache for the given bot (buy + sell items). */
-  public static void refresh(Bot bot) {
-    if (bot == null) {
-      return;
-    }
+  /**
+   * Refreshes the cache with the latest item data for specified bots.
+   */
+  public static void refresh(List<Bot> bots) {
     GGBot addon = GGBot.getInstance();
-    BotRequests.getSellItemsAsync(addon, bot, items -> {
-      synchronized (ENTRIES) {
-        ENTRIES.removeIf(e -> e.shop().equals("sell"));
+    synchronized (ENTRIES) {
+      ENTRIES.clear();
+      version++;
+    }
+    for (Bot bot : bots) {
+      Long id = bot.getId();
+      String label = BotMenuWidget.displayName(bot);
+      BotRequests.getSellItemsAsync(addon, bot, items -> {
+        List<Entry> entries = new ArrayList<>();
         for (SellItem item : items) {
-          Entry entry = toEntry(item.getName(), "sell", item.getItemType(),
+          add(entries, id, label, item.getName(), "sell",
+              ApiParsers.itemType(item.getItemKey(), item.getFallbackKey(), item.getItemType()),
+              item.getNbt(),
               item.getChestPosition());
-          if (entry != null) {
-            ENTRIES.add(entry);
-          }
         }
-      }
-    });
-    BotRequests.getBuyItemsAsync(addon, bot, items -> {
-      synchronized (ENTRIES) {
-        ENTRIES.removeIf(e -> e.shop().equals("buy"));
+        replace(id, "sell", entries);
+      });
+      BotRequests.getBuyItemsAsync(addon, bot, items -> {
+        List<Entry> entries = new ArrayList<>();
         for (BuyItem item : items) {
-          Entry entry = toEntry(item.getName(), "buy", item.getItemType(),
+          add(entries, id, label, item.getName(), "buy",
+              ApiParsers.itemType(item.getItemKey(), item.getFallbackKey(), item.getItemType()),
+              item.getNbt(),
               item.getChestPosition());
-          if (entry != null) {
-            ENTRIES.add(entry);
-          }
         }
-      }
-    });
+        replace(id, "buy", entries);
+      });
+    }
   }
 
-  private static Entry toEntry(String name, String shop, String itemType, BlockPosition pos) {
+  /**
+   * Replaces specific shop entries for a bot while keeping other entries intact.
+   *
+   * @param botId The bot ID associated with the entries
+   * @param shop The shop identifier for the entries
+   * @param entries The new list of entries to replace the existing ones
+   */
+  private static void replace(Long botId, String shop, List<Entry> entries) {
+    synchronized (ENTRIES) {
+      ENTRIES.removeIf(e -> e.shop().equals(shop) && Objects.equals(e.botId(), botId));
+      ENTRIES.addAll(entries);
+      version++;
+    }
+  }
+
+  /**
+   * Returns the current cache version for tracking changes.
+   *
+   * @return The current version number of the cache
+   */
+  public static int version() {
+    return version;
+  }
+
+  private static void add(List<Entry> target, Long botId, String bot, String name, String shop,
+      String itemType, String nbt, BlockPosition pos) {
     if (name == null || pos == null
         || pos.getX() == null || pos.getY() == null || pos.getZ() == null) {
-      return null;
+      return;
     }
     // Store the colour-stripped name so legacy codes never leak into search/marking.
-    return new Entry(TextUtil.stripColors(name), shop, itemType,
-        pos.getX().intValue(), pos.getY().intValue(), pos.getZ().intValue());
+    target.add(new Entry(botId, bot, TextUtil.stripColors(name), shop, itemType, nbt,
+        pos.getX().intValue(), pos.getY().intValue(), pos.getZ().intValue()));
   }
 
   /** Returns the merged item entries stored in the chest at the given block. */
@@ -98,21 +137,22 @@ public final class ChestItemCache {
   }
 
   /**
-   * Merges entries that refer to the same item at the same chest (same name +
-   * position) but in different shops, combining their shop label into
-   * {@code "buy/sell"} so each item appears once.
+   * Merges duplicate entries for the same bot and item at the same position.
+   *
+   * @param entries List of entries to merge
+   * @return A list of merged entries with unique bot/item/position combinations
    */
   private static List<Entry> merge(List<Entry> entries) {
     java.util.LinkedHashMap<String, Entry> byKey = new java.util.LinkedHashMap<>();
     for (Entry e : entries) {
-      String key = (e.name() == null ? "" : e.name().toLowerCase(Locale.ROOT))
+      String key = e.botId() + "/" + (e.name() == null ? "" : e.name().toLowerCase(Locale.ROOT))
           + "@" + e.x() + "," + e.y() + "," + e.z();
       Entry existing = byKey.get(key);
       if (existing == null) {
         byKey.put(key, e);
       } else if (!existing.shop().contains(e.shop())) {
-        byKey.put(key, new Entry(existing.name(), "buy/sell", existing.itemType(),
-            existing.x(), existing.y(), existing.z()));
+        byKey.put(key, new Entry(existing.botId(), existing.bot(), existing.name(), "buy/sell",
+            existing.itemType(), existing.nbt(), existing.x(), existing.y(), existing.z()));
       }
     }
     return new ArrayList<>(byKey.values());

@@ -1,13 +1,15 @@
 package de.ggbot.core.gui.shop.utils;
 
 import de.ggbot.core.GGBot;
+import de.ggbot.core.api.ApiParsers;
 import de.ggbot.core.api.VersioningHandler;
 import de.ggbot.sdk.api.ModulesApi;
-import de.ggbot.sdk.api.PublicApi;
 import de.ggbot.sdk.core.ApiException;
-import de.ggbot.sdk.model.PublicBot;
+import de.ggbot.sdk.model.SellArea;
 import de.ggbot.sdk.model.SellItem;
 import de.ggbot.sdk.model.SellItemPrice;
+import net.labymod.api.Laby;
+import net.labymod.api.client.entity.player.ClientPlayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,15 +19,22 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Shared cache for a bot's public data and sell items, keyed by bot + server.
+ * Maintains a shared cache of each bot's sell items and sell area, identified
+ * by the combination of bot and server.
+ * 
+ * <p>Callers pass the bot token from the public server bot list. Resolving it
+ * again by link name is not reliable: a link name can point at more than one bot
+ * record, and the lookup may answer with an offline one that has no items.
  *
  * <p>The sell items are fetched early (as soon as the shop hint spots a nearby
  * bot) so that:
  * <ul>
- *   <li>the hint can stay hidden for bots without any sell items,</li>
- *   <li>the shop GUI opens instantly instead of re-doing the request, and</li>
- *   <li>a hint fetch followed shortly by a GUI open results in one request,
- *       not two (in-flight fetches are deduplicated per key).</li>
+ *   <li>Hints can be suppressed for bots that have no sell items.</li>
+ *   <li>The shop GUI can display its contents immediately without making
+ *       another API request.</li>
+ *   <li>Requests triggered by the hint and a subsequent GUI opening are
+ *       shared, avoiding duplicate calls through per-key in-flight
+ *       request deduplication.</li>
  * </ul>
  *
  * <p>Cached data is valid for {@link #GUI_MAX_AGE_MS} when opening the GUI
@@ -45,21 +54,25 @@ public final class ShopDataCache {
 
   /** One cached fetch result for a bot on a server. */
   public static final class Entry {
-    private final PublicBot publicBot;
     private final List<CustomSellItem> sellItems;
+    private final SellArea sellArea;
     private final long fetchedAtMs;
 
-    private Entry(PublicBot publicBot, List<CustomSellItem> sellItems) {
-      this.publicBot = publicBot;
+    private Entry(List<CustomSellItem> sellItems, SellArea sellArea) {
       this.sellItems = Collections.unmodifiableList(sellItems);
+      this.sellArea = sellArea;
       this.fetchedAtMs = System.currentTimeMillis();
     }
 
-    /** Returns the bot's public data. */
-    public PublicBot getPublicBot() { return publicBot; }
-
     /** Returns the bot's sell items; empty when the bot sells nothing. */
     public List<CustomSellItem> getSellItems() { return sellItems; }
+
+    /**
+     * Provides the sell area region where buyers must stand, or null if unrestricted.
+     *
+     * @return the sell area region or null if unrestricted
+     */
+    public SellArea getSellArea() { return sellArea; }
 
     /** Returns the age of this entry in milliseconds. */
     public long ageMs() { return System.currentTimeMillis() - fetchedAtMs; }
@@ -98,20 +111,74 @@ public final class ShopDataCache {
   }
 
   /**
-   * Fetches a bot's public data and sell items in the background and caches
-   * the result. Concurrent fetches for the same bot/server are deduplicated:
-   * additional callers just queue their callback on the running request.
+   * Retrieves or fetches a cached entry if it's within the acceptable age.
    *
-   * @param versioningHandler used for the feature flag and base URL routing
-   * @param botName           the bot's player name
-   * @param serverIp          the normalized server host
-   * @param callback          invoked with the fetched entry, or {@code null}
-   *                          on failure; may itself be {@code null} for
-   *                          fire-and-forget prefetches. Runs on the fetch
-   *                          thread.
+   * @param versioningHandler used for feature flags and base URL routing
+   * @param botName the bot's player name
+   * @param serverIp the normalized server host
+   * @param botToken the bot token from the public server bot list
+   * @param maxAgeMs maximum acceptable age of a reused entry
+   * @param callback invoked with the entry, or null on failure
+   */
+  public static void getOrFetch(VersioningHandler versioningHandler, String botName,
+      String serverIp, String botToken, long maxAgeMs, Consumer<Entry> callback) {
+    Entry cached = get(botName, serverIp, maxAgeMs);
+    if (cached != null) {
+      callback.accept(cached);
+      return;
+    }
+    fetchAsync(versioningHandler, botName, serverIp, botToken, callback);
+  }
+
+  /**
+   * Checks if the player is within the bot's sell area.
+   *
+   * @param entry the cached entry, may be null
+   * @return true when buying from this bot is possible from here
+   */
+  public static boolean playerInSellArea(Entry entry) {
+    SellArea area = entry == null ? null : entry.getSellArea();
+    if (area == null || area.getStart() == null || area.getEnd() == null) {
+      return true;
+    }
+    ClientPlayer player = Laby.labyAPI().minecraft().getClientPlayer();
+    if (player == null) {
+      return false;
+    }
+    return within(player.position().getX(), area.getStart().getX(), area.getEnd().getX())
+        && within(player.position().getY(), area.getStart().getY(), area.getEnd().getY())
+        && within(player.position().getZ(), area.getStart().getZ(), area.getEnd().getZ());
+  }
+
+  /**
+   * Ensures the player's position is within the specified block coordinates range.
+   *
+   * @param value the player's coordinate value
+   * @param from the lower bound of the coordinate range
+   * @param to the upper bound of the coordinate range
+   * @return true if the value is within the coordinate range
+   */
+  private static boolean within(double value, Long from, Long to) {
+    if (from == null || to == null) {
+      return true;
+    }
+    return value >= Math.min(from, to) && value < Math.max(from, to) + 1;
+  }
+
+  /**
+   * Retrieves a bot's public information and sell items asynchronously, then
+   * stores the results in the cache. Simultaneous requests for the same bot
+   * and server share a single running fetch, with subsequent callers registering
+   * their callbacks to receive the result when the request completes.
+   *
+   * @param versioningHandler used for feature flags and base URL routing
+   * @param botName the bot's player name
+   * @param serverIp the normalized server host
+   * @param botToken the bot token from the public server bot list
+   * @param callback invoked with the fetched entry, or null on failure
    */
   public static void fetchAsync(VersioningHandler versioningHandler, String botName,
-      String serverIp, Consumer<Entry> callback) {
+      String serverIp, String botToken, Consumer<Entry> callback) {
     if (!versioningHandler.isFeatureEnabled(FEATURE)) {
       if (callback != null) callback.accept(null);
       return;
@@ -144,7 +211,7 @@ public final class ShopDataCache {
     Thread thread = new Thread(() -> {
       Entry entry = null;
       try {
-        entry = doFetch(versioningHandler, botName, serverIp);
+        entry = doFetch(versioningHandler, botName, serverIp, botToken);
       } catch (RuntimeException e) {
         GGBot.getInstance().logger().error(
             "Failed to fetch shop data for bot: " + botName + " on server: " + serverIp, e);
@@ -175,24 +242,19 @@ public final class ShopDataCache {
 
   /** Performs the actual API calls; returns {@code null} on failure. */
   private static Entry doFetch(VersioningHandler versioningHandler, String botName,
-      String serverIp) {
+      String serverIp, String botToken) {
+    if (botToken == null) return null;
     try {
-      PublicApi publicApi = new PublicApi();
       ModulesApi modulesApi = new ModulesApi();
-      String baseUrl = versioningHandler.getBaseUrlForFeature(FEATURE);
-      publicApi.setCustomBaseUrl(baseUrl);
-      modulesApi.setCustomBaseUrl(baseUrl);
-
-      PublicBot publicBot = publicApi.getPublicBotByLink(botName, serverIp);
-      if (publicBot == null || publicBot.getToken() == null) return null;
+      modulesApi.setCustomBaseUrl(versioningHandler.getBaseUrlForFeature(FEATURE));
 
       List<CustomSellItem> sellItems = new ArrayList<>();
-      for (SellItem item : modulesApi.getPublicSellItems(publicBot.getToken())) {
+      for (SellItem item : modulesApi.getPublicSellItems(botToken)) {
         for (SellItemPrice price : item.getPrices()) {
           sellItems.add(new CustomSellItem(
               item.getId(),
               item.getName(),
-              item.getItemType(),
+              ApiParsers.itemType(item.getItemKey(), item.getFallbackKey(), item.getItemType()),
               item.getNbt(),
               price.getPrice(),
               price.getAmount(),
@@ -200,7 +262,13 @@ public final class ShopDataCache {
           ));
         }
       }
-      return new Entry(publicBot, sellItems);
+      SellArea sellArea = null;
+      try {
+        sellArea = modulesApi.getSellArea(botToken);
+      } catch (Exception ignored) {
+        // Handles the case where a bot does not have a sell area, resulting in a 404 response.
+      }
+      return new Entry(sellItems, sellArea);
     } catch (ApiException e) {
       GGBot.getInstance().logger().error(
           "Failed to fetch shop data for bot: " + botName + " on server: " + serverIp, e);

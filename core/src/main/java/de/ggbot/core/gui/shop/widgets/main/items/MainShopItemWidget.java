@@ -1,13 +1,13 @@
 package de.ggbot.core.gui.shop.widgets.main.items;
 
-import net.labymod.api.client.gui.icon.Icon;
+import de.ggbot.core.gui.botmenu.ItemIcon;
+import de.ggbot.core.gui.botmenu.ItemIconWidget;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.SimpleWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalListWidget;
-import net.labymod.api.client.gui.screen.widget.widgets.renderer.IconWidget;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +16,12 @@ import java.util.List;
 public class MainShopItemWidget extends SimpleWidget {
   private final List<Runnable> clickListeners = new ArrayList<>();
   private final String itemName;
-  private final Icon itemIcon;
+  private final ItemIcon itemIcon;
   private final String[] itemLore;
   private final float itemPrice;
   private final long itemCount;
 
-  public MainShopItemWidget(String itemName, Icon itemIcon, String[] itemLore, float itemPrice,
+  public MainShopItemWidget(String itemName, ItemIcon itemIcon, String[] itemLore, float itemPrice,
       long itemCount) {
     this.itemName = itemName;
     this.itemIcon = itemIcon;
@@ -35,7 +35,7 @@ public class MainShopItemWidget extends SimpleWidget {
     super.initialize(parent);
     this.addId("main-shop-item-widget");
 
-    this.addChild(new IconWidget(itemIcon).addId("main-shop-item-icon"));
+    this.addChild(new ItemIconWidget(itemIcon).addId("main-shop-item-icon"));
     this.addChild(ComponentWidget.text(itemName).addId("main-shop-item-title"));
     VerticalListWidget<ComponentWidget> listWidget = new VerticalListWidget<>();
     listWidget.addId("main-shop-item-lore-container");

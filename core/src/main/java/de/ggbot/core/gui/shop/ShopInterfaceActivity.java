@@ -5,7 +5,6 @@ import de.ggbot.core.gui.shop.utils.CustomSellItem;
 import de.ggbot.core.gui.shop.utils.ShopDataCache;
 import de.ggbot.core.gui.shop.widgets.ShopWidget;
 import de.ggbot.core.gui.shop.widgets.cart.CartShopWidget.CartItemEntry;
-import de.ggbot.sdk.model.PublicBot;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
@@ -22,19 +21,21 @@ public class ShopInterfaceActivity extends SimpleActivity {
 
   public final String botName;
   public final String serverIp;
+  private final String botToken;
   private final VersioningHandler versioningHandler;
   public final ShopWidget shopWidget;
-  public PublicBot publicBot;
   public List<CustomSellItem> customSellItems = new ArrayList<>();
 
   private final List<Runnable> cancelListeners = new ArrayList<>();
   private final List<Consumer<List<CartItemEntry>>> purchaseListeners = new ArrayList<>();
   public final List<Function<Double, Boolean>> moneyCheckListeners = new ArrayList<>();
 
-  public ShopInterfaceActivity(String botName, String serverIp, VersioningHandler versioningHandler) {
+  public ShopInterfaceActivity(String botName, String serverIp, String botToken,
+      VersioningHandler versioningHandler) {
     super();
     this.botName = botName;
     this.serverIp = serverIp;
+    this.botToken = botToken;
     this.shopWidget = new ShopWidget(this);
     this.versioningHandler = versioningHandler;
   }
@@ -78,7 +79,7 @@ public class ShopInterfaceActivity extends SimpleActivity {
       return;
     }
 
-    ShopDataCache.fetchAsync(versioningHandler, botName, serverIp, entry -> {
+    ShopDataCache.fetchAsync(versioningHandler, botName, serverIp, botToken, entry -> {
       if (entry == null) return;
       Laby.labyAPI().minecraft().executeOnRenderThread(() -> applyShopData(entry));
     });
@@ -86,7 +87,6 @@ public class ShopInterfaceActivity extends SimpleActivity {
 
   /** Applies fetched shop data and refreshes the item grid. */
   private void applyShopData(ShopDataCache.Entry entry) {
-    publicBot = entry.getPublicBot();
     customSellItems = new ArrayList<>(entry.getSellItems());
     shopWidget.mainShopWidget.itemsWidget.refreshItems();
   }

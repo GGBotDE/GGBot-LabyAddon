@@ -2,11 +2,11 @@ package de.ggbot.core.overlay;
 
 import de.ggbot.core.gui.botmenu.BotMenuState;
 import de.ggbot.core.gui.botmenu.ChestItemCache;
+import de.ggbot.core.gui.botmenu.ItemIcon;
 import de.ggbot.core.gui.botmenu.ItemIcons;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
-import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.render.matrix.Stack;
 import net.labymod.api.client.world.phys.hit.BlockHitResult;
 import net.labymod.api.client.world.phys.hit.HitResult;
@@ -14,9 +14,7 @@ import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.render.overlay.IngameOverlayRenderEvent;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Shows the contents of a buy/sell chest when the player looks at it, and marks
@@ -38,6 +36,17 @@ public class ChestContentRenderer {
   private static final String SEARCH_PREFIX = "ggbot-itemsearch-";
   private static final String LOOK_ID = "ggbot-chestlook";
   private static final String LOOK_ID2 = "ggbot-chestlook2";
+
+  private static final Component LOOK_TITLE =
+      Component.translatable("ggbot.botmenu.chest.contents", NamedTextColor.AQUA);
+
+  private final List<ItemIcon> lookIcons = new ArrayList<>();
+  private final List<Component> lookLines = new ArrayList<>();
+  private boolean looking = false;
+  private int lookX;
+  private int lookY;
+  private int lookZ;
+  private int lookVersion;
 
   private String lastSearch = "";
   private boolean sawPost = false;
@@ -76,46 +85,27 @@ public class ChestContentRenderer {
     }
   }
 
+  /**
+   * Executes frame-based updates for chest content highlights.
+   *
+   * @param event the in-game overlay render event
+   */
   private void updateLookHighlight(IngameOverlayRenderEvent event) {
-    OverlayManager m = OverlayManager.getInstance();
-    m.removeById(LOOK_ID);
-    m.removeById(LOOK_ID2);
-
-    if (!BotMenuState.get().isShowChestContents()) return;
-
     HitResult hit = Laby.labyAPI().minecraft().getHitResult();
-    if (hit == null || hit.type() != HitResult.HitType.BLOCK
-        || !(hit instanceof BlockHitResult block)) {
+    if (!BotMenuState.get().isShowChestContents() || hit == null
+        || hit.type() != HitResult.HitType.BLOCK || !(hit instanceof BlockHitResult block)) {
+      clearLook();
       return;
     }
 
     int bx = (int) Math.floor(block.getBlockPosition().getX());
     int by = (int) Math.floor(block.getBlockPosition().getY());
     int bz = (int) Math.floor(block.getBlockPosition().getZ());
-
-    // Aggregate the looked block plus horizontal neighbours (double chest halves).
-    List<ChestItemCache.Entry> items = new ArrayList<>(ChestItemCache.itemsAtChest(bx, by, bz));
-    Set<int[]> highlighted = new LinkedHashSet<>();
-    if (!items.isEmpty()) highlighted.add(new int[]{bx, by, bz});
-
-    int[][] neighbours = {{bx + 1, by, bz}, {bx - 1, by, bz}, {bx, by, bz + 1}, {bx, by, bz - 1}};
-    for (int[] n : neighbours) {
-      List<ChestItemCache.Entry> ni = ChestItemCache.itemsAtChest(n[0], n[1], n[2]);
-      if (!ni.isEmpty()) {
-        items.addAll(ni);
-        highlighted.add(n);
-      }
+    int version = ChestItemCache.version();
+    if (!looking || bx != lookX || by != lookY || bz != lookZ || version != lookVersion) {
+      loadLook(bx, by, bz, version);
     }
-
-    if (items.isEmpty()) return;
-
-    int idx = 0;
-    for (int[] pos : highlighted) {
-      m.addBox(OverlayBox.singleBlock(idx == 0 ? LOOK_ID : LOOK_ID2,
-          pos[0], pos[1], pos[2], OverlayColor.CYAN));
-      idx++;
-      if (idx >= 2) break;
-    }
+    if (lookIcons.isEmpty()) return;
 
     Stack stack = event.stack();
     // Alternate path (1.21.8+): draw via the new canvas API instead of the legacy
@@ -128,22 +118,81 @@ public class ChestContentRenderer {
     float sh = Laby.labyAPI().minecraft().minecraftWindow().getScaledHeight();
     float x = sw * (cfg.chestContentsX.get() / 100f);
     float y = sh * (cfg.chestContentsY.get() / 100f);
-    drawText(stack, Component.translatable("ggbot.botmenu.chest.contents", NamedTextColor.AQUA),
-        x, y);
+    drawText(stack, LOOK_TITLE, x, y);
     y += 12;
-    for (ChestItemCache.Entry e : items) {
-      Icon icon = ItemIcons.forItemType(e.itemType());
-      if (canvas != null) {
-        canvas.submitIcon(icon, x, y - 1, 10, 10);
+    for (int i = 0; i < lookIcons.size(); i++) {
+      ItemIcon icon = lookIcons.get(i);
+      if (icon.stack() == null) {
+        if (canvas != null) {
+          canvas.submitIcon(icon.icon(), x, y - 1, 10, 10);
+        } else {
+          icon.icon().render(stack, x, y - 1, 10, 10);
+        }
+      } else if (canvas != null) {
+        icon.submit(event.context(), x, y - 1, 10);
       } else {
-        icon.render(stack, x, y - 1, 10, 10);
+        stack.push();
+        stack.translate(x, y - 1, 0F);
+        stack.scale(10F / 16F, 10F / 16F, 1F);
+        Laby.labyAPI().minecraft().itemStackRenderer().renderItemStack(stack, icon.stack(), 0, 0);
+        stack.pop();
       }
-      Component line = Component.text(e.name(), NamedTextColor.YELLOW)
-          .append(Component.text(" [" + e.shop() + "]", NamedTextColor.GRAY));
-      drawText(stack, line, x + 12, y);
+      drawText(stack, lookLines.get(i), x + 12, y);
       y += 11;
     }
     this.canvas = null;
+  }
+
+  private void clearLook() {
+    if (!looking) return;
+    looking = false;
+    lookIcons.clear();
+    lookLines.clear();
+    OverlayManager m = OverlayManager.getInstance();
+    m.removeById(LOOK_ID);
+    m.removeById(LOOK_ID2);
+  }
+
+  /**
+   * Gathers the target block and adjacent double chest components.
+   *
+   * @param bx the x-coordinate of the block
+   * @param by the y-coordinate of the block
+   * @param bz the z-coordinate of the block
+   * @param version the cache version
+   */
+  private void loadLook(int bx, int by, int bz, int version) {
+    clearLook();
+    looking = true;
+    lookX = bx;
+    lookY = by;
+    lookZ = bz;
+    lookVersion = version;
+
+    List<ChestItemCache.Entry> items = new ArrayList<>(ChestItemCache.itemsAtChest(bx, by, bz));
+    List<int[]> highlighted = new ArrayList<>();
+    if (!items.isEmpty()) highlighted.add(new int[]{bx, by, bz});
+
+    int[][] neighbours = {{bx + 1, by, bz}, {bx - 1, by, bz}, {bx, by, bz + 1}, {bx, by, bz - 1}};
+    for (int[] n : neighbours) {
+      List<ChestItemCache.Entry> ni = ChestItemCache.itemsAtChest(n[0], n[1], n[2]);
+      if (!ni.isEmpty()) {
+        items.addAll(ni);
+        highlighted.add(n);
+      }
+    }
+
+    OverlayManager m = OverlayManager.getInstance();
+    for (int i = 0; i < highlighted.size() && i < 2; i++) {
+      int[] pos = highlighted.get(i);
+      m.addBox(OverlayBox.singleBlock(i == 0 ? LOOK_ID : LOOK_ID2,
+          pos[0], pos[1], pos[2], OverlayColor.CYAN));
+    }
+    for (ChestItemCache.Entry e : items) {
+      lookIcons.add(ItemIcons.forItem(e.itemType(), e.nbt()));
+      lookLines.add(Component.text(e.name(), NamedTextColor.YELLOW)
+          .append(Component.text(" [" + e.shop() + "]", NamedTextColor.GRAY)));
+    }
   }
 
   private boolean altRenderMode() {

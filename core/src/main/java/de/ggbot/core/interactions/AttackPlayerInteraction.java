@@ -31,12 +31,13 @@ public class AttackPlayerInteraction implements BulletPoint {
     return null;
   }
 
-  /** Only shown when enabled in settings and the combat module is active on the bot. */
+  /** Displayed only when enabled, while the combat module is active and the target is not the bot itself. */
   @Override
   public boolean isVisible(Player player) {
     return addon.configuration().generalSub.attackPlayerEnabled.get()
         && addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.interaction.attackplayer")
-        && BotMenuState.get().isModuleActive("combat");
+        && BotMenuState.get().isModuleActive("combat")
+        && !BotRequests.isAccountOf(BotRequests.getBotFromCache(addon), player);
   }
 
   @Override

@@ -288,9 +288,36 @@
 
 /* kick areas */
 
-.bot-menu-kickarea-list { width: 100%; height: fit-content; }
+.bot-menu-kickarea-list { width: 100%; height: fit-content; space-between-entries: 3; }
 
-.bot-menu-kickarea-line { font-size: 0.55; text-color: #ffb84c; }
+.bot-menu-kickarea-entry {
+  width: 100%;
+  height: fit-content;
+  background-color: #141c28;
+  border-radius: 3;
+  padding: 3 4 3 4;
+  space-between-entries: 1;
+}
+
+.bot-menu-kickarea-entry:hover { background-color: #1c2636; }
+
+.bot-menu-kickarea-row { width: 100%; height: 12; space-between-entries: 4; }
+
+.bot-menu-kickarea-name { font-size: 0.6; text-color: #ffb84c; }
+
+.bot-menu-kickarea-show {
+  height: 12;
+  right: 0;
+  background-color: #2a3a55;
+  text-color: #cfe0ff;
+  border-radius: 3;
+  font-size: 0.5;
+  padding: 1 5 1 5;
+}
+
+.bot-menu-kickarea-show:hover { background-color: #35496e; }
+
+.bot-menu-kickarea-line { font-size: 0.55; text-color: #7E97B4; }
 
 /* module container */
 
@@ -331,6 +358,14 @@
   width: 100%;
   height: 14;
   space-between-entries: 4;
+}
+
+.bot-menu-overlay-row {
+  width: 100%;
+  height: 14;
+  space-between-entries: 4;
+  layout: fill;
+  margin-top: 2;
 }
 
 .bot-menu-we-btn {

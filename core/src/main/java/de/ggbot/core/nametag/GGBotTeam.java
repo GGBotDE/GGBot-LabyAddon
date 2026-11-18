@@ -1,18 +1,19 @@
 package de.ggbot.core.nametag;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * API response model for the GGBot team endpoint.
- * Contains the team roster with member Discord and Minecraft account data,
- * nametag icon URLs, and member-status flags.
+ * Represents the API response for the /all endpoint, including bot tags, team data, and external groups.
  */
 public class GGBotTeam {
 
   private Boolean success;
   private Object error;
   private Integer statusCode;
-  private List<TeamDTO> team;
+  private BotTagDTO bots;
+  private TeamDTO team;
+  private List<GroupDTO> groups;
 
   /** @return {@code true} if the API call succeeded */
   public Boolean getSuccess() { return success; }
@@ -23,108 +24,328 @@ public class GGBotTeam {
   /** @return HTTP status code returned by the endpoint */
   public Integer getStatusCode() { return statusCode; }
 
-  /** @return list of teams the queried player belongs to */
-  public List<TeamDTO> getTeam() { return team; }
+  /**
+   * Returns the bot tag settings for GGBots.
+   * 
+   * @return the tag settings for GGBots
+   */
+  public BotTagDTO getBots() { return bots; }
 
-  /** A single team entry returned by the API. */
+  /**
+   * Returns the team information associated with the bot tag settings.
+   *
+   * @return the team
+   */
+  public TeamDTO getTeam() { return team; }
+
+  /**
+   * Returns the list of groups outside the team structure.
+   *
+   * @return the groups outside the team
+   */
+  public List<GroupDTO> getGroups() { return groups; }
+
+  /**
+   * Encapsulates text with its translation key and fallback options.
+   */
+  public static class LocalizedText {
+    private String key;
+    private String fallback;
+    private Map<String, String> translations;
+
+    public LocalizedText() {}
+
+    /**
+     * Sets the plain text fallback for all languages.
+     *
+     * @param fallback plain text used for every language
+     */
+    public LocalizedText(String fallback) {
+      this.fallback = fallback;
+    }
+
+    /**
+     * Returns the translation key used for looking up translations.
+     *
+     * @return the translation key
+     */
+    public String getKey() { return key; }
+
+    /**
+     * Returns the default text when no translation is available.
+     *
+     * @return the text used when no translation exists
+     */
+    public String getFallback() { return fallback; }
+
+    /**
+     * Retrieves the translated text for a given language, using fallback if needed.
+     *
+     * @param language the short language code (e.g. {@code de})
+     * @return the translation, or the fallback when there is none
+     */
+    public String resolve(String language) {
+      String translated = translations != null ? translations.get(language) : null;
+      return translated != null && !translated.isEmpty() ? translated : fallback;
+    }
+  }
+
+  /**
+   * Represents tag settings for GGBots, including visibility, icon, and color.
+   */
+  public static class BotTagDTO {
+    private Boolean enabled;
+    private String icon;
+    private String color;
+
+    /**
+     * Indicates whether GGBots are assigned a tag.
+     *
+     * @return {@code true} if GGBots get a tag
+     */
+    public Boolean getEnabled() { return enabled; }
+
+    /**
+     * Returns the icon URL for the tag, or null for the client's default logo.
+     *
+     * @return the icon URL, null for the client's own logo
+     */
+    public String getIcon() { return icon; }
+
+    /**
+     * Returns the tag color as a hexadecimal string.
+     *
+     * @return the tag color as hex
+     */
+    public String getColor() { return color; }
+  }
+
+  /**
+   * Represents the team structure, including tag, color, icon, and departments.
+   */
   public static class TeamDTO {
-    private String name;
+    private LocalizedText tag;
+    private String tagColor;
+    private String ingameIcon;
+    private List<DepartmentDTO> departments;
+
+    /**
+     * Returns the localized tag text for the team.
+     *
+     * @return the tag text of the team
+     */
+    public LocalizedText getTag() { return tag; }
+
+    /**
+     * Returns the tag color of the team as a hexadecimal string.
+     *
+     * @return the tag color of the team as hex
+     */
+    public String getTagColor() { return tagColor; }
+
+    /**
+     * Returns the icon URL for the team's in-game display, which may be null.
+     *
+     * @return the icon URL of the team, may be {@code null}
+     */
+    public String getIngameIcon() { return ingameIcon; }
+
+    /**
+     * Returns the list of departments associated with the team.
+     *
+     * @return the departments of the team
+     */
+    public List<DepartmentDTO> getDepartments() { return departments; }
+  }
+
+  /**
+   * Represents a single department within a team, including name, slots, and color.
+   */
+  public static class DepartmentDTO {
+    private LocalizedText name;
     private Integer slots;
-    private List<MembersDTO> members;
+    private String tagColor;
+    private String ingameIcon;
+    private List<MemberDTO> members;
 
-    /** @return display name of the team */
-    public String getName() { return name; }
+    /**
+     * Provides the display name of the department.
+     *
+     * @return display name of the department
+     */
+    public LocalizedText getName() { return name; }
 
-    /** @return maximum number of member slots in this team */
+    /**
+     * Returns the maximum number of member slots available in the department.
+     *
+     * @return maximum number of member slots
+     */
     public Integer getSlots() { return slots; }
 
-    /** @return list of current team members */
-    public List<MembersDTO> getMembers() { return members; }
+    /**
+     * Returns the tag color of the department as a hexadecimal string, which may be null.
+     *
+     * @return the tag color of the department as hex, may be {@code null}
+     */
+    public String getTagColor() { return tagColor; }
 
-/** A single member entry combining Discord and Minecraft identity. */
-      public static class MembersDTO {
-        private DiscordDTO discord;
-        private MinecraftDTO minecraft;
-        private String image;
-        private String ingameIcon;
-        private Boolean isMember;
+    /**
+     * Returns the icon URL for the department's in-game display, which may be null.
+     *
+     * @return the icon URL of the department, may be {@code null}
+     */
+    public String getIngameIcon() { return ingameIcon; }
 
-        /** @return Discord account information for this member */
-        public DiscordDTO getDiscord() { return discord; }
+    /**
+     * Returns the list of members belonging to the department.
+     *
+     * @return the members of the department
+     */
+    public List<MemberDTO> getMembers() { return members; }
+  }
 
-        /** @return Minecraft account information for this member */
-        public MinecraftDTO getMinecraft() { return minecraft; }
+  /**
+   * Represents a group outside the team, such as creators or partners.
+   */
+  public static class GroupDTO {
+    private LocalizedText name;
+    private LocalizedText tag;
+    private String tagColor;
+    private String ingameIcon;
+    private List<MemberDTO> members;
 
-        /** @return URL of the member's profile avatar */
-        public String getImage() { return image; }
+    /**
+     * Provides the display name of the group.
+     *
+     * @return display name of the group
+     */
+    public LocalizedText getName() { return name; }
 
-        /** @return URL of the icon rendered above the player's head in-game */
-        public String getIngameIcon() { return ingameIcon; }
+    /**
+     * Returns the tag text of the group, used for display purposes.
+     *
+     * @return the tag text of the group
+     */
+    public LocalizedText getTag() { return tag; }
 
-        /** @return {@code true} if this person is an active team member */
-      public Boolean getIsMember() { return isMember; }
+    /**
+     * Returns the tag color of the group as a hexadecimal string.
+     *
+     * @return the tag color of the group as hex
+     */
+    public String getTagColor() { return tagColor; }
 
-/** Discord identity of a team member. */
-        public static class DiscordDTO {
-        private TeamDTO.MembersDTO.DiscordDTO.UserDTO user;
-        private String name;
+    /**
+     * Returns the icon URL for the group's in-game display, which may be null.
+     *
+     * @return the icon URL of the group, may be {@code null}
+     */
+    public String getIngameIcon() { return ingameIcon; }
 
-        public UserDTO getUser() { return user; }
-        public String getName() { return name; }
+    /**
+     * Returns the list of members belonging to the group.
+     *
+     * @return the members of the group
+     */
+    public List<MemberDTO> getMembers() { return members; }
+  }
 
-          /** Full Discord user payload as returned by the Discord.js API. */
-          public static class UserDTO {
-          private String id;
-          private Boolean bot;
-          private Boolean system;
-          private Integer flags;
-          private String username;
-          private String globalName;
-          private String discriminator;
-          private String avatar;
-          private Object banner;
-          private Integer accentColor;
-          private Object avatarDecoration;
-          private Long createdTimestamp;
-          private String defaultAvatarURL;
-          private String hexAccentColor;
-          private String tag;
-          private String avatarURL;
-          private String displayAvatarURL;
-          private Object bannerURL;
+  /**
+   * Represents a team or group member with details that override department or group settings.
+   */
+  public static class MemberDTO {
+    private DiscordDTO discord;
+    private MinecraftDTO minecraft;
+    private String image;
+    private LocalizedText tag;
+    private String tagColor;
+    private String ingameIcon;
 
-          public String getId() { return id; }
-          public Boolean getBot() { return bot; }
-          public Boolean getSystem() { return system; }
-          public Integer getFlags() { return flags; }
-          public String getUsername() { return username; }
-          public String getGlobalName() { return globalName; }
-          public String getDiscriminator() { return discriminator; }
-          public String getAvatar() { return avatar; }
-          public Object getBanner() { return banner; }
-          public Integer getAccentColor() { return accentColor; }
-          public Object getAvatarDecoration() { return avatarDecoration; }
-          public Long getCreatedTimestamp() { return createdTimestamp; }
-          public String getDefaultAvatarURL() { return defaultAvatarURL; }
-          public String getHexAccentColor() { return hexAccentColor; }
-          public String getTag() { return tag; }
-          public String getAvatarURL() { return avatarURL; }
-          public String getDisplayAvatarURL() { return displayAvatarURL; }
-          public Object getBannerURL() { return bannerURL; }
-        }
-      }
+    /**
+     * Provides access to the Discord account information for the member.
+     *
+     * @return Discord account information for this member
+     */
+    public DiscordDTO getDiscord() { return discord; }
 
-      /** Minecraft account identity of a team member. */
-      public static class MinecraftDTO {
-        private String name;
-        private String uuid;
+    /**
+     * Provides access to the Minecraft account information for the member.
+     *
+     * @return Minecraft account information for this member
+     */
+    public MinecraftDTO getMinecraft() { return minecraft; }
 
-        /** @return in-game Minecraft username */
-        public String getName() { return name; }
+    /**
+     * Provides access to the URL of the member's profile avatar.
+     *
+     * @return URL of the member's profile avatar
+     */
+    public String getImage() { return image; }
 
-        /** @return player UUID */
-        public String getUuid() { return uuid; }
-      }
-    }
+    /**
+     * Returns the member's own tag text, which may be null.
+     *
+     * @return the member's own tag text, may be {@code null}
+     */
+    public LocalizedText getTag() { return tag; }
+
+    /**
+     * Returns the member's own tag color as a hexadecimal string, which may be null.
+     *
+     * @return the member's own tag color as hex, may be {@code null}
+     */
+    public String getTagColor() { return tagColor; }
+
+    /**
+     * Returns the member's own icon URL for in-game display, which may be null.
+     *
+     * @return the member's own icon URL, may be {@code null}
+     */
+    public String getIngameIcon() { return ingameIcon; }
+  }
+
+  /**
+   * Represents the Discord identity of a member.
+   *
+   */
+  public static class DiscordDTO {
+    private String id;
+    private String name;
+
+    /**
+     * Provides access to the Discord user ID for the member.
+     *
+     * @return the Discord user ID
+     */
+    public String getId() { return id; }
+
+    /**
+     * Provides access to the Discord name associated with the member.
+     *
+     * @return the Discord name
+     */
+    public String getName() { return name; }
+  }
+
+  /**
+   * Represents the Minecraft account identity of a member.
+   */
+  public static class MinecraftDTO {
+    private String name;
+    private String uuid;
+
+    /**
+     * Provides access to the in-game Minecraft username for the member.
+     *
+     * @return in-game Minecraft username
+     */
+    public String getName() { return name; }
+
+    /**
+     * Provides access to the player's unique UUID.
+     *
+     * @return player UUID
+     */
+    public String getUuid() { return uuid; }
   }
 }

@@ -3,7 +3,11 @@ package de.ggbot.core.cbx;
 import com.google.gson.JsonObject;
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
+import de.ggbot.core.widget.ingame.FoodWidget;
 import de.ggbot.core.widget.ingame.HealthWidget;
+import de.ggbot.core.widget.ingame.LevelWidget;
+import de.ggbot.core.widget.ingame.PlayersWidget;
+import de.ggbot.core.widget.ingame.PositionWidget;
 import de.ggbot.sdk.model.Bot;
 import de.ggbot.sdk.model.Position;
 import java.util.concurrent.Executors;
@@ -50,6 +54,11 @@ public final class CbxManager {
   /** Delay before connecting after a bot start (the bot needs to log in). */
   private static final long BOT_START_CONNECT_DELAY_MS = 5_000L;
 
+  /**
+   * Limits the frequency of HUD updates to reduce resource usage.
+   */
+  private static final long POSITION_WIDGET_INTERVAL_MS = 1_000L;
+
   private static final CbxManager INSTANCE = new CbxManager();
 
   public static CbxManager get() {
@@ -73,6 +82,9 @@ public final class CbxManager {
 
   /** Whether the control feature is active (drives the movement subscription). */
   private volatile boolean controlActive = false;
+
+  private volatile boolean movementSubscribed = false;
+  private long lastPositionUpdate = 0L;
 
   private volatile Boolean lastKnownOnline = null;
   private int reconnectAttempt = 0;
@@ -144,6 +156,7 @@ public final class CbxManager {
       // so this frequent hook cannot turn into a fast retry storm.
       scheduleReconnect();
     }
+    syncMovementSubscription();
   }
 
   /** Called when the user selects a different bot; the session is per bot. */
@@ -164,7 +177,7 @@ public final class CbxManager {
     if (!cbxAllowed()) return;
     if (isConnected()) {
       desired = true;
-      subscribeMovement();
+      syncMovementSubscription();
     } else {
       startAttempt(0);
     }
@@ -173,10 +186,7 @@ public final class CbxManager {
   /** Called when the control feature ends; drops the movement subscription. */
   public void onControlStopped() {
     controlActive = false;
-    CbxClient current = client;
-    if (current != null && current.isOpen()) {
-      current.send("movement", "unsubscribe", null);
-    }
+    syncMovementSubscription();
     // Keep the connection: the hud pushes stay useful, and if it was only
     // opened for control it dies with the next lifecycle event anyway.
   }
@@ -240,6 +250,36 @@ public final class CbxManager {
   public Position getLiveLocation(Bot bot) {
     if (!isConnectedFor(bot)) return null;
     return liveState.getFreshLocation();
+  }
+
+  /**
+   * Provides the current health value, or -1 if the bot is not connected.
+   *
+   * @param bot The bot for which to check health
+   * @return The health value as a double, or -1 if the bot is not connected
+   */
+  public double getLiveHealth(Bot bot) {
+    return isConnectedFor(bot) ? liveState.getFreshHealth() : -1;
+  }
+
+  /**
+   * Provides the current food level, or -1 if the bot is not connected.
+   *
+   * @param bot The bot for which to check food level
+   * @return The food level as a double, or -1 if the bot is not connected
+   */
+  public double getLiveFood(Bot bot) {
+    return isConnectedFor(bot) ? liveState.getFreshFood() : -1;
+  }
+
+  /**
+   * Provides the current experience level, or -1 if the bot is not connected.
+   *
+   * @param bot The bot for which to check experience level
+   * @return The experience level as an integer, or -1 if the bot is not connected
+   */
+  public int getLiveLevel(Bot bot) {
+    return isConnectedFor(bot) ? liveState.getFreshLevel() : -1;
   }
 
   // ---- connection handling -------------------------------------------------
@@ -349,9 +389,8 @@ public final class CbxManager {
       // hudElements pushes start once a client sends its first packet on the
       // endpoint; getStatus doubles as the registration and initial snapshot.
       newClient.send("hudElements", "getStatus", null);
-      if (controlActive) {
-        subscribeMovement();
-      }
+      movementSubscribed = false;
+      syncMovementSubscription();
     } catch (Exception e) {
       onConnectFailed(String.valueOf(e.getMessage()));
     }
@@ -377,6 +416,7 @@ public final class CbxManager {
     }
     this.client = null;
     this.connectedBotToken = null;
+    this.movementSubscribed = false;
     // A real disconnect starts a new episode, so allow one failure log again.
     this.loggedConnectFailure = false;
     scheduleReconnect();
@@ -408,6 +448,7 @@ public final class CbxManager {
     CbxClient current = client;
     client = null;
     connectedBotToken = null;
+    movementSubscribed = false;
     if (current != null) {
       current.close();
       GGBot addon = GGBot.getInstance();
@@ -417,10 +458,16 @@ public final class CbxManager {
     }
   }
 
-  private void subscribeMovement() {
+  /**
+   * Controls movement subscription based on active mode or widget usage.
+   */
+  private void syncMovementSubscription() {
     CbxClient current = client;
-    if (current != null && current.isOpen()) {
-      current.send("movement", "subscribe", null);
+    if (current == null || !current.isOpen()) return;
+    boolean wanted = controlActive || isWidgetEnabled(PositionWidget.WIDGET_ID);
+    if (wanted == movementSubscribed) return;
+    if (current.send("movement", wanted ? "subscribe" : "unsubscribe", null)) {
+      movementSubscribed = wanted;
     }
   }
 
@@ -444,7 +491,7 @@ public final class CbxManager {
    * from a CBX session, tolerating a missing {@code url} by falling back to
    * {@code ws://host:port}.
    */
-  private static String buildConnectUri(de.ggbot.sdk.model.CbxSession session) {
+  static String buildConnectUri(de.ggbot.sdk.model.CbxSession session) {
     if (session == null || session.getToken() == null || session.getToken().isEmpty()) {
       return null;
     }
@@ -479,16 +526,35 @@ public final class CbxManager {
     JsonObject data = packet.getDataObject();
     if (data == null) return;
 
-    JsonObject player = null;
-    if ("partialUpdate".equals(packet.getAction()) && "player".equals(packet.getUpdateType())) {
-      player = data;
-    } else if (data.has("player") && data.get("player").isJsonObject()) {
-      player = data.getAsJsonObject("player");
+    JsonObject player = hudSection(packet, data, "player");
+    if (player != null) {
+      liveState.applyPlayer(player);
+      updatePlayerWidgets();
     }
-    if (player == null) return;
 
-    liveState.applyPlayer(player);
-    updateHealthWidget();
+    JsonObject tablist = hudSection(packet, data, "tablist");
+    if (tablist != null) {
+      liveState.applyTablist(tablist);
+      int count = liveState.getFreshPlayerCount();
+      if (count >= 0 && isWidgetEnabled(PlayersWidget.WIDGET_ID)) {
+        PlayersWidget.update(count);
+      }
+    }
+  }
+
+  /**
+   * Extracts HUD data sections based on update type and section name.
+   *
+   * @param packet The CBX packet containing HUD data
+   * @param data The JSON data object from the packet
+   * @param name The name of the HUD section to extract
+   * @return The extracted HUD section as a JSON object, or null if not found
+   */
+  private static JsonObject hudSection(CbxPacket packet, JsonObject data, String name) {
+    if ("partialUpdate".equals(packet.getAction())) {
+      return name.equals(packet.getUpdateType()) ? data : null;
+    }
+    return data.has(name) && data.get(name).isJsonObject() ? data.getAsJsonObject(name) : null;
   }
 
   private void handleMovementPacket(CbxPacket packet) {
@@ -501,24 +567,44 @@ public final class CbxManager {
         ? data.getAsJsonObject("snapshot") : data;
     if (snapshot.has("position")) {
       liveState.applyMovement(snapshot);
+      updatePositionWidget();
     }
   }
 
   /**
-   * Pushes the live health into the health widget the moment it changes,
-   * instead of waiting for the next stats timer tick. The timer keeps running
-   * as fallback and for everything CBX does not deliver.
+   * Updates the corresponding widgets immediately whenever live player values
+   * change, without waiting for the next stats timer cycle. The timer remains
+   * active as a fallback and continues handling data not provided by CBX.
    */
-  private void updateHealthWidget() {
-    GGBot addon = GGBot.getInstance();
-    if (addon == null) return;
+  private void updatePlayerWidgets() {
     double health = liveState.getFreshHealth();
-    if (health < 0) return;
-
-    var widget = addon.labyAPI().hudWidgetRegistry().getById(HealthWidget.WIDGET_ID);
-    if (widget != null && widget.isEnabled()) {
+    if (health >= 0 && isWidgetEnabled(HealthWidget.WIDGET_ID)) {
       HealthWidget.update(Component.text(health + " ")
           .append(Component.translatable("ggbot.widget.health.unit")));
     }
+    double food = liveState.getFreshFood();
+    if (food >= 0 && isWidgetEnabled(FoodWidget.WIDGET_ID)) {
+      FoodWidget.update(FoodWidget.format(food));
+    }
+    int level = liveState.getFreshLevel();
+    if (level >= 0 && isWidgetEnabled(LevelWidget.WIDGET_ID)) {
+      LevelWidget.update(level);
+    }
+  }
+
+  private void updatePositionWidget() {
+    long now = System.currentTimeMillis();
+    if (now - lastPositionUpdate < POSITION_WIDGET_INTERVAL_MS) return;
+    Position position = liveState.getFreshLocation();
+    if (position == null || !isWidgetEnabled(PositionWidget.WIDGET_ID)) return;
+    lastPositionUpdate = now;
+    PositionWidget.update(PositionWidget.format(position));
+  }
+
+  private boolean isWidgetEnabled(String id) {
+    GGBot addon = GGBot.getInstance();
+    if (addon == null) return false;
+    var widget = addon.labyAPI().hudWidgetRegistry().getById(id);
+    return widget != null && widget.isEnabled();
   }
 }

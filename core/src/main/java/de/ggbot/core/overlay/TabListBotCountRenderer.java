@@ -4,7 +4,6 @@ import de.ggbot.core.GGBot;
 import de.ggbot.sdk.api.PublicApi;
 import de.ggbot.sdk.core.ApiException;
 import de.ggbot.sdk.model.GetBotsOnServer200Response;
-import de.ggbot.sdk.model.GetBotsOnServer200ResponseBotsInner;
 import de.ggbot.sdk.model.Server;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
@@ -31,6 +30,9 @@ public class TabListBotCountRenderer {
   private final GGBot addon;
 
   private volatile int onlineCount = -1;
+  private int shownCount = -1;
+  private Component shownText;
+  private float shownWidth;
   private long lastFetchMs = 0L;
   private volatile boolean fetching = false;
   private boolean sawPost = false;
@@ -73,20 +75,28 @@ public class TabListBotCountRenderer {
       return;
     }
 
-    Component text = Component.translatable("ggbot.tablist.online",
-        NamedTextColor.AQUA,
-        Component.text(String.valueOf(onlineCount), NamedTextColor.GREEN));
+    // Optimizes text rendering by rebuilding only when the count changes.
+    int count = onlineCount;
+    if (count != shownCount) {
+      shownCount = count;
+      shownText = Component.translatable("ggbot.tablist.online",
+          NamedTextColor.AQUA,
+          Component.text(String.valueOf(count), NamedTextColor.GREEN));
+      shownWidth = altRenderMode()
+          ? net.labymod.api.client.render.font.RenderableComponent.of(shownText).getWidth()
+          : Laby.references().renderPipeline().componentRenderer().width(shownText);
+    }
+    Component text = shownText;
+    float width = shownWidth;
     float screenW = Laby.labyAPI().minecraft().minecraftWindow().getScaledWidth();
     float y = 2;
     // Manual horizontal nudge (the canvas centering for this element is unreliable in
     // the tab-list render state, so it can be corrected from the settings).
     float offset = addon.configuration().generalSub.tabListCountXOffset.get();
     if (altRenderMode()) {
-      float w = net.labymod.api.client.render.font.RenderableComponent.of(text).getWidth();
-      event.context().canvas().submitComponent(text, (screenW - w) / 2f + offset, y, -1,
-          1.0f, (int) Math.ceil(w));
+      event.context().canvas().submitComponent(text, (screenW - width) / 2f + offset, y, -1,
+          1.0f, (int) Math.ceil(width));
     } else {
-      float width = Laby.references().renderPipeline().componentRenderer().width(text);
       Laby.references().renderPipeline().componentRenderer().builder()
           .text(text)
           .pos((screenW - width) / 2f + offset, y)
@@ -107,14 +117,9 @@ public class TabListBotCountRenderer {
         PublicApi api = new PublicApi();
         api.setCustomBaseUrl(addon.getVersioningHandler().getBaseUrlForFeature(FEATURE));
         String serverIp = resolveServerDomain(api);
-        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
+        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp, true);
         if (response != null && response.getBots() != null) {
-          count = 0;
-          for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {
-            if (Boolean.TRUE.equals(bot.getOnline())) {
-              count++;
-            }
-          }
+          count = response.getBots().size();
         }
       } catch (ApiException e) {
         addon.logger().error("Failed to fetch tab list bot count: " + e.getMessage());

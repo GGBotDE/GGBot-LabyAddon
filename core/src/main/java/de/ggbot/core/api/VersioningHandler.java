@@ -16,7 +16,10 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.network.server.ServerData;
+import net.labymod.api.event.Priority;
 import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.network.server.ServerJoinEvent;
 import net.labymod.api.models.addon.info.dependency.MavenDependency;
 import net.labymod.api.notification.Notification;
@@ -88,7 +91,7 @@ public class VersioningHandler {
   private static final String ADDON_SLUG = "labymod-addon";
 
   /** Current API version used by the addon */
-  private static final String API_VERSION = "0.15.4";
+  private static final String API_VERSION = "0.15.14";
 
   /**
    * Hosts the versioning response may redirect feature API calls to. Some API
@@ -96,7 +99,9 @@ public class VersioningHandler {
    * must never be able to point them at an arbitrary URL - only our own
    * domains (and their subdomains) over HTTPS are accepted.
    */
-  private static final String[] ALLOWED_BASE_URL_DOMAINS = {"ggbot.de", "ggbot.me", "gg-bot.com", "development-server.eu"};
+  private static final String[] ALLOWED_BASE_URL_DOMAINS = {
+      "ggbot.de", "ggbot.me", "gg-bot.com", "networks.com.de", "development-server.eu"
+  };
 
   /**
    * Default delay between matrix refreshes when the server does not specify
@@ -119,6 +124,12 @@ public class VersioningHandler {
    * field is volatile to make each refresh immediately visible.
    */
   private volatile VersionCheckResponse versionCheckResponse;
+
+  /** The last matrix, evaluated again whenever the player changes servers. */
+  private volatile MatrixResponse matrix;
+
+  /** The host of the server the player is on, empty when on none. */
+  private volatile String server = "";
 
   private List<String> shownMessages;
 
@@ -303,7 +314,8 @@ public class VersioningHandler {
     versioningApiClient
         .matrix(ADDON_SLUG)
         .thenAccept(matrix -> {
-          this.versionCheckResponse = ClientRuleEngine.evaluate(matrix, buildBaseVersionCheckRequest());
+          this.matrix = matrix;
+          evaluateMatrix();
           scheduleNextRefresh(matrix.getRefreshSeconds());
         })
         .exceptionally(throwable -> {
@@ -311,6 +323,35 @@ public class VersioningHandler {
           scheduleNextRefresh(0);
           return null;
         });
+  }
+
+  /**
+   * Evaluates the last matrix for the current server. Server conditions are
+   * only ever checked here, so the server never leaves the client.
+   */
+  private synchronized void evaluateMatrix() {
+    MatrixResponse current = matrix;
+    if (current == null) return;
+    versionCheckResponse = ClientRuleEngine.evaluate(current, buildBaseVersionCheckRequest(), server);
+  }
+
+  /** Runs first so every other join listener already sees the flags of the new server. */
+  @Subscribe(Priority.FIRST)
+  private void onServerJoin(ServerJoinEvent event) {
+    server = serverHost(event.serverData());
+    evaluateMatrix();
+  }
+
+  @Subscribe(Priority.FIRST)
+  private void onServerDisconnect(ServerDisconnectEvent event) {
+    server = "";
+    evaluateMatrix();
+  }
+
+  static String serverHost(ServerData data) {
+    if (data == null || data.address() == null || data.address().getHost() == null) return "";
+    String host = data.address().getHost().trim().toLowerCase(Locale.ROOT);
+    return host.endsWith(".") ? host.substring(0, host.length() - 1) : host;
   }
 
   /**
@@ -495,10 +536,11 @@ public class VersioningHandler {
    * Returns whether a redirect base URL is HTTPS and points at one of our own
    * domains (or a subdomain of one).
    *
-   * @param url the URL to validate
+   * @param url          the URL to validate
+   * @param extraDomains further domains allowed for this URL
    * @return {@code true} if the URL may be used as an API base URL
    */
-  private static boolean isAllowedBaseUrl(String url) {
+  public static boolean isAllowedBaseUrl(String url, String... extraDomains) {
     URI uri;
     try {
       uri = new URI(url);
@@ -509,7 +551,11 @@ public class VersioningHandler {
     String host = uri.getHost();
     if (host == null) return false;
     host = host.toLowerCase(Locale.ROOT);
-    for (String domain : ALLOWED_BASE_URL_DOMAINS) {
+    return isOnDomain(host, ALLOWED_BASE_URL_DOMAINS) || isOnDomain(host, extraDomains);
+  }
+
+  private static boolean isOnDomain(String host, String[] domains) {
+    for (String domain : domains) {
       if (host.equals(domain) || host.endsWith("." + domain)) return true;
     }
     return false;

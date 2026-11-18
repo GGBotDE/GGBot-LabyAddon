@@ -50,6 +50,23 @@ public class OverlayRenderer {
   private static final float LABEL_MIN_SCALE = 0.5f;
   private static final float LABEL_MAX_SCALE = 1.0f;
 
+  /**
+   * Defines corner pairs for the twelve edges of a box.
+   */
+  private static final int[][] BOX_EDGES = {
+      {0, 1}, {1, 2}, {2, 3}, {3, 0},
+      {4, 5}, {5, 6}, {6, 7}, {7, 4},
+      {0, 4}, {1, 5}, {2, 6}, {3, 7}
+  };
+  /**
+   * Defines corner quads for the six faces of a box.
+   */
+  private static final int[][] BOX_FACES = {
+      {0, 1, 2, 3}, {4, 5, 6, 7},
+      {0, 1, 5, 4}, {2, 3, 7, 6},
+      {0, 3, 7, 4}, {1, 2, 6, 5}
+  };
+
   private final OverlayManager manager;
 
   private final Matrix4f cachedMvp = new Matrix4f();
@@ -104,7 +121,7 @@ public class OverlayRenderer {
     camY = y;
 
     GameTransformations t = Laby.references().gameTransformations();
-    new Matrix4f(t.projectionMatrix()).mul(new Matrix4f(t.viewMatrix()), cachedMvp);
+    t.projectionMatrix().mul(t.viewMatrix(), cachedMvp);
 
     ready = true;
   }
@@ -260,12 +277,7 @@ public class OverlayRenderer {
     Vector4f[] c = projectCorners(box);
     int col = box.getOutlineColor();
     float lw = box.getLineWidth();
-    int[][] edges = {
-        {0, 1}, {1, 2}, {2, 3}, {3, 0},
-        {4, 5}, {5, 6}, {6, 7}, {7, 4},
-        {0, 4}, {1, 5}, {2, 6}, {3, 7}
-    };
-    for (int[] e : edges) {
+    for (int[] e : BOX_EDGES) {
       drawLine3D(ctx, c[e[0]], c[e[1]], col, lw, sw, sh);
     }
   }
@@ -273,12 +285,7 @@ public class OverlayRenderer {
   private void fillBox(RectangleRenderContext ctx, OverlayBox box, float sw, float sh) {
     Vector4f[] c = projectCorners(box);
     int fc = box.getFillColor();
-    int[][] faces = {
-        {0, 1, 2, 3}, {4, 5, 6, 7},
-        {0, 1, 5, 4}, {2, 3, 7, 6},
-        {0, 3, 7, 4}, {1, 2, 6, 5}
-    };
-    for (int[] f : faces) {
+    for (int[] f : BOX_FACES) {
       // Faces with a corner behind the near plane are skipped (outline still draws).
       if (c[f[0]].w < NEAR_W || c[f[1]].w < NEAR_W
           || c[f[2]].w < NEAR_W || c[f[3]].w < NEAR_W) {

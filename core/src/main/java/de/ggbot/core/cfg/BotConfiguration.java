@@ -29,7 +29,7 @@ import java.io.IOException;
 @ConfigName("settings")
 @SpriteTexture("settings.png")
 public class BotConfiguration extends AddonConfig {
-  private final boolean debug = false;
+  private final transient boolean debug = false;
   private transient GGBot addon;
 
   /** Required by LabyMod's config loader - use {@link #init(GGBot)} afterwards. */
@@ -120,7 +120,7 @@ public class BotConfiguration extends AddonConfig {
         });
       } else {
         Builder builder = Notification.builder()
-            .title(Component.text("INFO", NamedTextColor.GREEN))
+            .title(Component.translatable("ggbot.toasts.status.info", NamedTextColor.GREEN))
             .text(Component.translatable("ggbot.messages.command.stop.error.offline"))
             .type(Type.SYSTEM);
         Laby.labyAPI().notificationController().push(builder.build());
@@ -171,6 +171,15 @@ public class BotConfiguration extends AddonConfig {
   }
 
   @MethodOrder(after = "setupGuide")
+  @SpriteSlot(x = 5)
+  @ButtonSetting
+  public void afkFleets(Setting setting) {
+    if (!this.addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.afkfleets")) return;
+    Laby.labyAPI().minecraft().minecraftWindow()
+        .displayScreen(new de.ggbot.core.gui.afkfleets.AfkFleetsActivity(addon));
+  }
+
+  @MethodOrder(after = "afkFleets")
   @SettingSection("Addon")
   @SpriteSlot(x = 7)
   public final BotCommandsSubConfig prefixSub = new BotCommandsSubConfig();

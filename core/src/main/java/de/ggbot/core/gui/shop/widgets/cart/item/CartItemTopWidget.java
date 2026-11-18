@@ -1,5 +1,7 @@
 package de.ggbot.core.gui.shop.widgets.cart.item;
 
+import de.ggbot.core.gui.botmenu.ItemIcon;
+import de.ggbot.core.gui.botmenu.ItemIconWidget;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
@@ -21,9 +23,9 @@ public class CartItemTopWidget extends HorizontalListWidget {
   public final ButtonWidget deleteButton;
   public final String itemName;
 
-  public CartItemTopWidget(Icon itemIcon, String itemName, String itemId) {
+  public CartItemTopWidget(ItemIcon itemIcon, String itemName, String itemId) {
     super();
-    this.itemIcon = new IconWidget(itemIcon).addId("cart-item-icon");
+    this.itemIcon = new ItemIconWidget(itemIcon).addId("cart-item-icon");
     this.countSelectionWidget = new CartCountSelectionWidget();
     this.deleteButton = new ButtonWidget();
     this.deleteButton.icon().set(Icon.texture(

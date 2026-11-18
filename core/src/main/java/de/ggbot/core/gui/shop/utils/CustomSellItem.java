@@ -1,10 +1,10 @@
 package de.ggbot.core.gui.shop.utils;
 
+import de.ggbot.core.gui.botmenu.ItemIcon;
+import de.ggbot.core.gui.botmenu.ItemIcons;
 import de.ggbot.sdk.model.BlockPosition;
 import de.ggbot.sdk.model.SellItem;
 import de.ggbot.sdk.model.SellItemPrice;
-import net.labymod.api.client.gui.icon.Icon;
-import net.labymod.api.client.resources.ResourceLocation;
 import java.util.List;
 
 /**
@@ -77,31 +77,13 @@ public class CustomSellItem {
     return position;
   }
 
-  public Icon getIcon() {
-    String typeName = this.getType().toLowerCase();
-    // Strip namespace prefix (e.g. "minecraft:diamond_sword" → "diamond_sword")
-    if (typeName.contains(":")) {
-      typeName = typeName.substring(typeName.indexOf(':') + 1);
-    }
-    // We need to find a working solution for reliably loading item textures, since the vanilla Minecraft resource location.
-    // That, currently however, does not work so for now we use manually added item textures. (The same one we use for our own webpanel.)
-    /*ResourceLocation resourceLocation = ResourceLocation.create(
-        "minecraft", "textures/item/" + typeName + ".png"
-    );
-    if (!resourceLocation.exists()) {
-      resourceLocation = ResourceLocation.create(
-          "minecraft", "textures/block/" + typeName + ".png"
-      );
-    }*/
-    ResourceLocation resourceLocation = ResourceLocation.create(
-        "ggbot", "themes/vanilla/textures/icons/items/" + typeName + ".png"
-    );
-    if (!resourceLocation.exists()) {
-      resourceLocation = ResourceLocation.create(
-          "minecraft", "themes/vanilla/textures/icons/items/barrier.png"
-      );
-    }
-    return Icon.texture(resourceLocation);
+  /**
+   * Returns the visual representation of the item.
+   *
+   * @return the item's visual icon
+   */
+  public ItemIcon getIcon() {
+    return ItemIcons.forItem(type, nbt);
   }
 
   /** @return lore lines parsed from the item's NBT data */

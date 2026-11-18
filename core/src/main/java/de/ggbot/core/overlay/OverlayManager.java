@@ -1,6 +1,5 @@
 package de.ggbot.core.overlay;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,6 +10,13 @@ public class OverlayManager {
 
   private final List<OverlayLine> lines = new CopyOnWriteArrayList<>();
   private final List<OverlayBox> boxes = new CopyOnWriteArrayList<>();
+
+  // These values are accessed multiple times per frame by the renderer,
+  // so their read-only views are created once and reused. Since the underlying
+  // lists use copy-on-write, live views can be safely iterated without creating
+  // separate snapshots.
+  private final List<OverlayLine> lineView = Collections.unmodifiableList(lines);
+  private final List<OverlayBox> boxView = Collections.unmodifiableList(boxes);
 
   public static OverlayManager getInstance() {
     if (instance == null) {
@@ -65,11 +71,11 @@ public class OverlayManager {
   }
 
   public List<OverlayLine> getLines() {
-    return Collections.unmodifiableList(new ArrayList<>(lines));
+    return lineView;
   }
 
   public List<OverlayBox> getBoxes() {
-    return Collections.unmodifiableList(new ArrayList<>(boxes));
+    return boxView;
   }
 
   public boolean hasOverlays() {

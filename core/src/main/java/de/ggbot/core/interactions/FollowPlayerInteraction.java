@@ -31,12 +31,13 @@ public class FollowPlayerInteraction implements BulletPoint {
     return null;
   }
 
-  /** Only shown when enabled in settings and the utils module is active on the bot. */
+  /** Only shown when enabled, the utils module is active and it is not the bot itself. */
   @Override
   public boolean isVisible(Player player) {
     return addon.configuration().generalSub.followPlayerEnabled.get()
         && addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.interaction.followplayer")
-        && BotMenuState.get().isModuleActive("utils");
+        && BotMenuState.get().isModuleActive("utils")
+        && !BotRequests.isAccountOf(BotRequests.getBotFromCache(addon), player);
   }
 
   @Override
