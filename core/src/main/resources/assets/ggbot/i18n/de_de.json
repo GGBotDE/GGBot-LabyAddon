@@ -1,5 +1,16 @@
 {
     "ggbot": {
+    "oauth": {
+      "close": "Du kannst diese Seite jetzt schließen",
+      "success": {
+        "title": "Erfolgreich!",
+        "message": "Dein Vorgang wurde erfolgreich abgeschlossen."
+      },
+      "failed": {
+        "title": "Anmeldung fehlgeschlagen",
+        "message": "Die Anmeldung wurde abgebrochen oder ist fehlgeschlagen. Bitte versuche es im Spiel erneut."
+      }
+    },
         "widget": {
             "status": {
                 "name": "Bot Status"
@@ -32,7 +43,27 @@
                     "name": "Geschlossene Tickets"
                 }
             },
-            "unknown": "Unbekannt"
+            "unknown": "Unbekannt",
+            "food": {
+                "name": "Bot Hunger"
+            },
+            "level": {
+                "name": "Bot Level"
+            },
+            "players": {
+                "name": "Bot Serverspieler"
+            },
+            "position": {
+                "name": "Bot Position"
+            },
+            "afk": {
+                "bots": {
+                    "name": "AFK-Bots online"
+                },
+                "fleets": {
+                    "name": "Aktive AFK-Flotten"
+                }
+            }
         },
         "onboarding": {
             "title": "GGBot Einrichtung",
@@ -134,6 +165,10 @@
                 "name": "Einrichtungsassistent",
                 "text": "Öffnen"
             },
+            "afkFleets": {
+                "name": "AFK-Flotten",
+                "text": "Öffnen"
+            },
             "startSelectedBot": {
                 "name": "Ausgewählten Bot starten",
                 "text": "Start"
@@ -210,6 +245,12 @@
                 "botSelectorKey": {
                     "name": "Bot-Auswahl Taste"
                 },
+                "afkFleetsEnabled": {
+                    "name": "AFK-Flotten-Tastenkürzel aktivieren"
+                },
+                "afkFleetsKey": {
+                    "name": "AFK-Flotten Taste"
+                },
                 "followPlayerEnabled": {
                     "name": "'Spieler folgen' im Spielermenü anzeigen (Utils-Modul)"
                 },
@@ -236,6 +277,9 @@
                 },
                 "highlightKickAreas": {
                     "name": "Kick-Bereiche hervorheben"
+                },
+                "allBots": {
+                    "name": "Daten aller Bots anzeigen"
                 },
                 "showChestContents": {
                     "name": "Kisteninhalt beim Anschauen anzeigen"
@@ -314,6 +358,24 @@
             },
             "closedTickets": {
                 "name": "Geschlossene Tickets"
+            },
+            "botfood": {
+                "name": "Bot Hunger"
+            },
+            "botlevel": {
+                "name": "Bot Level"
+            },
+            "botplayers": {
+                "name": "Bot Serverspieler"
+            },
+            "botposition": {
+                "name": "Bot Position"
+            },
+            "afkbots": {
+                "name": "AFK-Bots online"
+            },
+            "afkfleets": {
+                "name": "Aktive AFK-Flotten"
             }
         },
         "messages": {
@@ -343,6 +405,7 @@
             "command": {
                 "send": {
                     "error": {
+                        "failed": "Der Befehl konnte nicht gesendet werden.",
                         "offline": "Fehler: Der Bot ist zurzeit offline."
                     }
                 },
@@ -370,11 +433,12 @@
             },
             "log": {
                 "time": "%s",
-                "textfilter": "%s",
+                "textfilter": "%s​",
                 "tab": "Bot Logs"
             },
             "shop": {
-                "nobot": "Kein GGBot in der Nähe gefunden."
+                "nobot": "Kein GGBot in der Nähe gefunden.",
+                "outsideArea": "Du musst im Verkaufsbereich des Bots stehen, um hier einzukaufen."
             }
         },
         "toasts": {
@@ -409,7 +473,8 @@
                 "selected": {
                     "title": "Bot ausgewählt",
                     "text": "Verwende jetzt %s."
-                }
+                },
+                "afkFleets": "AFK-Flotten"
             },
             "shop": {
                 "title": "Kaufe Artikel von %s",
@@ -428,6 +493,7 @@
             "stop": "Stop",
             "close": "Schließen",
             "changeBot": "Bot wechseln",
+            "selectBot": "Bot auswählen",
             "on": "AN",
             "off": "AUS",
             "status": {
@@ -461,7 +527,8 @@
                 "offline": "Der Bot ist offline - Steuerung nicht möglich.",
                 "tooFar": "Der Bot ist außer Reichweite - komm näher zum Steuern.",
                 "outOfRange": "Steuerung beendet: Der Bot ist außer Reichweite.",
-                "actionbar": "Du steuerst %s - drücke %s zum Beenden"
+                "actionbar": "Du steuerst %s - drücke %s zum Beenden",
+                "otherServer": "Der ausgewählte Bot ist nicht hier - er spielt auf einem anderen Server."
             },
             "shopHint": "Shop-GUI für %s verfügbar - drücke %s zum Öffnen",
             "section": {
@@ -509,7 +576,12 @@
                 "stopFollowMe": "Nicht mehr folgen"
             },
             "kickAreas": {
-                "none": "(keine Kick-Bereiche)"
+                "none": "(keine Kick-Bereiche)",
+                "noRegion": "Kein Bereich gesetzt"
+            },
+            "overlays": {
+                "showAll": "Alle anzeigen",
+                "hideAll": "Alle ausblenden"
             },
             "search": {
                 "placeholder": "Artikel suchen...",
@@ -527,15 +599,19 @@
                 "pos1": "Pos1 setzen",
                 "pos2": "Pos2 setzen",
                 "send": "An Bot senden",
-                "clear": "Auswahl löschen",
-                "disabled": "Das WorldEdit-Modul ist auf diesem Bot nicht aktiviert."
+                "clear": "Auswahl löschen"
             },
             "chest": {
                 "contents": "Kisteninhalt:"
-            }
-        }
-    },
-    "labymod": {
+            },
+            "mccontrol": {
+                "button": "Per MCControl beitreten",
+                "title": "Per MCControl beitreten",
+                "text": "Du verlässt deinen aktuellen Server und wechselst auf %s, um deinen Bot zu steuern.",
+                "join": "Beitreten"
+            },
+            "replays": "Replays"
+        },
         "hudWidgetCategory": {
             "botggfeatures": {
                 "name": "GGBot: GG-Features",
@@ -552,6 +628,151 @@
             "botticket": {
                 "name": "GGBot: Ticket-Infos",
                 "description": "Details aus dem Ticket-Modul"
+            },
+            "botafk": {
+                "name": "GGBot: AFK-Flotten",
+                "description": "Informationen zu deinen AFK-Flotten"
+            }
+        },
+        "afkfleets": {
+            "title": "AFK-Flotten",
+            "loading": "Flotten werden geladen...",
+            "login": "Verknüpfe dein GGBot-Konto, um AFK-Flotten zu verwenden.",
+            "empty": "Keine AFK-Flotten vorhanden.",
+            "noMatch": "Keine Flotte entspricht deiner Suche.",
+            "noBots": "Diese Flotte enthält keine Bots.",
+            "searchPlaceholder": "Suchen...",
+            "chatPlaceholder": "Nachricht oder /Befehl für die gesteuerten Bots...",
+            "wholeFleet": "Gesamte Flotte",
+            "target": {
+                "fleet": "Gesamte Flotte: %s online",
+                "selected": "Ausgewählt: %s online"
+            },
+            "send": "Senden",
+            "start": "Starten",
+            "stop": "Stoppen",
+            "open": "Öffnen",
+            "inspect": "Prüfen",
+            "back": "Zurück",
+            "refresh": "Aktualisieren",
+            "close": "Schließen",
+            "noAnswer": "Der Bot hat nicht geantwortet.",
+            "details": "Leben: %s  Hunger: %s  Position: %s",
+            "status": {
+                "online": "Online",
+                "connecting": "Verbindet",
+                "reconnecting": "Verbindet neu",
+                "offline": "Offline"
+            },
+            "command": {
+                "usage": "Nutzung: /afkfleets [list | start <Flotte> | stop <Flotte> | say <Flotte> <Nachricht>]",
+                "entry": "%s: %s/%s online",
+                "notFound": "Keine Flotte gefunden für: %s",
+                "started": "Flotte %s wird gestartet.",
+                "stopped": "Flotte %s wird gestoppt.",
+                "sent": "An Flotte %s gesendet."
+            },
+            "manage": "Verwalten",
+            "botChatPlaceholder": "Nachricht oder /Befehl für diesen Bot...",
+            "walk": {
+                "forward": "Vorwärts",
+                "back": "Zurück",
+                "left": "Links",
+                "right": "Rechts",
+                "turnLeft": "Links drehen",
+                "turnRight": "Rechts drehen",
+                "jump": "Springen"
+            }
+        },
+        "confirm": {
+            "cancel": "Abbrechen"
+        },
+        "replays": {
+            "title": "Replays",
+            "loading": "Replays werden geladen...",
+            "failed": "Die Replays deines Bots konnten nicht geladen werden.",
+            "noBot": "Wähle einen Bot aus, um seine Replays zu sehen.",
+            "login": "Verknüpfe deinen GGBot Account, um die Replays deines Bots zu sehen.",
+            "empty": "Noch keine Replays.",
+            "includeLocal": "Lokale Replays anzeigen",
+            "refresh": "Aktualisieren",
+            "folder": "Replay Ordner",
+            "close": "Schließen",
+            "download": "Herunterladen",
+            "show": "Anzeigen",
+            "downloaded": "Heruntergeladen",
+            "local": "Lokal",
+            "ggbot": "GGBot",
+            "downloadDone": "Das Replay wurde in deinem Replay Ordner gespeichert.",
+            "deleteFailed": "Das Replay konnte nicht gelöscht werden.",
+            "failedReplay": "Das Replay konnte nicht geladen werden.",
+            "tooLarge": "Dieses Replay ist zu groß, um es ohne Herunterladen zu öffnen.",
+            "playFailed": "ReplayMod konnte das Replay nicht öffnen.",
+            "busy": {
+                "loading": "Replay wird geladen...",
+                "downloading": "Replay wird heruntergeladen..."
+            },
+            "open": {
+                "button": "Öffnen",
+                "title": "Replay ansehen",
+                "leave": "Du verlässt den Server, auf dem du bist, und das Replay öffnet sich in ReplayMod.",
+                "notSaved": "Dieses Replay ist nicht heruntergeladen. Was du in ReplayMod änderst (Marker, Keyframes), wird nur gespeichert, wenn du es vorher herunterlädst.",
+                "downloadAndOpen": "Herunterladen und öffnen",
+                "open": "Öffnen"
+            },
+            "delete": {
+                "button": "Löschen",
+                "title": "Replay löschen",
+                "remote": "Das Replay %s von deinem Bot löschen? Das kann nicht rückgängig gemacht werden.",
+                "local": "%s aus deinem Replay Ordner löschen? Das kann nicht rückgängig gemacht werden.",
+                "confirm": "Löschen",
+                "which": "Das Replay %s ist auf deinem Bot und in deinem Replay Ordner. Was möchtest du löschen?",
+                "bot": "Vom Bot löschen",
+                "localCopy": "Lokale Kopie löschen",
+                "both": "Beide löschen"
+            },
+            "allBots": "Alle Bots",
+            "allEvents": "Alle Ereignisse",
+            "noMatch": "Nichts gefunden.",
+            "web": "Web",
+            "back": "Zurück",
+            "search": {
+                "button": "Suchen",
+                "title": "Replays durchsuchen",
+                "words": "Wörter",
+                "player": "Spieler",
+                "more": "Weiter zurück suchen",
+                "searching": "Suche läuft...",
+                "failed": "Die Suche ist fehlgeschlagen.",
+                "hint": "Durchsuche die Ereignisse deiner Replays: Chat, Spieler, Kills und mehr."
+            },
+            "details": {
+                "button": "Details",
+                "filter": "Nach Wörtern oder Spieler filtern",
+                "loading": "Die Ereignisse des Replays werden geladen...",
+                "info": "%s  Minecraft %s  %s  %s Teile  %s",
+                "players": "Spieler: %s",
+                "noEvents": "Dieses Replay hat keine Ereignisse.",
+                "more": "%s weitere, nutze den Filter, um sie einzugrenzen."
+            },
+            "event": {
+                "chat": "Chat",
+                "command": "Befehl",
+                "player_join": "Spieler beigetreten",
+                "player_leave": "Spieler verlassen",
+                "player_in_view": "Spieler in Sicht",
+                "entity_spawn": "Entity erschienen",
+                "entity_remove": "Entity entfernt",
+                "block_change": "Block geändert",
+                "item_pickup": "Item aufgehoben",
+                "container_open": "Container geöffnet",
+                "bot_death": "Bot gestorben",
+                "bot_kicked": "Bot gekickt",
+                "damage": "Schaden",
+                "explosion": "Explosion",
+                "inventory_change": "Inventar geändert",
+                "respawn": "Respawn",
+                "bot_position": "Bot Position"
             }
         }
     }

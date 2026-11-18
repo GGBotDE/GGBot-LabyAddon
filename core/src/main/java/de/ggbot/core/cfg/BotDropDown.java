@@ -2,6 +2,7 @@ package de.ggbot.core.cfg;
 
 import de.ggbot.core.api.BotRequests;
 import de.ggbot.core.GGBot;
+import de.ggbot.core.gui.botselector.BotSelectorWidget;
 import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
@@ -20,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 @AutoWidget
@@ -29,16 +29,14 @@ import java.util.function.Consumer;
 public class BotDropDown extends HorizontalListWidget {
 
     private final String customText;
-    private final String initialValue;
 
     private Consumer<String> customUpdateListener;
     /** Set to {@code true} while programmatically repopulating the dropdown
      *  to prevent the change-listener from overwriting the saved selection. */
     private boolean populatingDropdown = false;
 
-    public BotDropDown(String customText, String initialValue) {
+    public BotDropDown(String customText) {
         this.customText = customText;
-        this.initialValue = initialValue;
     }
 
     public void setCustomUpdateListener(Consumer<String> customUpdateListener) {
@@ -48,21 +46,15 @@ public class BotDropDown extends HorizontalListWidget {
     /** Populate {@code dropdown} from the current cached bot list. */
     private void populateDropdown(DropdownWidget<String> dropdown) {
         for (Bot bot : BotRequests.getCachedBots()) {
-          String finalDisplayValue = "";
-          if (bot.getDescription() == null || Objects.equals(bot.getDescription(), "")) {
-              if (bot.getLinkName().equals("unknown") || bot.getLinkName().isEmpty()) {
-                  String display = bot.getToken().substring(0, 3);
-                finalDisplayValue = display + " (" + bot.getId() + ")";
-              } else {
-                finalDisplayValue = bot.getLinkName() + " (" + bot.getId() + ")";
-              }
-          } else {
-            finalDisplayValue = bot.getDescription() + " (" + bot.getId() + ")";
-          }
-          dropdown.add(finalDisplayValue);
-          if(GGBot.getInstance().configuration().token.get().equals(bot.getToken())){
-              dropdown.setSelected(finalDisplayValue);
-          }
+            dropdown.add(BotSelectorWidget.formatBotDisplay(bot));
+        }
+        GGBot addon = GGBot.getInstance();
+        Bot selected = BotRequests.getBotFromCache(addon);
+        String selection = selected != null
+            ? BotSelectorWidget.formatBotDisplay(selected)
+            : addon.configuration().botlist.get();
+        if (!selection.isEmpty()) {
+            dropdown.setSelected(selection);
         }
     }
 
@@ -80,24 +72,16 @@ public class BotDropDown extends HorizontalListWidget {
             }
         });
 
-        if (this.initialValue != null) {
-            dropdown.setSelected(this.initialValue);
-        }
-
         this.addEntry(dropdown);
 
         GGBot addon = GGBot.getInstance();
         ButtonWidget button = ButtonWidget.text(this.customText);
         button.setPressListener(() -> {
             button.setEnabled(false);
-            String savedSelection = dropdown.getSelected();
             BotRequests.updateBotListAsync(addon, () -> {
                 populatingDropdown = true;
                 dropdown.clear();
                 populateDropdown(dropdown);
-                if (savedSelection != null) {
-                    dropdown.setSelected(savedSelection);
-                }
                 populatingDropdown = false;
                 button.setEnabled(true);
             });
@@ -126,10 +110,7 @@ public class BotDropDown extends HorizontalListWidget {
 
         @Override
         public BotDropDown[] create(Setting setting, BotDropDownMenu annotation, SettingInfo<?> info, SettingAccessor accessor) {
-            BotDropDown customWidget = new BotDropDown(
-                annotation.customText(),
-                accessor.get()
-            );
+            BotDropDown customWidget = new BotDropDown(annotation.customText());
 
             customWidget.setCustomUpdateListener(accessor::set);
 

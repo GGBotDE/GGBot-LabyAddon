@@ -23,7 +23,7 @@ public class ChatListener {
     if (!addon.configuration().prefixSub.botCommands.get()) return;
 
     String message = e.getMessage();
-    if (!message.startsWith(addon.configuration().prefixSub.prefix.get())) return;
+    if (message == null || !message.startsWith(addon.configuration().prefixSub.prefix.get())) return;
 
     // Cancel the event immediately on the game thread - no blocking work here.
     e.setCancelled(true);
@@ -44,18 +44,23 @@ public class ChatListener {
         } catch (Exception ex) {
           addon.logger().error("Failed to send bot command: " + ex.getMessage());
           addon.getVersioningHandler().reportError(ex);
+          notifyError("ggbot.messages.command.send.error.failed");
         }
       } else {
-        Laby.labyAPI().minecraft().executeOnRenderThread(() -> {
-          Notification.Builder builder = Notification.builder()
-              .title(Component.text("ERROR", NamedTextColor.RED))
-              .text(Component.translatable("ggbot.messages.command.send.error.offline"))
-              .type(Type.SYSTEM);
-          Laby.labyAPI().notificationController().push(builder.build());
-        });
+        notifyError("ggbot.messages.command.send.error.offline");
       }
     }, "ggbot-command-send");
     t.setDaemon(true);
     t.start();
+  }
+
+  private void notifyError(String textKey) {
+    Laby.labyAPI().minecraft().executeOnRenderThread(() -> {
+      Notification.Builder builder = Notification.builder()
+          .title(Component.translatable("ggbot.toasts.status.error", NamedTextColor.RED))
+          .text(Component.translatable(textKey))
+          .type(Type.SYSTEM);
+      Laby.labyAPI().notificationController().push(builder.build());
+    });
   }
 }

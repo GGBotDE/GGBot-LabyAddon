@@ -27,6 +27,14 @@ public class BotMenuSubConfig extends Config {
   public final ConfigProperty<Boolean> highlightKickAreas = new ConfigProperty<>(false)
       .addChangeListener(v -> BotMenuState.get().setHighlightKickAreas(v));
 
+  /**
+   * Displays world overlays and item search results for all bots on the account.
+   *
+   * @param false The default value, which means only the selected bot's data is displayed
+   */
+  @SwitchSetting
+  public final ConfigProperty<Boolean> allBots = new ConfigProperty<>(false);
+
   /** Show the contents of a buy/sell chest when looking at it. */
   @SwitchSetting
   public final ConfigProperty<Boolean> showChestContents = new ConfigProperty<>(false)

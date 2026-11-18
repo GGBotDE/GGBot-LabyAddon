@@ -9,6 +9,7 @@ import de.ggbot.core.gui.botmenu.ChestItemCache;
 import de.ggbot.core.gui.botmenu.ControlModeManager;
 import de.ggbot.core.utils.KeyComboTrigger;
 import de.ggbot.sdk.model.Bot;
+import java.util.Objects;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -65,15 +66,35 @@ public class BotMenuListener {
 
     if (menuTrigger.test(e, addon.configuration().botMenuSub.menuKey.get())
         && addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.botmenu")) {
-      Bot bot = BotRequests.getBotFromCache(addon);
-      if (bot != null) {
-        ChestItemCache.refresh(bot);
-        BotRequests.getActiveModulesAsync(addon, bot,
-            modules -> BotMenuState.get().setActiveModules(modules));
+      if (BotRequests.getBotFromCache(addon) == null) {
+        // Ensures the bot is available before opening the menu to avoid empty states.
+        BotRequests.updateBotListAsync(addon, this::openMenu);
+      } else {
+        openMenu();
       }
-      Laby.labyAPI().minecraft().executeOnRenderThread(() ->
-          Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new BotMenuActivity()));
     }
+  }
+
+  /**
+   * Opens the menu with current modules and updates if new modules are available.
+   */
+  private void openMenu() {
+    ChestItemCache.refresh(BotRequests.getOverlayBots(addon));
+    BotMenuActivity menu = displayMenu();
+    Bot bot = BotRequests.getBotFromCache(addon);
+    if (bot == null) return;
+    BotRequests.getActiveModulesAsync(addon, bot, modules -> {
+      if (Objects.equals(modules, BotMenuState.get().getActiveModules())) return;
+      BotMenuState.get().setActiveModules(modules);
+      if (menu.isOpen()) displayMenu();
+    });
+  }
+
+  private BotMenuActivity displayMenu() {
+    BotMenuActivity menu = new BotMenuActivity();
+    Laby.labyAPI().minecraft().executeOnRenderThread(() ->
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(menu));
+    return menu;
   }
 
   /** Safety net: never leave control states active after leaving a server. */

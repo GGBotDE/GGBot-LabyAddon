@@ -37,8 +37,10 @@ public final class BotMenuState {
    */
   private final Map<String, String> editValues = new HashMap<>();
 
-  /** Modules currently enabled on the selected bot (lower-case names). */
-  private volatile Set<String> activeModules = new HashSet<>();
+  /**
+   * Stores the active modules for the selected bot, or null if unknown.
+   */
+  private volatile Set<String> activeModules = null;
 
   private WorldPosition pos1;
   private WorldPosition pos2;
@@ -80,16 +82,37 @@ public final class BotMenuState {
   }
 
   public void setActiveModules(Set<String> modules) {
-    this.activeModules = modules == null ? new HashSet<>() : modules;
+    this.activeModules = modules;
+  }
+
+  public Set<String> getActiveModules() {
+    return activeModules;
   }
 
   public boolean isModuleActive(String module) {
-    return activeModules.contains(module);
+    Set<String> modules = activeModules;
+    return modules != null && modules.contains(module);
   }
 
-  /** Whether the active-module set has been populated (false means "unknown yet"). */
-  public boolean hasActiveModules() {
-    return !activeModules.isEmpty();
+  /**
+   * Checks if a module is available, treating unknown modules as available.
+   *
+   * @param module The module name to check
+   * @return true if the module is available, false otherwise
+   */
+  public boolean isModuleAvailable(String module) {
+    Set<String> modules = activeModules;
+    return modules == null || modules.contains(module);
+  }
+
+  /**
+   * Resets module state and unsaved edits when switching between bots.
+   */
+  public void resetForBotChange() {
+    this.activeModules = null;
+    synchronized (editValues) {
+      editValues.clear();
+    }
   }
 
   /** Returns the in-progress edit value for a setting key, or {@code null}. */

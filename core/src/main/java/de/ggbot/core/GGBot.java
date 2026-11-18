@@ -47,6 +47,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
   private HudWidgetCategory ticketCategory;
   private HudWidgetCategory ingameCategory;
   private HudWidgetCategory infoCategory;
+  private HudWidgetCategory afkCategory;
 
   private CheckGGBot checkGGBotInteraction;
   private OverlayRenderer overlayRenderer;
@@ -160,7 +161,10 @@ public class GGBot extends LabyAddon<BotConfiguration> {
    */
   public static void setAuthenticated(boolean state) {
     authenticated = state;
-    if (state) tokenExpired = false;
+    if (state) {
+      tokenExpired = false;
+      de.ggbot.core.api.BotRequests.updateBotListAsync(getInstance(), null);
+    }
   }
 
   /**
@@ -213,6 +217,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     this.registerListener(new ShopListener(this));
     this.registerListener(new BotSelectorListener(this));
     this.registerListener(new BotMenuListener(this));
+    this.registerListener(new de.ggbot.core.listener.AfkFleetsListener(this));
     onboardingListener = new de.ggbot.core.listener.OnboardingListener(this);
     this.registerListener(onboardingListener);
     this.registerListener(de.ggbot.core.gui.botmenu.ControlModeManager.get());
@@ -220,6 +225,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     // allows it, teardown on disconnect (see CbxManager for the full policy).
     this.registerListener(de.ggbot.core.cbx.CbxManager.get());
     this.registerCommand(new de.ggbot.core.commands.ServerBotsCommand(this));
+    this.registerCommand(new de.ggbot.core.commands.AfkFleetsCommand(this));
     overlayRenderer = new OverlayRenderer(OverlayManager.getInstance());
     this.registerListener(overlayRenderer);
     this.registerListener(new ChestContentRenderer());
@@ -227,28 +233,36 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     this.registerListener(new de.ggbot.core.overlay.TabListBotCountRenderer(this));
   }
 
-  /**
-   * Registers HUD widget categories based on enabled feature flags.
-   * The global {@code de.ggbot.addon.widgets} flag must be active.
-   */
+/**
+ * Registers HUD widget categories according to the active feature flags.
+ * The global {@code de.ggbot.addon.widgets} setting must be enabled.
+ *
+ * <p>Categories are created using the holder-based overload to ensure
+ * their translation keys are stored under the addon's own
+ * {@code ggbot.hudWidgetCategory.*} namespace.
+ */
   private void registerWidgetCategories() {
     if (!versioningHandler.isFeatureEnabled("de.ggbot.addon.widgets")) return;
 
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ggfeatures"))
       labyAPI().hudWidgetRegistry().categoryRegistry().register(
-          ggfeaturesCategory = new HudWidgetCategory("botggfeatures"));
+          ggfeaturesCategory = new HudWidgetCategory(this, "botggfeatures"));
 
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket"))
       labyAPI().hudWidgetRegistry().categoryRegistry().register(
-          ticketCategory = new HudWidgetCategory("botticket"));
+          ticketCategory = new HudWidgetCategory(this, "botticket"));
 
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame"))
       labyAPI().hudWidgetRegistry().categoryRegistry().register(
-          ingameCategory = new HudWidgetCategory("botingame"));
+          ingameCategory = new HudWidgetCategory(this, "botingame"));
 
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.info"))
       labyAPI().hudWidgetRegistry().categoryRegistry().register(
-          infoCategory = new HudWidgetCategory("botinfo"));
+          infoCategory = new HudWidgetCategory(this, "botinfo"));
+
+    if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.afk"))
+      labyAPI().hudWidgetRegistry().categoryRegistry().register(
+          afkCategory = new HudWidgetCategory(this, "botafk"));
   }
 
   /**
@@ -276,6 +290,21 @@ public class GGBot extends LabyAddon<BotConfiguration> {
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame")) {
       if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.hearts"))
         labyAPI().hudWidgetRegistry().register(new HealthWidget());
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.food"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.ingame.FoodWidget());
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.level"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.ingame.LevelWidget());
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.players"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.ingame.PlayersWidget());
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ingame.position"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.ingame.PositionWidget());
+    }
+
+    if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.afk")) {
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.afk.bots"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.afk.AfkBotsWidget());
+      if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.afk.fleets"))
+        labyAPI().hudWidgetRegistry().register(new de.ggbot.core.widget.afk.AfkFleetsWidget());
     }
 
     if (versioningHandler.isFeatureEnabled("de.ggbot.addon.widget.ticket")) {
@@ -317,7 +346,7 @@ public class GGBot extends LabyAddon<BotConfiguration> {
         "labymod_role",
         "ggbot_role",
         PositionType.LEFT_TO_NAME,
-        new TeamNameTagIcon(() -> 1F)
+        new TeamNameTagIcon()
     );
 
     Laby.references().badgeRegistry().registerBefore(

@@ -1,6 +1,7 @@
 package de.ggbot.core.auth;
 
 import com.google.gson.JsonObject;
+import net.labymod.api.util.I18n;
 import net.labymod.api.util.io.web.request.Request;
 import net.labymod.api.util.io.web.request.Request.Method;
 import net.labymod.api.util.io.web.request.Response;
@@ -11,7 +12,9 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -44,6 +47,9 @@ public class OAuthServer {
    * OAuth scopes requested during authorization.
    */
   public static final String SCOPES = "read:bots%20write:bots%20execute:bots";
+
+  private static final String PAGE =
+      "<!doctypehtml><html><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>{title}</title><link href=https://ggbot.de/assets/css/globals.css rel=stylesheet><link href=https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css rel=stylesheet><div><i class=\"bx {icon}\"></i><h1>{title}</h1><p>{message}<p class=strong>{close}</div><style>i{display:block;font-size:100px;color:{color}}div{text-align:center;background:var(--background-100);padding:2em;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px}h1{margin-bottom:.5em;font-family:Sora,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}p{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--text-600);margin:.5em 0}.strong{font-weight:600;color:var(--text-800)}</style>";
 
   private final GGBot addon;
   private ServerSocket serverSocket;
@@ -84,10 +90,9 @@ public class OAuthServer {
   }
 
   /**
-   * Waits synchronously for the OAuth redirect and extracts the authorization code.
-   * A success HTML page is returned to the browser.
+   * Listens for an OAuth redirect to extract the authorization code, displaying the browser result and returning null on errors.
    *
-   * @return The received authorization code, or null if an error occurred
+   * @return The authorization code string if successfully retrieved, otherwise null
    */
   public String listenForCode() {
     while (this.serverSocket.isBound()) {
@@ -96,12 +101,11 @@ public class OAuthServer {
         Scanner scanner = new Scanner(socket.getInputStream());
         String path = scanner.nextLine().split(" ")[1];
 
-        PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), false, StandardCharsets.UTF_8);
         printWriter.write("HTTP/1.0 200 OK\r\n");
         printWriter.write("Content-Type: text/html; charset=UTF-8\r\n");
         printWriter.write("\r\n");
-        printWriter.write(
-            "<!doctypehtml><html lang=en><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>Success</title><link href=https://ggbot.de/assets/css/globals.css rel=stylesheet><link href=https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css rel=stylesheet><div><i class=\"bx bxs-check-circle\"></i><h1>Success!</h1><p>Your operation was completed successfully.<p class=strong>You can now close this page</div><style>i{display:block;font-size:100px;color:green}div{text-align:center;background:var(--background-100);padding:2em;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px}h1{margin-bottom:.5em;font-family:Sora,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}p{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--text-600);margin:.5em 0}.strong{font-weight:600;color:var(--text-800)}</style>");
+        printWriter.write(page(path.contains("?code=")));
         printWriter.flush();
 
         printWriter.close();
@@ -131,6 +135,16 @@ public class OAuthServer {
     return null;
   }
 
+  private static String page(boolean success) {
+    String key = success ? "ggbot.oauth.success." : "ggbot.oauth.failed.";
+    return PAGE
+        .replace("{title}", I18n.getTranslation(key + "title"))
+        .replace("{message}", I18n.getTranslation(key + "message"))
+        .replace("{close}", I18n.getTranslation("ggbot.oauth.close"))
+        .replace("{icon}", success ? "bxs-check-circle" : "bxs-x-circle")
+        .replace("{color}", success ? "green" : "red");
+  }
+
   /**
    * Closes the local OAuth redirect server and its executor.
    */
@@ -149,10 +163,10 @@ public class OAuthServer {
    * @throws IOException if the URL is invalid
    */
   public URL getUrl() throws IOException {
-    return new URL(String.format(
+    return URI.create(String.format(
         "https://api.ggbot.de/oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s&scope=%s",
         CLIENT_ID, REDIRECT_URL, SCOPES
-    ));
+    )).toURL();
   }
 
   /**

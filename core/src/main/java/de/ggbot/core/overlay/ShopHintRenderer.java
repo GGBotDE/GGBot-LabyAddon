@@ -7,9 +7,9 @@ import de.ggbot.sdk.core.ApiException;
 import de.ggbot.sdk.model.GetBotsOnServer200Response;
 import de.ggbot.sdk.model.GetBotsOnServer200ResponseBotsInner;
 import de.ggbot.sdk.model.Server;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.format.NamedTextColor;
@@ -19,6 +19,8 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.render.matrix.Stack;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
+import net.labymod.api.event.client.network.server.ServerSwitchEvent;
 import net.labymod.api.event.client.render.overlay.IngameOverlayRenderEvent;
 
 /**
@@ -35,6 +37,11 @@ public class ShopHintRenderer {
 
   private static final long RECOMPUTE_INTERVAL_MS = 500L;
   private static final long FETCH_INTERVAL_MS = 15_000L;
+
+  /**
+   * Specifies the interval for fetching bot tags when the shop is not active.
+   */
+  private static final long TAG_FETCH_INTERVAL_MS = 300_000L;
   private static final String FEATURE = "de.ggbot.addon.shop";
 
   private final GGBot addon;
@@ -43,16 +50,51 @@ public class ShopHintRenderer {
   private Component cachedHint = null;
   private boolean sawPost = false;
 
-  /** Lower-case link names of the online GGBots on the current server. */
-  private volatile Set<String> serverBots = new HashSet<>();
+  /**
+   * Maintains a mapping of online GGBots to their bot tokens.
+   *
+   * @return true if the name corresponds to an online GGBot
+   */
+  private static volatile Map<String, String> serverBots = new HashMap<>();
   private long lastFetchMs = 0L;
   private volatile boolean fetching = false;
+  private volatile int serverGeneration = 0;
 
   /** Normalized server host from the last bot-list fetch, for the sell-item cache. */
   private volatile String resolvedServerIp = null;
 
   public ShopHintRenderer(GGBot addon) {
     this.addon = addon;
+  }
+
+  /**
+   * Checks if a name corresponds to an online GGBot on the current server.
+   *
+   * @param name the name to check
+   * @return true if the name corresponds to an online GGBot
+   */
+  public static boolean isOnlineBot(String name) {
+    return name != null && serverBots.containsKey(name.toLowerCase(Locale.ROOT));
+  }
+
+  @Subscribe
+  public void onServerDisconnect(ServerDisconnectEvent event) {
+    forgetServer();
+  }
+
+  @Subscribe
+  public void onServerSwitch(ServerSwitchEvent event) {
+    forgetServer();
+  }
+
+  /**
+   * Resets the server bot data and initiates a new fetch.
+   */
+  private void forgetServer() {
+    serverGeneration++;
+    serverBots = new HashMap<>();
+    resolvedServerIp = null;
+    lastFetchMs = 0L;
   }
 
   @Subscribe
@@ -63,19 +105,24 @@ public class ShopHintRenderer {
     // Prefer POST; if a version never emits POST, draw on PRE instead.
     if (!(event.phase() == Phase.POST || (!sawPost && event.phase() == Phase.PRE))) return;
     if (event.isGuiHidden()) return;
-    if (!addon.configuration().shopSub.shopEnabled.get()) return;
+    boolean shopEnabled = addon.configuration().shopSub.shopEnabled.get();
 
     long now = System.currentTimeMillis();
     // The backend can pace this repeating fetch via the feature's interval config.
     long fetchIntervalMs = addon.getVersioningHandler()
-        .clampIntervalMs(FEATURE, FETCH_INTERVAL_MS);
+        .clampIntervalMs(FEATURE, shopEnabled ? FETCH_INTERVAL_MS : TAG_FETCH_INTERVAL_MS);
     if (!fetching && now - lastFetchMs >= fetchIntervalMs) {
       lastFetchMs = now;
       fetchServerBots();
     }
+    if (!shopEnabled) return;
     if (now - lastComputeMs >= RECOMPUTE_INTERVAL_MS) {
       lastComputeMs = now;
-      cachedHint = computeHint();
+      Component hint = computeHint();
+      if (hint == null || !hint.equals(cachedHint)) {
+        cachedHint = hint;
+        cachedHintWidth = -1F;
+      }
     }
     if (cachedHint == null) return;
 
@@ -88,11 +135,18 @@ public class ShopHintRenderer {
         // submitComponent left-aligns at x, so centre by placing the left edge at
         // (screenW - width) / 2. Explicit scale 1.0 avoids inheriting a previous
         // scaled submission (that leftover scale was shifting this off-centre).
-        float w = net.labymod.api.client.render.font.RenderableComponent.of(cachedHint).getWidth();
+        if (cachedHintWidth < 0F) {
+          cachedHintWidth =
+              net.labymod.api.client.render.font.RenderableComponent.of(cachedHint).getWidth();
+        }
+        float w = cachedHintWidth;
         event.context().canvas().submitComponent(cachedHint, (screenW - w) / 2f, 6, -1,
             1.0f, (int) Math.ceil(w));
       } else {
-        float width = Laby.references().renderPipeline().componentRenderer().width(cachedHint);
+        if (cachedHintWidth < 0F) {
+          cachedHintWidth = Laby.references().renderPipeline().componentRenderer().width(cachedHint);
+        }
+        float width = cachedHintWidth;
         Laby.references().renderPipeline().componentRenderer().builder()
             .text(cachedHint)
             .pos((screenW - width) / 2f, 6)
@@ -113,6 +167,7 @@ public class ShopHintRenderer {
   }
 
   private boolean loggedDrawError = false;
+  private float cachedHintWidth = -1F;
 
   /** Builds the hint component for the nearest in-range bot, or {@code null}. */
   private Component computeHint() {
@@ -127,10 +182,13 @@ public class ShopHintRenderer {
     ShopDataCache.Entry shopData =
         ShopDataCache.get(botName, serverIp, ShopDataCache.HINT_MAX_AGE_MS);
     if (shopData == null) {
-      ShopDataCache.fetchAsync(addon.getVersioningHandler(), botName, serverIp, null);
+      ShopDataCache.fetchAsync(addon.getVersioningHandler(), botName, serverIp,
+          serverBots.get(botName.toLowerCase(Locale.ROOT)), null);
       return null;
     }
     if (shopData.getSellItems().isEmpty()) return null;
+    // Ensures bots only accept payments within their sell area.
+    if (!ShopDataCache.playerInSellArea(shopData)) return null;
 
     String keyCombo = formatCombo(addon.configuration().shopSub.shopKey.get());
     return Component.translatable("ggbot.botmenu.shopHint",
@@ -145,7 +203,7 @@ public class ShopHintRenderer {
    * names exactly the bot that pressing the key will open - never a closer non-bot.
    */
   private String nearestBotName() {
-    Set<String> bots = serverBots;
+    Map<String, String> bots = serverBots;
     if (bots.isEmpty()) return null;
     ClientPlayer local = Laby.labyAPI().minecraft().getClientPlayer();
     if (local == null || Laby.labyAPI().minecraft().clientWorld() == null) return null;
@@ -164,7 +222,7 @@ public class ShopHintRenderer {
       if (player == local) continue;
       String name = player.getName();
       // Only consider actual online GGBots.
-      if (name == null || !bots.contains(name.toLowerCase(Locale.ROOT))) continue;
+      if (name == null || !bots.containsKey(name.toLowerCase(Locale.ROOT))) continue;
       double dx = player.position().getX() - local.position().getX();
       double dy = player.position().getY() - local.position().getY();
       double dz = player.position().getZ() - local.position().getZ();
@@ -184,22 +242,23 @@ public class ShopHintRenderer {
   private void fetchServerBots() {
     if (!addon.getVersioningHandler().isFeatureEnabled(FEATURE)
         || addon.labyAPI().serverController().getCurrentServerData() == null) {
-      serverBots = new HashSet<>();
+      serverBots = new HashMap<>();
       return;
     }
     fetching = true;
+    int generation = serverGeneration;
     Thread thread = new Thread(() -> {
-      Set<String> names = new HashSet<>();
+      Map<String, String> bots = new HashMap<>();
+      String serverIp = null;
       try {
         PublicApi api = new PublicApi();
         api.setCustomBaseUrl(addon.getVersioningHandler().getBaseUrlForFeature(FEATURE));
-        String serverIp = resolveServerDomain(api);
-        resolvedServerIp = serverIp;
-        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
+        serverIp = resolveServerDomain(api);
+        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp, true);
         if (response != null && response.getBots() != null) {
           for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {
-            if (bot.getLinkName() != null && Boolean.TRUE.equals(bot.getOnline())) {
-              names.add(bot.getLinkName().toLowerCase(Locale.ROOT));
+            if (bot.getLinkName() != null && bot.getToken() != null) {
+              bots.put(bot.getLinkName().toLowerCase(Locale.ROOT), bot.getToken());
             }
           }
         }
@@ -207,7 +266,10 @@ public class ShopHintRenderer {
         addon.logger().error("Failed to fetch server bots for hint: " + e.getMessage());
         addon.getVersioningHandler().reportError(e);
       } finally {
-        serverBots = names;
+        if (generation == serverGeneration) {
+          serverBots = bots;
+          resolvedServerIp = serverIp;
+        }
         fetching = false;
       }
     }, "ggbot-shophint-fetch");

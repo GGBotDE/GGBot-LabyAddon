@@ -40,16 +40,60 @@ import java.util.Map;
  */
 public final class PositionEditorWidget {
 
-  /** Registered start/end areas, redrawn live when any of their values change. */
-  private static final List<AreaDef> AREAS = new ArrayList<>();
+  /**
+   * Defines all module locations editable through the menu: module, setting prefix, and label key.
+   */
+  private static final String[][] LOCATIONS = {
+      {"sell", "sellAreaStart", "ggbot.botmenu.editor.sellAreaStart"},
+      {"sell", "sellAreaEnd", "ggbot.botmenu.editor.sellAreaEnd"},
+      {"sell", "sellDropLocation", "ggbot.botmenu.editor.sellDropLocation"},
+      {"buy", "chestOverrideLocation", "ggbot.botmenu.editor.chestOverride"},
+      {"ggfeatures", "trashItemsIntoChest", "ggbot.botmenu.editor.trashChest"},
+  };
+
+  /**
+   * Lists corner pairs displayed as a single spanning box: module, start, end, and label key.
+   */
+  private static final String[][] AREA_PAIRS = {
+      {"sell", "sellAreaStart", "sellAreaEnd", "ggbot.botmenu.editor.sellArea"},
+  };
 
   private PositionEditorWidget() {
   }
 
+  /**
+   * Adds coordinate editors for all locations associated with a specific module.
+   *
+   * @param content the container for UI elements
+   * @param bot the bot configuration
+   * @param module the module name to filter locations by
+   */
+  public static void buildAll(VerticalListWidget<Widget> content, Bot bot, String module) {
+    for (String[] location : LOCATIONS) {
+      if (location[0].equals(module)) {
+        build(content, bot, module, location[1], location[2]);
+      }
+    }
+  }
+
+  /**
+   * Adds a toggle for spanning-box functionality for each corner pair of a module.
+   *
+   * @param content the container for UI elements
+   * @param module the module name to filter corner pairs by
+   */
+  public static void buildAreaToggles(VerticalListWidget<Widget> content, String module) {
+    for (String[] pair : AREA_PAIRS) {
+      if (pair[0].equals(module)) {
+        buildAreaToggle(content, module, pair[1], pair[2], pair[3]);
+      }
+    }
+  }
+
   /** Appends a single coordinate editor for {@code module}/{@code prefix}. */
-  public static void build(VerticalListWidget<Widget> content, Bot bot, String module,
+  private static void build(VerticalListWidget<Widget> content, Bot bot, String module,
       String prefix, String labelKey) {
-    final String overlayId = "ggbot-modarea-" + module + ":" + prefix;
+    final String overlayId = pointId(module, prefix);
     final int color = colorFor(prefix);
 
     ComponentWidget label = ComponentWidget.i18n(labelKey);
@@ -113,18 +157,16 @@ public final class PositionEditorWidget {
    * (e.g. the sell area between {@code sellAreaStart} and {@code sellAreaEnd}),
    * letting the user see the whole covered region.
    */
-  public static void buildAreaToggle(VerticalListWidget<Widget> content, String module,
+  private static void buildAreaToggle(VerticalListWidget<Widget> content, String module,
       String startPrefix, String endPrefix, String labelKey) {
-    AreaDef def = new AreaDef(module, startPrefix, endPrefix, labelKey, colorFor(startPrefix));
-    registerArea(def);
+    final String overlayId = areaId(module, startPrefix);
 
-    ButtonWidget area = ButtonWidget.i18n(areaKey(def.overlayId));
+    ButtonWidget area = ButtonWidget.i18n(areaKey(overlayId));
     area.addId("pos-editor-area-btn");
     area.setPressable(() -> {
-      boolean visible = !BotMenuState.get().isAreaVisible(def.overlayId);
-      BotMenuState.get().setAreaVisible(def.overlayId, visible);
+      BotMenuState.get().setAreaVisible(overlayId, !BotMenuState.get().isAreaVisible(overlayId));
       refreshAreas();
-      area.updateComponent(Component.translatable(areaKey(def.overlayId)));
+      area.updateComponent(Component.translatable(areaKey(overlayId)));
     });
     content.addChildInitialized(area);
   }
@@ -159,6 +201,13 @@ public final class PositionEditorWidget {
     });
   }
 
+  /**
+   * Applies a saved value to a field, or stores it if the field is null.
+   *
+   * @param settings the map of saved settings
+   * @param key the key associated with the value
+   * @param field the text field to update or null
+   */
   private static void applyServerValue(Map<String, String> settings, String key,
       TextFieldWidget field) {
     if (BotMenuState.get().hasEditValue(key)) {
@@ -167,9 +216,75 @@ public final class PositionEditorWidget {
     String value = settings == null ? null : settings.get(key);
     // Treat missing/undefined values (including the literal string "null") as empty.
     if (value != null && !value.isBlank() && !"null".equalsIgnoreCase(value.trim())) {
-      field.setText(value);
+      if (field != null) {
+        field.setText(value);
+      }
       BotMenuState.get().setEditValue(key, value);
     }
+  }
+
+  /**
+   * Toggles the visibility of all module locations and their associated areas.
+   * When enabled, previously saved coordinates are loaded first to ensure
+   * all markers are displayed, even if the modules tab has never been opened.
+   *
+   * @param bot the bot configuration
+   * @param visible whether to show or hide the elements
+   */
+  public static void setAllVisible(Bot bot, boolean visible) {
+    for (String[] location : LOCATIONS) {
+      BotMenuState.get().setAreaVisible(pointId(location[0], location[1]), visible);
+    }
+    for (String[] pair : AREA_PAIRS) {
+      BotMenuState.get().setAreaVisible(areaId(pair[0], pair[1]), visible);
+    }
+    if (!visible) {
+      refreshAll();
+      return;
+    }
+    for (String module : modules()) {
+      BotRequests.getModuleSettingsAsync(GGBot.getInstance(), bot, module, settings -> {
+        for (String[] location : LOCATIONS) {
+          if (!location[0].equals(module)) {
+            continue;
+          }
+          applyServerValue(settings, location[1] + "X", null);
+          applyServerValue(settings, location[1] + "Y", null);
+          applyServerValue(settings, location[1] + "Z", null);
+        }
+        refreshAll();
+      });
+    }
+  }
+
+  /**
+   * Returns a list of distinct modules that own locations, in the order they were declared.
+   *
+   * @return a list of module names in declaration order
+   */
+  private static List<String> modules() {
+    List<String> modules = new ArrayList<>();
+    for (String[] location : LOCATIONS) {
+      if (!modules.contains(location[0])) {
+        modules.add(location[0]);
+      }
+    }
+    return modules;
+  }
+
+  /**
+   * Redraws all location markers and areas based on current visibility and values.
+   */
+  private static void refreshAll() {
+    for (String[] location : LOCATIONS) {
+      String overlayId = pointId(location[0], location[1]);
+      if (BotMenuState.get().isAreaVisible(overlayId)) {
+        updateMarker(overlayId, location[2], colorFor(location[1]), location[1]);
+      } else {
+        OverlayManager.getInstance().removeById(overlayId);
+      }
+    }
+    refreshAreas();
   }
 
   private static void fillFromLook(String prefix, TextFieldWidget xField,
@@ -244,46 +359,69 @@ public final class PositionEditorWidget {
         color, fillFor(color), lineWidth()).withLabel(I18n.getTranslation(labelKey)));
   }
 
-  private static void registerArea(AreaDef def) {
-    synchronized (AREAS) {
-      AREAS.removeIf(a -> a.overlayId.equals(def.overlayId));
-      AREAS.add(def);
-    }
-  }
-
-  /** Redraws every visible registered area from the current edit values. */
+  /**
+   * Updates visible corner-pair areas using the current edit values.
+   */
   private static void refreshAreas() {
     OverlayManager manager = OverlayManager.getInstance();
-    synchronized (AREAS) {
-      for (AreaDef def : AREAS) {
-        if (!BotMenuState.get().isAreaVisible(def.overlayId)) {
-          manager.removeById(def.overlayId);
-          continue;
-        }
-        Integer x1 = parse(BotMenuState.get().getEditValue(def.startPrefix + "X"));
-        Integer y1 = parse(BotMenuState.get().getEditValue(def.startPrefix + "Y"));
-        Integer z1 = parse(BotMenuState.get().getEditValue(def.startPrefix + "Z"));
-        Integer x2 = parse(BotMenuState.get().getEditValue(def.endPrefix + "X"));
-        Integer y2 = parse(BotMenuState.get().getEditValue(def.endPrefix + "Y"));
-        Integer z2 = parse(BotMenuState.get().getEditValue(def.endPrefix + "Z"));
-        if (x1 == null || y1 == null || z1 == null
-            || x2 == null || y2 == null || z2 == null) {
-          manager.removeById(def.overlayId);
-          continue;
-        }
-        // Span the full area inclusive of both corner blocks (max corner + 1).
-        int color = colorFor(def.startPrefix);
-        manager.addBox(OverlayBox.area(def.overlayId,
-            x1, y1, z1, x2 + 1, y2 + 1, z2 + 1,
-            color, fillFor(color), lineWidth())
-            .withLabel(I18n.getTranslation(def.labelKey)));
+    for (String[] pair : AREA_PAIRS) {
+      String overlayId = areaId(pair[0], pair[1]);
+      if (!BotMenuState.get().isAreaVisible(overlayId)) {
+        manager.removeById(overlayId);
+        continue;
       }
+      Integer x1 = parse(BotMenuState.get().getEditValue(pair[1] + "X"));
+      Integer y1 = parse(BotMenuState.get().getEditValue(pair[1] + "Y"));
+      Integer z1 = parse(BotMenuState.get().getEditValue(pair[1] + "Z"));
+      Integer x2 = parse(BotMenuState.get().getEditValue(pair[2] + "X"));
+      Integer y2 = parse(BotMenuState.get().getEditValue(pair[2] + "Y"));
+      Integer z2 = parse(BotMenuState.get().getEditValue(pair[2] + "Z"));
+      if (x1 == null || y1 == null || z1 == null
+          || x2 == null || y2 == null || z2 == null) {
+        manager.removeById(overlayId);
+        continue;
+      }
+      // Calculates the full area spanned by both corner blocks, including the max corner + 1.
+      int color = colorFor(pair[1]);
+      manager.addBox(OverlayBox.area(overlayId,
+          Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
+          Math.max(x1, x2) + 1, Math.max(y1, y2) + 1, Math.max(z1, z2) + 1,
+          color, fillFor(color), lineWidth())
+          .withLabel(I18n.getTranslation(pair[3])));
     }
   }
 
   // ---- helpers ------------------------------------------------------------
 
-  private static String showKey(String overlayId) {
+  /**
+   * Generates a unique identifier for a module location marker.
+   *
+   * @param module the module name
+   * @param prefix the location prefix
+   * @return the generated overlay ID
+   */
+  private static String pointId(String module, String prefix) {
+    return "ggbot-modarea-" + module + ":" + prefix;
+  }
+
+  /**
+   * Creates an overlay ID for a corner-pair area starting at the specified prefix.
+   *
+   * @param module the module name
+   * @param startPrefix the prefix of the starting location
+   * @return the generated overlay ID for the area
+   */
+  private static String areaId(String module, String startPrefix) {
+    return pointId(module, startPrefix) + "-area";
+  }
+
+  /**
+   * Determines the label key for a show/hide button based on overlay visibility.
+   *
+   * @param overlayId the ID of the overlay
+   * @return the label key for the show/hide action
+   */
+  static String showKey(String overlayId) {
     return BotMenuState.get().isAreaVisible(overlayId)
         ? "ggbot.botmenu.editor.hide" : "ggbot.botmenu.editor.show";
   }
@@ -334,22 +472,5 @@ public final class PositionEditorWidget {
 
   private static float lineWidth() {
     return GGBot.getInstance().configuration().overlaySub.lineWidth.get();
-  }
-
-  /** Immutable definition of a start/end coordinate area shown as one box. */
-  private static final class AreaDef {
-    final String startPrefix;
-    final String endPrefix;
-    final String labelKey;
-    final int color;
-    final String overlayId;
-
-    AreaDef(String module, String startPrefix, String endPrefix, String labelKey, int color) {
-      this.startPrefix = startPrefix;
-      this.endPrefix = endPrefix;
-      this.labelKey = labelKey;
-      this.color = color;
-      this.overlayId = "ggbot-modarea-" + module + ":" + startPrefix + "-area";
-    }
   }
 }

@@ -1,77 +1,47 @@
 package de.ggbot.core.nametag;
 
-import net.labymod.api.client.component.Component;
-import net.labymod.api.client.entity.player.tag.tags.ComponentNameTag;
-import net.labymod.api.client.render.matrix.Stack;
+import net.labymod.api.client.entity.player.tag.tags.IconTag;
+import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.render.state.entity.EntitySnapshot;
-import net.labymod.api.laby3d.render.queue.SubmissionCollector;
-import net.labymod.api.laby3d.render.queue.submissions.IconSubmission.DisplayMode;
-import org.jetbrains.annotations.NotNull;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
- * Name tag renderer that replaces the player's name tag component with their
- * GGBot team in-game icon when applicable.
+ * Displays the GGBot team or bot icon alongside a player's name tag.
  */
-public class TeamNameTagIcon extends ComponentNameTag {
+public class TeamNameTagIcon extends IconTag {
 
-  private final Supplier<Float> scaleSupplier;
+  private static final float ICON_SIZE = 9F;
 
-  /**
-   * @param scaleSupplier provides the render scale for this tag
-   */
-  public TeamNameTagIcon(Supplier<Float> scaleSupplier) {
-    this.scaleSupplier = scaleSupplier;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public float getScale() {
-    return scaleSupplier.get();
+  public TeamNameTagIcon() {
+    super(ICON_SIZE);
   }
 
   /**
-   * Replaces the default name tag with the player's team icon component,
-   * falling back to the default rendering when no icon is available.
+   * Fetches the cached icon for the player's snapshot.
    *
    * @param snapshot the current entity snapshot
-   * @return list of components to display
+   * @return the icon, or {@code null} to hide the tag
    */
   @Override
-  protected @NotNull List<Component> buildComponents(EntitySnapshot snapshot) {
-    if (snapshot.isDiscrete()
-        || snapshot.isInvisible()
+  public Icon getIcon(EntitySnapshot snapshot) {
+    if (snapshot.isDiscrete() || snapshot.isInvisible()
         || !snapshot.has(GGBotTeamTagUserSnapshot.GGBOT_TEAMMEMBER)) {
-      return super.buildComponents(snapshot);
+      return null;
     }
     GGBotTeamTagUserSnapshot teamSnapshot = snapshot.get(GGBotTeamTagUserSnapshot.GGBOT_TEAMMEMBER);
-    if (teamSnapshot == null || teamSnapshot.getPlayer() == null
-        || !teamSnapshot.getPlayer().isTeamMember()
-        || teamSnapshot.getPlayer().getIngameIcon() == null) {
-      return super.buildComponents(snapshot);
+    if (teamSnapshot == null || teamSnapshot.getPlayer() == null) {
+      return null;
     }
-    return Collections.singletonList(Component.icon(teamSnapshot.getPlayer().getIngameIcon()));
+    GGBotTeamPlayer player = teamSnapshot.getPlayer();
+    return GGBotTeamPlayer.getTeamIcon(player.getUuid(), player.getName());
   }
 
   /**
-   * Renders the team icon as a 9×9 sprite above the player's head.
+   * Indicates this method adheres to the parent class's contract.
    *
-   * @param stack                the matrix stack
-   * @param submissionCollector  the render submission collector
-   * @param snapshot             the current entity snapshot
+   * @return true indicating visibility is restricted to the main name tag
    */
   @Override
-  public void render(Stack stack, SubmissionCollector submissionCollector, EntitySnapshot snapshot) {
-    super.render(stack, submissionCollector, snapshot);
-    GGBotTeamTagUserSnapshot teamSnapshot = snapshot.get(GGBotTeamTagUserSnapshot.GGBOT_TEAMMEMBER);
-    if (teamSnapshot == null || teamSnapshot.getPlayer() == null
-        || !teamSnapshot.getPlayer().isTeamMember()
-        || teamSnapshot.getPlayer().getIngameIcon() == null) {
-      return;
-    }
-    submissionCollector.submitIcon(stack, teamSnapshot.getPlayer().getIngameIcon(), DisplayMode.NORMAL, -8, 0, 9, 9, -1);
+  public boolean isOnlyVisibleOnMainTag() {
+    return true;
   }
 }
-

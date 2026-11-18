@@ -2,9 +2,13 @@ package de.ggbot.core.gui.botmenu;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.core.api.BotRequests;
+import de.ggbot.core.gui.ConfirmActivity;
+import de.ggbot.core.gui.replays.ReplaysActivity;
+import de.ggbot.core.replay.ReplayModSupport;
 import de.ggbot.core.utils.TextUtil;
 import de.ggbot.sdk.model.Bot;
 import de.ggbot.sdk.model.KickArea;
+import de.ggbot.sdk.model.Position;
 import de.ggbot.sdk.model.Ticket;
 import de.ggbot.sdk.model.TicketMessage;
 import net.labymod.api.Laby;
@@ -25,10 +29,13 @@ import net.labymod.api.client.gui.screen.widget.widgets.layout.list.HorizontalLi
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalListWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.renderer.IconWidget;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -54,6 +61,11 @@ public class BotMenuWidget extends DivWidget {
 
   /** Tracks the active tab and the logs-tab widgets so logs can refresh in place. */
   private String currentTab = "overview";
+
+  /**
+   * Tracks tab build generations to manage and discard outdated builds.
+   */
+  private int tabGeneration;
   private VerticalListWidget<Widget> logListRef;
   private ButtonWidget logRefreshRef;
 
@@ -92,6 +104,9 @@ public class BotMenuWidget extends DivWidget {
       ComponentWidget none = ComponentWidget.i18n("ggbot.botmenu.noBot");
       none.addId("bot-menu-empty");
       content.addChild(none);
+      ButtonWidget select = ButtonWidget.i18n("ggbot.botmenu.selectBot", this::openBotSelector);
+      select.addId("bot-menu-changebot");
+      content.addChild(select);
       return;
     }
     showTab("overview");
@@ -187,13 +202,7 @@ public class BotMenuWidget extends DivWidget {
 
       ButtonWidget changeBot = ButtonWidget.i18n("ggbot.botmenu.changeBot");
       changeBot.addId("bot-menu-changebot");
-      changeBot.setPressable(() -> {
-        de.ggbot.core.utils.GuiSounds.click();
-        closeMenu();
-        Laby.labyAPI().minecraft().executeOnRenderThread(() ->
-            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(
-                new de.ggbot.core.gui.botselector.BotSelectorActivity()));
-      });
+      changeBot.setPressable(this::openBotSelector);
       col.addChild(changeBot);
 
       ButtonWidget controlBtn = ButtonWidget.i18n("ggbot.botmenu.control.button");
@@ -204,13 +213,48 @@ public class BotMenuWidget extends DivWidget {
         closeMenu();
       });
       col.addChild(controlBtn);
-    }
 
-    col.addChild(tabButton("ggbot.botmenu.tab.overview", "overview"));
-    col.addChild(tabButton("ggbot.botmenu.tab.modules", "modules"));
-    col.addChild(tabButton("ggbot.botmenu.tab.logs", "logs"));
-    col.addChild(tabButton("ggbot.botmenu.tab.tools", "tools"));
-    col.addChild(tabButton("ggbot.botmenu.tab.tickets", "tickets"));
+      boolean mcControlEnabled = module("mccontrol") && Boolean.TRUE.equals(bot.getOnline())
+          && addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.mccontrol");
+
+      if (mcControlEnabled) {
+        ButtonWidget mcControl = ButtonWidget.i18n("ggbot.botmenu.mccontrol.button");
+        mcControl.addId("bot-menu-controlmode");
+        mcControl.setEnabled(false);
+        col.addChild(mcControl);
+
+        BotRequests.getMcControlDomainAsync(addon, bot, domain -> {
+          if (domain == null) {
+            col.removeChild(mcControl);
+            return;
+          }
+
+          mcControl.setEnabled(true);
+          mcControl.setPressable(() -> {
+            de.ggbot.core.utils.GuiSounds.click();
+            confirmMcControlJoin(domain);
+          });
+        });
+      }
+
+      if (ReplayModSupport.isAvailable(addon)) {
+        ButtonWidget replays = ButtonWidget.i18n("ggbot.botmenu.replays");
+        replays.addId("bot-menu-controlmode");
+        replays.setPressable(() -> {
+          de.ggbot.core.utils.GuiSounds.click();
+          Laby.labyAPI().minecraft().minecraftWindow().displayScreen(
+              new ReplaysActivity(addon, bot));
+        });
+        col.addChild(replays);
+      }
+
+      // Ensures tabs are only displayed when a selected bot is available.
+      col.addChild(tabButton("ggbot.botmenu.tab.overview", "overview"));
+      if (hasModulesTab()) col.addChild(tabButton("ggbot.botmenu.tab.modules", "modules"));
+      col.addChild(tabButton("ggbot.botmenu.tab.logs", "logs"));
+      if (module("worldedit")) col.addChild(tabButton("ggbot.botmenu.tab.tools", "tools"));
+      if (module("tickets")) col.addChild(tabButton("ggbot.botmenu.tab.tickets", "tickets"));
+    }
 
     ButtonWidget close = ButtonWidget.i18n("ggbot.botmenu.close");
     close.addId("bot-menu-close");
@@ -224,6 +268,28 @@ public class BotMenuWidget extends DivWidget {
     sidebarScroll.addId("bot-menu-sidebar-scroll");
     sidebar.addChild(sidebarScroll);
     this.addChild(sidebar);
+  }
+
+  /** Prompts for confirmation before joining the bot's server via MCControl, which disconnects from the current one. */
+  private void confirmMcControlJoin(String domain) {
+    Component text = Component.translatable("ggbot.botmenu.mccontrol.text", Component.text(domain));
+    ConfirmActivity.Choice join = new ConfirmActivity.Choice("ggbot.botmenu.mccontrol.join",
+        () -> Laby.labyAPI().serverController().joinServer(domain));
+
+    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new ConfirmActivity(
+        Component.translatable("ggbot.botmenu.mccontrol.title"), List.of(text), List.of(join),
+        null));
+  }
+
+  /**
+   * Closes the current menu and opens the bot selector interface.
+   */
+  private void openBotSelector() {
+    de.ggbot.core.utils.GuiSounds.click();
+    closeMenu();
+    Laby.labyAPI().minecraft().executeOnRenderThread(() ->
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(
+            new de.ggbot.core.gui.botselector.BotSelectorActivity()));
   }
 
   private ButtonWidget tabButton(String labelKey, String tab) {
@@ -282,6 +348,7 @@ public class BotMenuWidget extends DivWidget {
   private void showTab(String tab) {
     if (content == null) return;
     this.currentTab = tab;
+    this.tabGeneration++;
     this.logListRef = null;
     this.logRefreshRef = null;
     content.removeChildIf(w -> true);
@@ -325,22 +392,60 @@ public class BotMenuWidget extends DivWidget {
     row.addEntry(send);
     content.addChildInitialized(row);
 
+    if (!module("ggfeatures") && !hasShopModule()) return;
+
     header("ggbot.botmenu.section.overlays");
-    content.addChildInitialized(toggle("ggbot.botmenu.toggle.kickAreas",
-        BotMenuState.get().isHighlightKickAreas(), v -> {
-          BotMenuState.get().setHighlightKickAreas(v);
-          addon.configuration().botMenuSub.highlightKickAreas.set(v);
-          if (v) {
-            BotRequests.getKickAreasAsync(addon, bot, KickAreaHighlighter::update);
-          } else {
-            KickAreaHighlighter.refresh();
-          }
-        }));
-    content.addChildInitialized(toggle("ggbot.botmenu.toggle.chestContents",
-        BotMenuState.get().isShowChestContents(), v -> {
-          BotMenuState.get().setShowChestContents(v);
-          addon.configuration().botMenuSub.showChestContents.set(v);
-        }));
+    if (module("ggfeatures")) {
+      content.addChildInitialized(toggle("ggbot.botmenu.toggle.kickAreas",
+          BotMenuState.get().isHighlightKickAreas(), this::setKickAreasVisible));
+    }
+    if (hasShopModule()) {
+      content.addChildInitialized(toggle("ggbot.botmenu.toggle.chestContents",
+          BotMenuState.get().isShowChestContents(), v -> {
+            BotMenuState.get().setShowChestContents(v);
+            addon.configuration().botMenuSub.showChestContents.set(v);
+          }));
+    }
+
+    HorizontalListWidget allRow = new HorizontalListWidget();
+    allRow.addId("bot-menu-overlay-row");
+    allRow.addEntry(allOverlaysButton("ggbot.botmenu.overlays.showAll", true));
+    allRow.addEntry(allOverlaysButton("ggbot.botmenu.overlays.hideAll", false));
+    content.addChildInitialized(allRow);
+  }
+
+  /**
+   * Toggles all module overlays with a single action, simplifying the modules tab experience.
+   *
+   * @param labelKey The key for the button's label
+   * @param visible The visibility state to set for overlays
+   * @return The configured button widget
+   */
+  private ButtonWidget allOverlaysButton(String labelKey, boolean visible) {
+    ButtonWidget button = ButtonWidget.i18n(labelKey);
+    button.addId("pos-editor-btn");
+    button.setPressable(() -> {
+      de.ggbot.core.utils.GuiSounds.click();
+      PositionEditorWidget.setAllVisible(bot, visible);
+      setKickAreasVisible(visible);
+      showTab("overview");
+    });
+    return button;
+  }
+
+  /**
+   * Controls kick area visibility and triggers overlay reloads when activated.
+   *
+   * @param visible The visibility state to set for kick areas
+   */
+  private void setKickAreasVisible(boolean visible) {
+    BotMenuState.get().setHighlightKickAreas(visible);
+    addon.configuration().botMenuSub.highlightKickAreas.set(visible);
+    if (visible) {
+      loadKickAreas(BotRequests.getOverlayBots(addon), null);
+    } else {
+      KickAreaHighlighter.refresh();
+    }
   }
 
   /** A toggle button (added directly so it always renders). */
@@ -368,46 +473,53 @@ public class BotMenuWidget extends DivWidget {
   // ---- Modules ------------------------------------------------------------
 
   private void buildModulesTab() {
-    // All module sections are always shown so the editors are reliably visible.
-    // (Backend module-detection via getBotSettings proved unreliable and would
-    // otherwise hide everything, so gating the editors was removed on purpose.)
-    moduleSection("ggbot.botmenu.module.sell", "sell", new String[][]{
-        {"sellAreaStart", "ggbot.botmenu.editor.sellAreaStart"},
-        {"sellAreaEnd", "ggbot.botmenu.editor.sellAreaEnd"},
-        {"sellDropLocation", "ggbot.botmenu.editor.sellDropLocation"}
-    });
-    // Show the whole sell area (start corner to end corner) as one spanning box.
-    PositionEditorWidget.buildAreaToggle(content, "sell", "sellAreaStart", "sellAreaEnd",
-        "ggbot.botmenu.editor.sellArea");
-    content.addChildInitialized(actionButton("ggbot.botmenu.action.sellScan",
-        () -> BotRequests.startSellScanAsync(addon, bot)));
+    if (module("sell")) {
+      moduleSection("ggbot.botmenu.module.sell", "sell");
+      // Renders the sell area as a single spanning box covering the entire area.
+      PositionEditorWidget.buildAreaToggles(content, "sell");
+      content.addChildInitialized(actionButton("ggbot.botmenu.action.sellScan",
+          () -> BotRequests.startSellScanAsync(addon, bot)));
+    }
 
-    moduleSection("ggbot.botmenu.module.buy", "buy", new String[][]{
-        {"chestOverrideLocation", "ggbot.botmenu.editor.chestOverride"}
-    });
-    content.addChildInitialized(actionButton("ggbot.botmenu.action.buyScan",
-        () -> BotRequests.startBuyScanAsync(addon, bot)));
+    if (module("buy")) {
+      moduleSection("ggbot.botmenu.module.buy", "buy");
+      content.addChildInitialized(actionButton("ggbot.botmenu.action.buyScan",
+          () -> BotRequests.startBuyScanAsync(addon, bot)));
+    }
 
-    moduleSection("ggbot.botmenu.module.ggfeatures", "ggfeatures",
-        new String[][]{{"trashItemsIntoChest", "ggbot.botmenu.editor.trashChest"}});
-    buildKickAreaSection();
+    if (module("ggfeatures")) {
+      moduleSection("ggbot.botmenu.module.ggfeatures", "ggfeatures");
+      buildKickAreaSection();
+    }
 
-    ComponentWidget utilsHeader = ComponentWidget.i18n("ggbot.botmenu.module.utils");
-    utilsHeader.addId("bot-menu-section-header");
-    content.addChildInitialized(utilsHeader);
-    content.addChildInitialized(actionButton("ggbot.botmenu.action.followMe",
-        () -> {
-          var p = Laby.labyAPI().minecraft().getClientPlayer();
-          if (p != null) BotRequests.followPlayerAsync(addon, bot, p.getName());
-        }));
-    content.addChildInitialized(actionButton("ggbot.botmenu.action.stopFollowMe",
-        () -> BotRequests.stopFollowingAsync(addon, bot)));
+    if (module("utils")) {
+      ComponentWidget utilsHeader = ComponentWidget.i18n("ggbot.botmenu.module.utils");
+      utilsHeader.addId("bot-menu-section-header");
+      content.addChildInitialized(utilsHeader);
+      content.addChildInitialized(actionButton("ggbot.botmenu.action.followMe",
+          () -> {
+            var p = Laby.labyAPI().minecraft().getClientPlayer();
+            if (p != null) BotRequests.followPlayerAsync(addon, bot, p.getName());
+          }));
+      content.addChildInitialized(actionButton("ggbot.botmenu.action.stopFollowMe",
+          () -> BotRequests.stopFollowingAsync(addon, bot)));
+    }
 
-    buildItemSearch();
+    if (hasShopModule()) {
+      buildItemSearch();
+    }
+  }
 
-    // Keep the cached module set fresh (used only for the player interactions).
-    BotRequests.getActiveModulesAsync(addon, bot,
-        modules -> BotMenuState.get().setActiveModules(modules));
+  private static boolean module(String name) {
+    return BotMenuState.get().isModuleAvailable(name);
+  }
+
+  private static boolean hasShopModule() {
+    return module("sell") || module("buy");
+  }
+
+  private static boolean hasModulesTab() {
+    return hasShopModule() || module("ggfeatures") || module("utils");
   }
 
   private void buildKickAreaSection() {
@@ -415,19 +527,106 @@ public class BotMenuWidget extends DivWidget {
     VerticalListWidget<Widget> kickList = new VerticalListWidget<>();
     kickList.addId("bot-menu-kickarea-list");
     content.addChildInitialized(kickList);
-    BotRequests.getKickAreasAsync(addon, bot, areas -> {
-      KickAreaHighlighter.update(areas);
-      kickList.removeChildIf(w -> true);
-      if (areas.isEmpty()) {
-        kickList.addChildInitialized(dim("ggbot.botmenu.kickAreas.none"));
+
+    List<Bot> bots = BotRequests.getOverlayBots(addon);
+    if (bots.isEmpty()) {
+      kickList.addChildInitialized(dim("ggbot.botmenu.kickAreas.none"));
+      return;
+    }
+    kickList.addChildInitialized(dim("ggbot.botmenu.logs.loading"));
+
+    // Maintains row stability by rendering each bot's data once.
+    Map<Bot, List<KickArea>> loaded = new LinkedHashMap<>();
+    loadKickAreas(bots, (owner, areas) -> {
+      loaded.put(owner, areas);
+      if (loaded.size() < bots.size()) {
         return;
       }
-      for (KickArea area : areas) {
-        ComponentWidget line = ComponentWidget.text(formatKickArea(area));
-        line.addId("bot-menu-kickarea-line");
-        kickList.addChildInitialized(line);
+      kickList.removeChildIf(w -> true);
+      int shown = 0;
+      for (Map.Entry<Bot, List<KickArea>> entry : loaded.entrySet()) {
+        for (KickArea area : entry.getValue()) {
+          addKickAreaEntry(kickList, entry.getKey(), area);
+          shown++;
+        }
+      }
+      if (shown == 0) {
+        kickList.addChildInitialized(dim("ggbot.botmenu.kickAreas.none"));
       }
     });
+  }
+
+  /**
+   * Loads kick areas for specified bots and updates the highlighter on the render thread.
+   *
+   * @param bots List of bots to load kick areas for
+   * @param onLoaded Callback to handle loaded kick areas
+   */
+  private void loadKickAreas(List<Bot> bots, BiConsumer<Bot, List<KickArea>> onLoaded) {
+    KickAreaHighlighter.clear();
+    for (Bot owner : bots) {
+      BotRequests.getKickAreasAsync(addon, owner, areas -> {
+        KickAreaHighlighter.update(owner.getId(), areas);
+        if (onLoaded != null) {
+          onLoaded.accept(owner, areas);
+        }
+      });
+    }
+  }
+
+  /**
+   * Creates a kick area entry card with name and visibility controls.
+   *
+   * @param list The list widget to add the entry to
+   * @param owner The bot associated with the kick area
+   * @param area The kick area details
+   */
+  private void addKickAreaEntry(VerticalListWidget<Widget> list, Bot owner, KickArea area) {
+    VerticalListWidget<Widget> entry = new VerticalListWidget<>();
+    entry.addId("bot-menu-kickarea-entry");
+
+    HorizontalListWidget row = new HorizontalListWidget();
+    row.addId("bot-menu-kickarea-row");
+    ComponentWidget name = ComponentWidget.text(kickAreaName(owner, area));
+    name.addId("bot-menu-kickarea-name");
+    row.addEntry(name);
+    if (hasCorners(area)) {
+      row.addEntry(kickAreaShowButton(KickAreaHighlighter.overlayId(owner.getId(), area)));
+    }
+    entry.addChildInitialized(row);
+
+    entry.addChildInitialized(hasCorners(area)
+        ? kickAreaLine(formatCorners(area))
+        : dimLine("ggbot.botmenu.kickAreas.noRegion"));
+    String details = formatKickAreaDetails(area);
+    if (!details.isEmpty()) {
+      entry.addChildInitialized(kickAreaLine(details));
+    }
+    list.addChildInitialized(entry);
+  }
+
+  private ButtonWidget kickAreaShowButton(String overlayId) {
+    ButtonWidget show = ButtonWidget.i18n(PositionEditorWidget.showKey(overlayId));
+    show.addId("bot-menu-kickarea-show");
+    show.setPressable(() -> {
+      de.ggbot.core.utils.GuiSounds.click();
+      BotMenuState.get().setAreaVisible(overlayId, !BotMenuState.get().isAreaVisible(overlayId));
+      KickAreaHighlighter.refresh();
+      show.updateComponent(Component.translatable(PositionEditorWidget.showKey(overlayId)));
+    });
+    return show;
+  }
+
+  private ComponentWidget kickAreaLine(String text) {
+    ComponentWidget line = ComponentWidget.text(text);
+    line.addId("bot-menu-kickarea-line");
+    return line;
+  }
+
+  private ComponentWidget dimLine(String key) {
+    ComponentWidget line = ComponentWidget.i18n(key);
+    line.addId("bot-menu-kickarea-line");
+    return line;
   }
 
   // ---- Tickets ------------------------------------------------------------
@@ -529,6 +728,11 @@ public class BotMenuWidget extends DivWidget {
       }
     });
 
+    // Prevents actions on closed tickets as they are read-only.
+    if (ticket.getStatus() == Ticket.StatusEnum.CLOSED) {
+      return;
+    }
+
     HorizontalListWidget respondRow = new HorizontalListWidget();
     respondRow.addId("bot-menu-command-row");
     TextFieldWidget input = new TextFieldWidget();
@@ -582,14 +786,12 @@ public class BotMenuWidget extends DivWidget {
     return b;
   }
 
-  private void moduleSection(String titleKey, String module, String[][] editors) {
+  private void moduleSection(String titleKey, String module) {
     ComponentWidget h = ComponentWidget.i18n(titleKey);
     h.addId("bot-menu-section-header");
     content.addChildInitialized(h);
     // Editors are appended as plain widgets (label + row) so they render reliably.
-    for (String[] e : editors) {
-      PositionEditorWidget.build(content, bot, module, e[0], e[1]);
-    }
+    PositionEditorWidget.buildAll(content, bot, module);
   }
 
   private void buildItemSearch() {
@@ -645,13 +847,16 @@ public class BotMenuWidget extends DivWidget {
     HorizontalListWidget row = new HorizontalListWidget();
     row.addId("bot-menu-item-row");
 
-    IconWidget icon = new IconWidget(ItemIcons.forItemType(e.itemType()));
+    IconWidget icon = new ItemIconWidget(ItemIcons.forItem(e.itemType(), e.nbt()));
     icon.addId("bot-menu-item-icon");
     row.addEntry(icon);
 
+    String suffix = " [" + e.shop() + "] @ " + e.x() + " " + e.y() + " " + e.z();
+    if (Boolean.TRUE.equals(addon.configuration().botMenuSub.allBots.get())) {
+      suffix = " (" + e.bot() + ")" + suffix;
+    }
     Component label = Component.text(e.name(), NamedTextColor.YELLOW)
-        .append(Component.text(" [" + e.shop() + "] @ " + e.x() + " " + e.y() + " " + e.z(),
-            NamedTextColor.GRAY));
+        .append(Component.text(suffix, NamedTextColor.GRAY));
     ComponentWidget text = ComponentWidget.component(label);
     text.addId("bot-menu-item-label");
     row.addEntry(text);
@@ -766,40 +971,27 @@ public class BotMenuWidget extends DivWidget {
 
   private void buildToolsTab() {
     header("ggbot.botmenu.section.tools");
-    ComponentWidget loading = dim("ggbot.botmenu.logs.loading");
-    content.addChildInitialized(loading);
+    content.addChildInitialized(dim("ggbot.botmenu.tools.hint"));
 
-    // WorldEdit controls are shown when the worldedit module is enabled. If module
-    // detection is unavailable (empty), we show them anyway so the tab is usable.
-    BotRequests.getActiveModulesAsync(addon, bot, modules -> {
-      content.removeChildIf(w -> w == loading);
-      if (!modules.isEmpty() && !modules.contains("worldedit")) {
-        content.addChildInitialized(dim("ggbot.botmenu.tools.disabled"));
-        return;
-      }
+    HorizontalListWidget row = new HorizontalListWidget();
+    row.addId("bot-menu-worldedit-row");
+    // Closes the menu to enable block selection after position setting.
+    row.addEntry(weButton("ggbot.botmenu.tools.pos1", () -> {
+      BotMenuPositions.setFromLook(true);
+      closeMenu();
+    }));
+    row.addEntry(weButton("ggbot.botmenu.tools.pos2", () -> {
+      BotMenuPositions.setFromLook(false);
+      closeMenu();
+    }));
+    content.addChildInitialized(row);
 
-      content.addChildInitialized(dim("ggbot.botmenu.tools.hint"));
-
-      HorizontalListWidget row = new HorizontalListWidget();
-      row.addId("bot-menu-worldedit-row");
-      // Setting a position closes the menu so you can look around to pick blocks.
-      row.addEntry(weButton("ggbot.botmenu.tools.pos1", () -> {
-        BotMenuPositions.setFromLook(true);
-        closeMenu();
-      }));
-      row.addEntry(weButton("ggbot.botmenu.tools.pos2", () -> {
-        BotMenuPositions.setFromLook(false);
-        closeMenu();
-      }));
-      content.addChildInitialized(row);
-
-      HorizontalListWidget row2 = new HorizontalListWidget();
-      row2.addId("bot-menu-worldedit-row");
-      row2.addEntry(weButton("ggbot.botmenu.tools.send", () -> BotMenuPositions.sendToBot(bot)));
-      // Clears the local pos1/pos2 selection and its overlay.
-      row2.addEntry(weButton("ggbot.botmenu.tools.clear", BotMenuPositions::clearSelection));
-      content.addChildInitialized(row2);
-    });
+    HorizontalListWidget row2 = new HorizontalListWidget();
+    row2.addId("bot-menu-worldedit-row");
+    row2.addEntry(weButton("ggbot.botmenu.tools.send", () -> BotMenuPositions.sendToBot(bot)));
+    // Resets local position selection and clears the overlay display.
+    row2.addEntry(weButton("ggbot.botmenu.tools.clear", BotMenuPositions::clearSelection));
+    content.addChildInitialized(row2);
   }
 
   private ButtonWidget weButton(String key, Runnable r) {
@@ -821,19 +1013,55 @@ public class BotMenuWidget extends DivWidget {
     return w;
   }
 
-  private static String formatKickArea(KickArea area) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(area.getName() == null ? "?" : TextUtil.stripColors(area.getName()));
-    if (area.getType() != null) sb.append(" [").append(area.getType()).append("]");
-    if (area.getMaxPlayerCount() != null) sb.append(" max=").append(area.getMaxPlayerCount());
-    if (area.getAfkTime() != null) sb.append(" afk=").append(area.getAfkTime());
-    if (area.getExceptions() != null && !area.getExceptions().isEmpty()) {
-      sb.append(" except=").append(String.join(",", area.getExceptions()));
+  /**
+   * Adds the bot's name to the area name when multiple bots are displayed.
+   *
+   * @param owner The bot associated with the kick area
+   * @param area The kick area details
+   * @return The formatted area name with bot prefix if needed
+   */
+  private String kickAreaName(Bot owner, KickArea area) {
+    String name = area.getName() == null ? "?" : TextUtil.stripColors(area.getName());
+    if (Boolean.TRUE.equals(addon.configuration().botMenuSub.allBots.get())) {
+      return displayName(owner) + ": " + name;
     }
-    return sb.toString();
+    return name;
   }
 
-  private static String displayName(Bot bot) {
+  /**
+   * Verifies if the kick area has both start and end corners.
+   *
+   * @param area The kick area to check for corners
+   * @return true if both corners are present, false otherwise
+   */
+  private static boolean hasCorners(KickArea area) {
+    return area.getStartPos() != null && area.getEndPos() != null;
+  }
+
+  private static String formatCorners(KickArea area) {
+    return blockPos(area.getStartPos()) + " - " + blockPos(area.getEndPos());
+  }
+
+  private static String blockPos(Position pos) {
+    return coord(pos.getX()) + " " + coord(pos.getY()) + " " + coord(pos.getZ());
+  }
+
+  private static String coord(Double value) {
+    return value == null ? "?" : String.valueOf((long) Math.floor(value));
+  }
+
+  private static String formatKickAreaDetails(KickArea area) {
+    List<String> parts = new ArrayList<>();
+    if (area.getType() != null) parts.add(area.getType());
+    if (area.getMaxPlayerCount() != null) parts.add("max " + area.getMaxPlayerCount());
+    if (area.getAfkTime() != null) parts.add("afk " + area.getAfkTime());
+    if (area.getExceptions() != null && !area.getExceptions().isEmpty()) {
+      parts.add("except " + String.join(", ", area.getExceptions()));
+    }
+    return String.join(", ", parts);
+  }
+
+  static String displayName(Bot bot) {
     if (bot.getDescription() != null && !bot.getDescription().isEmpty()) {
       return TextUtil.stripColors(bot.getDescription());
     }

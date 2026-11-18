@@ -2,6 +2,7 @@ package de.ggbot.core.listener;
 
 import de.ggbot.core.GGBot;
 import de.ggbot.core.gui.shop.ShopInterfaceActivity;
+import de.ggbot.core.gui.shop.utils.ShopDataCache;
 import de.ggbot.core.utils.KeyComboTrigger;
 import de.ggbot.sdk.api.PublicApi;
 import de.ggbot.sdk.core.ApiException;
@@ -18,9 +19,9 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.notification.Notification;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Listens for the configurable shop key and opens the {@link ShopInterfaceActivity}
@@ -69,10 +70,10 @@ public class ShopListener {
         String serverIp = resolveServerDomain(rawServerIp);
 
         // Public, unauthenticated lookup of every GGBot on this server.
-        Set<String> serverBots = fetchServerBotNames(serverIp);
+        Map<String, String> serverBots = fetchServerBotTokens(serverIp);
         String botName = null;
         for (String candidate : candidates) {
-          if (serverBots.contains(candidate.toLowerCase())) {
+          if (serverBots.containsKey(candidate.toLowerCase())) {
             botName = candidate;
             break;
           }
@@ -84,8 +85,17 @@ public class ShopListener {
 
         final String finalServerIp = serverIp;
         final String finalBotName = botName;
-        Laby.labyAPI().minecraft().executeOnRenderThread(
-            () -> openShop(finalBotName, finalServerIp));
+        final String botToken = serverBots.get(botName.toLowerCase());
+        // Ensures the bot's sell area is checked before allowing payment.
+        ShopDataCache.getOrFetch(addon.getVersioningHandler(), finalBotName, finalServerIp,
+            botToken, ShopDataCache.GUI_MAX_AGE_MS,
+            entry -> Laby.labyAPI().minecraft().executeOnRenderThread(() -> {
+              if (!ShopDataCache.playerInSellArea(entry)) {
+                notifyOutsideArea();
+                return;
+              }
+              openShop(finalBotName, finalServerIp, botToken);
+            }));
       }, "ggbot-shop-verify");
       verifyThread.setDaemon(true);
       verifyThread.start();
@@ -93,9 +103,9 @@ public class ShopListener {
   }
 
   /** Builds and shows the shop interface for the resolved bot. */
-  private void openShop(String botName, String serverIp) {
+  private void openShop(String botName, String serverIp, String botToken) {
     ShopInterfaceActivity activity = new ShopInterfaceActivity(
-        botName, serverIp, addon.getVersioningHandler());
+        botName, serverIp, botToken, addon.getVersioningHandler());
 
     activity.onCancel(activity::closeScreen);
     activity.onMoneyCheck(requiredAmount -> true);
@@ -138,29 +148,41 @@ public class ShopListener {
   }
 
   private void notifyNoBot() {
+    notify("ggbot.messages.shop.nobot");
+  }
+
+  private void notifyOutsideArea() {
+    notify("ggbot.messages.shop.outsideArea");
+  }
+
+  private void notify(String textKey) {
     Notification.Builder builder = Notification.builder()
         .title(Component.text("GGBot", NamedTextColor.RED))
-        .text(Component.translatable("ggbot.messages.shop.nobot"))
+        .text(Component.translatable(textKey))
         .type(Notification.Type.SYSTEM);
     Laby.labyAPI().notificationController().push(builder.build());
   }
 
   /**
-   * Returns the public, unauthenticated set of GGBot link-names present on the
-   * given (normalized) server, via {@code getBotsOnServer}.
+   * Retrieves the publicly available, unauthenticated GGBots on the specified
+   * normalized server using {@code getBotsOnServer}, returning a map of
+   * lower-case link names to their corresponding bot tokens.
+   * Only online bots are included, since matching a name alone does not
+   * guarantee that the account is currently running GGBot.
+   *
+   * @param serverIp the normalized server host
+   * @return a map of lowercase bot names to their tokens
    */
-  private Set<String> fetchServerBotNames(String serverIp) {
-    Set<String> names = new HashSet<>();
+  private Map<String, String> fetchServerBotTokens(String serverIp) {
+    Map<String, String> bots = new HashMap<>();
     try {
       PublicApi api = new PublicApi();
       api.setCustomBaseUrl(addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.shop"));
-      GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
+      GetBotsOnServer200Response response = api.getBotsOnServer(serverIp, true);
       if (response != null && response.getBots() != null) {
         for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {
-          // Only treat a player as a shoppable GGBot when it is actually online;
-          // otherwise the account could just be logged in without running GGBot.
-          if (bot.getLinkName() != null && Boolean.TRUE.equals(bot.getOnline())) {
-            names.add(bot.getLinkName().toLowerCase());
+          if (bot.getLinkName() != null && bot.getToken() != null) {
+            bots.put(bot.getLinkName().toLowerCase(), bot.getToken());
           }
         }
       }
@@ -168,7 +190,7 @@ public class ShopListener {
       addon.logger().error("Failed to fetch bots on server: " + ex.getMessage());
       addon.getVersioningHandler().reportError(ex);
     }
-    return names;
+    return bots;
   }
 
   /**
@@ -181,7 +203,7 @@ public class ShopListener {
    */
   private List<String> findNearbyPlayerNames() {
     List<String> result = new ArrayList<>();
-    ClientPlayer local = Laby.labyAPI().minecraft().clientPlayer();
+    ClientPlayer local = Laby.labyAPI().minecraft().getClientPlayer();
     if (local == null || Laby.labyAPI().minecraft().clientWorld() == null) {
       return result;
     }

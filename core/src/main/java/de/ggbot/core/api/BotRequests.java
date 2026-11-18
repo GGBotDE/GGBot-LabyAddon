@@ -1,18 +1,33 @@
 package de.ggbot.core.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import de.ggbot.core.GGBot;
+import de.ggbot.core.cbx.AfkCbxManager;
+import de.ggbot.core.cbx.CbxManager;
+import de.ggbot.core.gui.botmenu.BotMenuState;
+import de.ggbot.core.widget.afk.AfkBotsWidget;
+import de.ggbot.core.widget.afk.AfkFleetsWidget;
+import de.ggbot.sdk.api.AfkApi;
 import de.ggbot.sdk.api.IngameApi;
 import de.ggbot.sdk.api.ModulesApi;
 import de.ggbot.sdk.core.ApiCallback;
+import de.ggbot.sdk.core.JSON;
+import de.ggbot.sdk.model.AfkBot;
+import de.ggbot.sdk.model.AfkFleet;
+import de.ggbot.sdk.model.AfkInspect;
 import de.ggbot.sdk.model.BuyItem;
 import de.ggbot.sdk.model.GetBotHealth200Response;
 import de.ggbot.sdk.model.GetGGFeaturesCityBuild200Response;
 import de.ggbot.sdk.model.GetGGFeaturesCurrentPlot200Response;
 import de.ggbot.sdk.model.GetGGFeaturesMoney200Response;
 import de.ggbot.sdk.model.GetKickAreas200Response;
+import de.ggbot.sdk.model.GetMCControlStatus200Response;
 import de.ggbot.sdk.model.KickArea;
+import de.ggbot.sdk.model.ReplaySummary;
 import de.ggbot.sdk.model.SellItem;
 import de.ggbot.sdk.model.SendCommandToBotRequest;
 import de.ggbot.sdk.model.UpdateModuleSettingRequest;
@@ -29,6 +44,7 @@ import de.ggbot.sdk.core.auth.OAuth;
 import de.ggbot.sdk.model.Bot;
 import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.component.format.TextColor;
+import net.labymod.api.client.entity.player.Player;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -45,6 +61,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -93,6 +110,33 @@ public class BotRequests {
   }
 
   /**
+   * Checks if the provided player matches the bot's linked account name.
+   *
+   * @param bot The bot object to compare against
+   * @param player The player object to verify
+   * @return True if the player's name matches the bot's linked name
+   */
+  public static boolean isAccountOf(Bot bot, Player player) {
+    return bot != null && player != null && player.getName().equalsIgnoreCase(bot.getLinkName());
+  }
+
+  /**
+   * Retrieves the bots used to display world overlays and cached shop items.
+   * Includes all account bots when the "all bots" option is enabled;
+   * otherwise, returns only the currently selected bot.
+   *
+   * @param addon The GGBot instance containing configuration settings
+   * @return A list of all bots if 'all bots' is enabled, otherwise a list containing only the selected bot
+   */
+  public static List<Bot> getOverlayBots(GGBot addon) {
+    if (Boolean.TRUE.equals(addon.configuration().botMenuSub.allBots.get())) {
+      return getCachedBots();
+    }
+    Bot bot = getBotFromCache(addon);
+    return bot == null ? Collections.emptyList() : Collections.singletonList(bot);
+  }
+
+  /**
    * Returns whether the selected bot is online according to the last cached data.
    * No network request is made - call {@link #updateBotList(GGBot)} first if
    * freshness is required.
@@ -118,7 +162,7 @@ public class BotRequests {
       try {
         if (addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) {
           cachedBots = new ArrayList<>(new BotsApi(
-              createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots());
+              createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots(null));
         }
       } catch (ApiException e) {
         addon.logger().error("Failed to refresh bot list: " + e.getMessage());
@@ -178,7 +222,7 @@ public class BotRequests {
   public static void updateBotList(GGBot addon) throws ApiException {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.updatebotlist")) return;
     cachedBots = new ArrayList<>(new BotsApi(
-        createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots());
+        createApiClient(addon, "de.ggbot.addon.api.updatebotlist")).getAllBots(null));
     // Let the CBX react to online-state changes (connect on offline-to-online,
     // tear down when the bot went offline).
     de.ggbot.core.cbx.CbxManager.get().onBotStatusRefresh();
@@ -296,6 +340,17 @@ public class BotRequests {
   private static final String F_ROTATE_BOT = "de.ggbot.addon.api.rotatebot";
   private static final String F_GET_BOT_LOCATION = "de.ggbot.addon.api.getbotlocation";
   private static final String F_CBX = "de.ggbot.addon.cbx";
+  private static final String F_GET_AFK = "de.ggbot.addon.api.getafk";
+  private static final String F_AFK_CONTROL = "de.ggbot.addon.api.afkcontrol";
+  private static final String F_AFK_CHAT = "de.ggbot.addon.api.afkchat";
+  private static final String F_AFK_INSPECT = "de.ggbot.addon.api.afkinspect";
+  private static final String F_GET_FOOD = "de.ggbot.addon.api.getfood";
+  private static final String F_GET_LEVEL = "de.ggbot.addon.api.getlevel";
+  private static final String F_REPLAYS = "de.ggbot.addon.api.replays";
+  private static final String F_MCCONTROL = "de.ggbot.addon.api.mccontrol";
+  private static final String F_GET_REPLAY = "de.ggbot.addon.api.getreplay";
+  private static final String F_SEARCH_REPLAYS = "de.ggbot.addon.api.searchreplays";
+  private static final String F_DELETE_REPLAY = "de.ggbot.addon.api.deletereplay";
 
   /** Runs {@code work} on a daemon thread, then {@code onResult} on the render thread. */
   private static <T> void async(GGBot addon, ThrowingSupplier<T> work, Consumer<T> onResult, T fallback) {
@@ -322,28 +377,178 @@ public class BotRequests {
   }
 
   /**
-   * Fetches the set of active module names. Module activity is read from the bot
-   * settings ({@code module-<name>=true}), matching the backend convention.
+   * Retrieves active module names for a bot, either from module data or offline settings, and passes them to a callback.
+   *
+   * @param addon The GGBot instance managing module access
+   * @param bot The bot object to check for active modules
+   * @param cb The callback to handle the retrieved module names
    */
   public static void getActiveModulesAsync(GGBot addon, Bot bot, Consumer<Set<String>> cb) {
     if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_MODULES)) {
-      cb.accept(new HashSet<>());
+      cb.accept(null);
       return;
     }
     async(addon, () -> {
-      Set<String> active = new HashSet<>();
-      Map<String, String> settings =
-          new BotsApi(createApiClient(addon, F_GET_MODULES)).getBotSettings(bot.getToken());
-      if (settings != null) {
-        for (Map.Entry<String, String> e : settings.entrySet()) {
-          if (e.getKey() != null && e.getKey().startsWith("module-")
-              && "true".equalsIgnoreCase(e.getValue())) {
-            active.add(e.getKey().substring("module-".length()).toLowerCase());
-          }
-        }
+      return fetchActiveModules(addon, bot);
+    }, cb, null);
+  }
+
+  private static Set<String> fetchActiveModules(GGBot addon, Bot bot) throws ApiException {
+    BotsApi api = new BotsApi(createApiClient(addon, F_GET_MODULES));
+    String body = null;
+    try {
+      body = rawBody(api.getBotModulesCall(bot.getToken(), null));
+      if (ApiParsers.hasEnabledFlags(body)) return ApiParsers.parseModules(body);
+    } catch (ApiException | IOException e) {
+
+    }
+    Map<String, String> settings = api.getBotSettings(bot.getToken());
+    if (body != null && !ApiParsers.hasModuleKeys(settings)) {
+      return ApiParsers.parseModules(body);
+    }
+    return ApiParsers.modulesFromSettings(settings);
+  }
+
+  /**
+   * Clears previous bot data and initializes module information for the newly selected bot.
+   *
+   * @param addon The GGBot instance managing bot selection and module data
+   * Ensures the active modules are updated when the selected bot changes
+   */
+  public static void onSelectedBotChanged(GGBot addon) {
+    BotMenuState.get().resetForBotChange();
+    Bot bot = getBotFromCache(addon);
+    if (bot == null) return;
+    getActiveModulesAsync(addon, bot, modules -> {
+      Bot current = getBotFromCache(addon);
+      if (current != null && Objects.equals(current.getId(), bot.getId())) {
+        BotMenuState.get().setActiveModules(modules);
       }
-      return active;
-    }, cb, new HashSet<>());
+    });
+  }
+
+  /**
+   * Retrieves the raw response body from an API call, handling both successful and failed responses.
+   *
+   * @param call The API call object to execute
+   * @return The raw response body as a string, or an empty string if none
+   */
+  private static String rawBody(Call call) throws ApiException, IOException {
+    try (Response response = call.execute()) {
+      String body = response.body() != null ? response.body().string() : "";
+      if (!response.isSuccessful()) throw new ApiException(response.code(), body);
+      return body;
+    }
+  }
+
+  private static String rawApi(GGBot addon, String feature, String method, String path)
+      throws ApiException, IOException {
+    Request request = new Request.Builder()
+        .url(addon.getVersioningHandler().getBaseUrlForFeature(feature) + path)
+        .addHeader("Authorization", "Bearer " + addon.configuration().token.get())
+        .method(method, null)
+        .build();
+    return rawBody(createApiClient(addon, feature).getHttpClient().newCall(request));
+  }
+
+  /**
+   * Retrieves a bot's replays, most recent first.
+   *
+   * @param addon the addon
+   * @param bot   the bot
+   * @param cb    receives the replays, {@code null} if loading failed
+   */
+  public static void getReplaysAsync(GGBot addon, Bot bot, Consumer<List<ReplaySummary>> cb) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_REPLAYS)) {
+      cb.accept(new ArrayList<>());
+      return;
+    }
+
+    async(addon, () -> new ModulesApi(createApiClient(addon, F_REPLAYS))
+        .listReplays(bot.getToken(), null, null), cb, null);
+  }
+
+  /**
+   * Loads a replay together with access to its files, see {@link de.ggbot.core.replay.ReplayExport}.
+   *
+   * @param addon    the addon
+   * @param bot      the bot
+   * @param replayId the replay
+   * @return the replay details as JSON; the replay itself has no model in the SDK
+   */
+  public static JsonObject getReplay(GGBot addon, Bot bot, String replayId)
+      throws ApiException, IOException {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_REPLAY)) {
+      throw new IOException("Replays are disabled");
+    }
+
+    ModulesApi api = new ModulesApi(createApiClient(addon, F_GET_REPLAY));
+    Object replay = api.getReplay(bot.getToken(), replayId);
+    return JSON.getGson().toJsonTree(replay).getAsJsonObject();
+  }
+
+  /**
+   * Queries the events of a bot's replays, see {@link de.ggbot.core.replay.ReplayEvents}.
+   *
+   * @param addon the addon
+   * @param bot   the bot
+   * @param query the query string, e.g. {@code text=diamond&kinds=1}
+   * @return the snippets that may match, along with access to their files
+   */
+  public static JsonObject searchReplays(GGBot addon, Bot bot, String query)
+      throws ApiException, IOException {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_SEARCH_REPLAYS)) {
+      throw new IOException("Replays are disabled");
+    }
+
+    String path = "/bot/" + bot.getToken() + "/modules/replay/search?" + query;
+    return JsonParser.parseString(rawApi(addon, F_SEARCH_REPLAYS, "GET", path)).getAsJsonObject();
+  }
+
+  /**
+   * Deletes a replay belonging to a bot.
+   *
+   * @param addon    the addon
+   * @param bot      the bot
+   * @param replayId the replay
+   * @param cb       receives whether the deletion succeeded
+   */
+  public static void deleteReplayAsync(GGBot addon, Bot bot, String replayId,
+      Consumer<Boolean> cb) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_DELETE_REPLAY)) {
+      cb.accept(false);
+      return;
+    }
+
+    async(addon, () -> {
+      ModulesApi api = new ModulesApi(createApiClient(addon, F_DELETE_REPLAY));
+      api.deleteReplay(bot.getToken(), replayId);
+      return true;
+    }, cb, false);
+  }
+
+  /**
+   * Determines the domain for joining a bot via MCControl, only while its proxy is running.
+   *
+   * @param addon the addon
+   * @param bot   the bot
+   * @param cb    receives the domain, {@code null} when it cannot be joined
+   */
+  public static void getMcControlDomainAsync(GGBot addon, Bot bot, Consumer<String> cb) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_MCCONTROL)) {
+      cb.accept(null);
+      return;
+    }
+
+    async(addon, () -> {
+      ModulesApi api = new ModulesApi(createApiClient(addon, F_MCCONTROL));
+      GetMCControlStatus200Response status = api.getMCControlStatus(bot.getToken());
+      boolean running = status.getData() != null
+          && Boolean.TRUE.equals(status.getData().getIsRunning());
+      if (!running) return null;
+
+      return ApiParsers.mcControlDomain(api.getMCControlDomains(bot.getToken()));
+    }, cb, null);
   }
 
   /** Fetches the settings map for a single module (e.g. {@code sell}). */
@@ -562,6 +767,259 @@ public class BotRequests {
   }
 
   /**
+   * Generates a CBX session for AFK bots associated with the account, returning the raw JSON response.
+   *
+   * @param addon The GGBot instance managing CBX session creation
+   * @return The raw JSON string representing the CBX session data
+   */
+  public static String createAfkCbxSession(GGBot addon) throws ApiException, IOException {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_CBX)) return null;
+    return rawBody(new AfkApi(createApiClient(addon, F_CBX)).createAfkCbxSessionCall(null));
+  }
+
+  private static void afkPost(GGBot addon, String feature, List<String> paths, JsonObject body) {
+    async(addon, () -> {
+      String base = addon.getVersioningHandler().getBaseUrlForFeature(feature);
+      String token = addon.configuration().token.get();
+      AfkHttp.forEach(paths, path -> AfkHttp.post(base + path, token, body));
+      return true;
+    }, done -> { }, false);
+  }
+
+  private static List<String> botPaths(List<String> tokens, String action) {
+    List<String> paths = new ArrayList<>();
+    for (String token : tokens) {
+      paths.add("/afk/bots/" + token + action);
+    }
+    return paths;
+  }
+
+  /**
+   * Fetches AFK fleets and bots for the account, providing an empty overview if the feature is disabled or the request fails.
+   *
+   * @param addon The GGBot instance managing AFK data retrieval
+   * @param cb The callback to handle the retrieved AfkOverview data
+   */
+  public static void getAfkOverviewAsync(GGBot addon, Consumer<AfkOverview> cb) {
+    AfkOverview empty = new AfkOverview(new ArrayList<>(), new ArrayList<>());
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_AFK)) {
+      cb.accept(empty);
+      return;
+    }
+    async(addon, () -> {
+      AfkApi api = new AfkApi(createApiClient(addon, F_GET_AFK));
+      return new AfkOverview(ApiParsers.parseFleets(rawBody(api.getAfkFleetsCall(null))),
+          ApiParsers.parseBots(rawBody(api.getAfkBotsCall(null, null))));
+    }, overview -> {
+      if (overview == null) {
+        cb.accept(empty);
+        return;
+      }
+      updateAfkWidgets(overview.getBots());
+      cb.accept(overview);
+    }, null);
+  }
+
+  /**
+   * Refreshes AFK widgets by retrieving bot data in a single API call.
+   *
+   * @param addon The GGBot instance managing AFK widget updates
+   */
+  public static void refreshAfkWidgets(GGBot addon) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_AFK)) return;
+    async(addon, () -> ApiParsers.parseBots(
+        rawBody(new AfkApi(createApiClient(addon, F_GET_AFK)).getAfkBotsCall(null, null))), bots -> {
+      if (bots != null) updateAfkWidgets(bots);
+    }, null);
+  }
+
+  private static void updateAfkWidgets(List<AfkBot> bots) {
+    Set<Integer> fleets = new HashSet<>();
+    Set<Integer> activeFleets = new HashSet<>();
+    int online = 0;
+    for (AfkBot bot : bots) {
+      fleets.add(bot.getFleet());
+      if (AfkOverview.isOnline(bot)) {
+        online++;
+        activeFleets.add(bot.getFleet());
+      }
+    }
+    AfkBotsWidget.update(online + "/" + bots.size());
+    AfkFleetsWidget.update(activeFleets.size() + "/" + fleets.size());
+  }
+
+  /**
+   * Initiates the startup of all bots within a specified fleet, with the completion handler executed on the render thread.
+   *
+   * @param addon The GGBot instance managing AFK fleet operations
+   * @param fleet The AfkFleet object representing the fleet to start
+   * @param onDone The Runnable to execute upon successful completion of the fleet start
+   */
+  public static void startAfkFleetAsync(GGBot addon, AfkFleet fleet, Runnable onDone) {
+    afkControl(addon, api -> api.startAfkFleet(fleet.getId()), onDone);
+  }
+
+  /**
+   * Initiates the shutdown of all bots within a specified fleet, with the completion handler executed on the render thread.
+   *
+   * @param addon The GGBot instance managing AFK fleet operations
+   * @param fleet The AfkFleet object representing the fleet to stop
+   * @param onDone The Runnable to execute upon successful completion of the fleet stop
+   */
+  public static void stopAfkFleetAsync(GGBot addon, AfkFleet fleet, Runnable onDone) {
+    afkControl(addon, api -> api.stopAfkFleet(fleet.getId()), onDone);
+  }
+
+  /**
+   * Starts specified AFK bots, with the completion handler executed on the render thread.
+   *
+   * @param addon The GGBot instance managing AFK bot operations
+   * @param tokens The list of bot tokens to start
+   * @param onDone The Runnable to execute upon successful completion of bot startup
+   */
+  public static void startAfkBotsAsync(GGBot addon, List<String> tokens, Runnable onDone) {
+    afkControl(addon, api -> AfkHttp.forEach(tokens, api::startAfkBot), onDone);
+  }
+
+  /**
+   * Stops specified AFK bots, with the completion handler executed on the render thread.
+   *
+   * @param addon The GGBot instance managing AFK bot operations
+   * @param tokens The list of bot tokens to stop
+   * @param onDone The Runnable to execute upon successful completion of bot shutdown
+   */
+  public static void stopAfkBotsAsync(GGBot addon, List<String> tokens, Runnable onDone) {
+    afkControl(addon, api -> AfkHttp.forEach(tokens, api::stopAfkBot), onDone);
+  }
+
+  private static void afkControl(GGBot addon, AfkAction action, Runnable onDone) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_AFK_CONTROL)) {
+      Laby.labyAPI().minecraft().executeOnRenderThread(onDone);
+      return;
+    }
+    async(addon, () -> {
+      action.run(new AfkApi(createApiClient(addon, F_AFK_CONTROL)));
+      return true;
+    }, done -> onDone.run(), false);
+  }
+
+  @FunctionalInterface
+  private interface AfkAction {
+    void run(AfkApi api) throws Exception;
+  }
+
+  /**
+   * Sends a message to online bots within a fleet, prioritizing CBX if available.
+   *
+   * @param addon The GGBot instance managing AFK fleet communication
+   * @param fleet The AfkFleet object representing the target fleet
+   * @param onlineTokens The list of tokens for online bots in the fleet
+   * @param text The message content to send to the bots
+   */
+  public static void chatAfkFleetAsync(GGBot addon, AfkFleet fleet, List<String> onlineTokens,
+      String text) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_AFK_CHAT)) return;
+    if (AfkCbxManager.get().tryChat(onlineTokens, text)) return;
+    JsonObject body = new JsonObject();
+    body.addProperty("message", text);
+    afkPost(addon, F_AFK_CHAT, List.of("/afk/fleets/" + fleet.getId() + "/chat"), body);
+  }
+
+  /**
+   * Sends a message to AFK bots, utilizing CBX for efficient delivery if available.
+   *
+   * @param addon The GGBot instance managing AFK bot communication
+   * @param tokens The list of bot tokens to message
+   * @param text The message content to send to the bots
+   */
+  public static void chatAfkBotsAsync(GGBot addon, List<String> tokens, String text) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_AFK_CHAT)) return;
+    if (AfkCbxManager.get().tryChat(tokens, text)) return;
+    JsonObject body = new JsonObject();
+    body.addProperty("message", text);
+    afkPost(addon, F_AFK_CHAT, botPaths(tokens, "/chat"), body);
+  }
+
+  /**
+   * Directs AFK bots to move with specified forward, strafe, turn, and jump parameters.
+   *
+   * @param addon The GGBot instance managing AFK bot control
+   * @param tokens The list of bot tokens to control
+   * @param forward The amount to move forward
+   * @param strafe The amount to move sideways
+   * @param turn The amount to rotate
+   * @param jump Whether to perform a jump action
+   */
+  public static void walkAfkBotsAsync(GGBot addon, List<String> tokens, double forward,
+      double strafe, double turn, boolean jump) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_AFK_CONTROL)) return;
+    if (AfkCbxManager.get().tryWalk(tokens, forward, strafe, turn, jump)) return;
+    JsonObject body = new JsonObject();
+    body.addProperty("forward", forward);
+    body.addProperty("strafe", strafe);
+    body.addProperty("turn", turn);
+    body.addProperty("jump", jump);
+    afkPost(addon, F_AFK_CONTROL, botPaths(tokens, "/walk"), body);
+  }
+
+  /**
+   * Initiates an inspection of an AFK bot via CBX, returning null if no response is received.
+   *
+   * @param addon The GGBot instance managing AFK bot inspection
+   * @param bot The AfkBot object to inspect
+   * @param cb The callback to handle the inspection result
+   */
+  public static void inspectAfkBotAsync(GGBot addon, AfkBot bot, Consumer<AfkInspect> cb) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_AFK_INSPECT)) {
+      cb.accept(null);
+      return;
+    }
+    boolean sent = AfkCbxManager.get().tryInspect(bot.getToken(), result ->
+        Laby.labyAPI().minecraft().executeOnRenderThread(() -> cb.accept(result)));
+    if (sent) return;
+    async(addon, () -> new AfkApi(createApiClient(addon, F_AFK_INSPECT))
+        .inspectAfkBot(bot.getToken()), cb, null);
+  }
+
+  /**
+   * Fetches the food level of a bot using CBX if available, returning null if the operation fails.
+   *
+   * @param addon The GGBot instance managing food level retrieval
+   * @param bot The Bot object to check for food level
+   * @return The food level as a double value, or null if the operation fails
+   */
+  public static Double getFood(GGBot addon, Bot bot) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_FOOD)) return null;
+    double live = CbxManager.get().getLiveFood(bot);
+    if (live >= 0) return live;
+    try {
+      return new IngameApi(createApiClient(addon, F_GET_FOOD)).getBotFood(bot.getToken()).getData();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  /**
+   * Retrieves the experience level of a bot using CBX if available, returning null if the operation fails.
+   *
+   * @param addon The GGBot instance managing experience level retrieval
+   * @param bot The Bot object to check for experience level
+   * @return The experience level as an integer value, or null if the operation fails
+   */
+  public static Integer getLevel(GGBot addon, Bot bot) {
+    if (!addon.getVersioningHandler().isFeatureEnabled(F_GET_LEVEL)) return null;
+    int live = CbxManager.get().getLiveLevel(bot);
+    if (live >= 0) return live;
+    try {
+      var data = new IngameApi(createApiClient(addon, F_GET_LEVEL))
+          .getBotExperience(bot.getToken()).getData();
+      return data != null ? data.getLevel() : null;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  /**
    * Returns the bot's current world position, or {@code null} on failure.
    * Served from the live CBX movement subscription when fresh data is
    * available, otherwise from the HTTP endpoint.
@@ -589,7 +1047,7 @@ public class BotRequests {
     if (!addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.api.isonline")) return false;
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.isonline");
     long botId = getSelectedBotId(addon);
-    for (Bot bot : new BotsApi(client).getAllBots()) {
+    for (Bot bot : new BotsApi(client).getAllBots(null)) {
       if (bot.getId() == botId) return Boolean.TRUE.equals(bot.getOnline());
     }
     return false;
@@ -720,6 +1178,8 @@ new OkHttpClient().newCall(request).enqueue(new Callback() {
     if (!GGBot.isAuthenticated()) { callback.accept(0.0); return; }
     Bot bot = getBotFromCache(addon);
     if (bot == null) { callback.accept(0.0); return; }
+    double live = CbxManager.get().getLiveHealth(bot);
+    if (live >= 0) { callback.accept(live); return; }
     ApiClient client = createApiClient(addon, "de.ggbot.addon.api.gethealth");
     new IngameApi(client).getBotHealthAsync(bot.getToken(), new ApiCallback<>() {
       @Override public void onFailure(ApiException e, int s, Map<String, List<String>> h) { callback.accept(0.0); }

@@ -67,14 +67,13 @@ public class CheckGGBot implements BulletPoint {
       // wrongly report a real bot as "not a bot".
       boolean isBot = false;
       try {
-        GetBotsOnServer200Response response = api.getBotsOnServer(finalServerIP);
+        // Only online bots are requested: a matching name alone does not prove the
+        // account is actually running GGBot.
+        GetBotsOnServer200Response response = api.getBotsOnServer(finalServerIP, true);
         if (response != null && response.getBots() != null) {
           for (GetBotsOnServer200ResponseBotsInner serverBot : response.getBots()) {
-            // Require the bot to be online: a matching name alone does not prove the
-            // account is actually running GGBot.
             if (serverBot.getLinkName() != null
-                && serverBot.getLinkName().equalsIgnoreCase(player.getName())
-                && Boolean.TRUE.equals(serverBot.getOnline())) {
+                && serverBot.getLinkName().equalsIgnoreCase(player.getName())) {
               isBot = true;
               break;
             }

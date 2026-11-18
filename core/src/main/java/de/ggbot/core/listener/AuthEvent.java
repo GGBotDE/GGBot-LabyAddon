@@ -111,9 +111,9 @@ public class AuthEvent {
             .color(NamedTextColor.RED).build();
         action = Component.text()
             .append(Component.translatable("ggbot.messages.join.error.expired.text2")
-                .decoration(TextDecoration.BOLD, true))
+                .decorate(TextDecoration.BOLD))
             .append(Component.translatable("ggbot.messages.join.error.expired.text3")
-                .decoration(TextDecoration.BOLD, false))
+                .undecorate(TextDecoration.BOLD))
             .color(NamedTextColor.GREEN)
             .clickEvent(ClickEvent.openUrl(authServer.getUrl()))
             .build();
@@ -123,9 +123,9 @@ public class AuthEvent {
             .color(NamedTextColor.RED).build();
         action = Component.text()
             .append(Component.translatable("ggbot.messages.join.error.authenticate.text2")
-                .decoration(TextDecoration.BOLD, true))
+                .decorate(TextDecoration.BOLD))
             .append(Component.translatable("ggbot.messages.join.error.authenticate.text3")
-                .decoration(TextDecoration.BOLD, false))
+                .undecorate(TextDecoration.BOLD))
             .color(NamedTextColor.GREEN)
             .clickEvent(ClickEvent.openUrl(authServer.getUrl()))
             .build();
@@ -138,9 +138,9 @@ public class AuthEvent {
           .color(NamedTextColor.RED).build();
       action = Component.text()
           .append(Component.translatable("ggbot.messages.join.error.authenticate.text2")
-              .decoration(TextDecoration.BOLD, true))
+              .decorate(TextDecoration.BOLD))
           .append(Component.translatable("ggbot.messages.join.error.authenticate.text3")
-              .decoration(TextDecoration.BOLD, false))
+              .undecorate(TextDecoration.BOLD))
           .color(NamedTextColor.GREEN)
           .build();
     }

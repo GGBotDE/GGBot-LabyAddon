@@ -67,6 +67,12 @@ public class GeneralSubConfig extends Config {
   @MultiKeyBindSetting
   public final ConfigProperty<Key[]> botSelectorKey = new ConfigProperty<>(new Key[]{Key.L_CONTROL, Key.B});
 
+  @SwitchSetting
+  public final ConfigProperty<Boolean> afkFleetsEnabled = new ConfigProperty<>(true);
+
+  @MultiKeyBindSetting
+  public final ConfigProperty<Key[]> afkFleetsKey = new ConfigProperty<>(new Key[]{Key.L_CONTROL, Key.J});
+
   /** Show "Follow Player" in the player middle-click menu (utils module). */
   @SwitchSetting
   public final ConfigProperty<Boolean> followPlayerEnabled = new ConfigProperty<>(true);

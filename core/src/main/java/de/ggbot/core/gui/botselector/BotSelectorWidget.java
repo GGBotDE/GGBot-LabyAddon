@@ -63,6 +63,15 @@ public class BotSelectorWidget extends DivWidget {
     });
     buttonBar.addEntry(refreshButton);
 
+    GGBot addon = GGBot.getInstance();
+    if (addon.getVersioningHandler().isFeatureEnabled("de.ggbot.addon.afkfleets")) {
+      ButtonWidget afkButton = ButtonWidget.i18n("ggbot.gui.botselector.afkFleets");
+      afkButton.addId("bot-selector-refresh-button");
+      afkButton.setPressable(() -> Laby.labyAPI().minecraft().minecraftWindow().displayScreen(
+          new de.ggbot.core.gui.afkfleets.AfkFleetsActivity(addon)));
+      buttonBar.addEntry(afkButton);
+    }
+
     ButtonWidget closeButton = ButtonWidget.i18n("ggbot.gui.botselector.close");
     closeButton.addId("bot-selector-close-button");
     closeButton.setPressable(() -> {
@@ -81,7 +90,7 @@ public class BotSelectorWidget extends DivWidget {
     this.refreshAction = refreshAction;
   }
 
-  static String formatBotDisplay(Bot bot) {
+  public static String formatBotDisplay(Bot bot) {
     if (bot.getDescription() != null && !bot.getDescription().isEmpty()) {
       return bot.getDescription() + " (" + bot.getId() + ")";
     }

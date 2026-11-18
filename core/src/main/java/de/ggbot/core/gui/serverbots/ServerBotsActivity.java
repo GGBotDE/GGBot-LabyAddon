@@ -112,7 +112,8 @@ public class ServerBotsActivity extends SimpleActivity {
         api.setCustomBaseUrl(
             addon.getVersioningHandler().getBaseUrlForFeature("de.ggbot.addon.serverbots"));
         String serverIp = resolveServerDomain(api);
-        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp);
+        // Fetches both online and offline bot states; the online filter is handled locally.
+        GetBotsOnServer200Response response = api.getBotsOnServer(serverIp, null);
         if (response != null && response.getBots() != null) {
           for (GetBotsOnServer200ResponseBotsInner bot : response.getBots()) {
             String name = bot.getLinkName();

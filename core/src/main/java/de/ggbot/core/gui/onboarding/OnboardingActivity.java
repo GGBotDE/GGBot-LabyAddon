@@ -90,18 +90,20 @@ public class OnboardingActivity extends SimpleActivity {
 
     VerticalListWidget<Widget> content = new VerticalListWidget<>();
     content.addId("onboarding-content");
-
-    HorizontalListWidget buttons = new HorizontalListWidget();
-    buttons.addId("onboarding-buttons");
-
-    buildStep(content, buttons);
-
     ScrollWidget scroll = new ScrollWidget(content);
     scroll.addId("onboarding-scroll");
     panel.addChild(scroll);
+
+    HorizontalListWidget buttons = new HorizontalListWidget();
+    buttons.addId("onboarding-buttons");
     panel.addChild(buttons);
 
     this.document().addChild(panel);
+
+    // Initialized when the panel is attached to ensure the scroll area uses the
+    // actual content height. This allows oversized steps to scroll instead of
+    // being clipped by the container.
+    buildStep(content, buttons);
   }
 
   private void buildStep(VerticalListWidget<Widget> content, HorizontalListWidget buttons) {
@@ -125,7 +127,7 @@ public class OnboardingActivity extends SimpleActivity {
       content.addChildInitialized(privacyToggle("ggbot.onboarding.privacy.versionReport",
           GGBot.getInstance().configuration().generalSub.versionReportEnabled));
 
-      buttons.addEntry(cancel());
+      buttons.addEntryInitialized(cancel());
       return;
     }
 
@@ -351,17 +353,17 @@ public class OnboardingActivity extends SimpleActivity {
   private void finishStep(VerticalListWidget<Widget> content, HorizontalListWidget buttons) {
     title(content, "ggbot.onboarding.finish.title");
     paragraph(content, "ggbot.onboarding.finish.body");
-    buttons.addEntry(secondary("ggbot.onboarding.back",
+    buttons.addEntryInitialized(secondary("ggbot.onboarding.back",
         () -> go(path, path == Path.SHOP ? 1 : 3)));
-    buttons.addEntry(primary("ggbot.onboarding.finish.button", this::complete));
-    buttons.addEntry(cancel());
+    buttons.addEntryInitialized(primary("ggbot.onboarding.finish.button", this::complete));
+    buttons.addEntryInitialized(cancel());
   }
 
   /** Adds a Back / Next / Cancel button row to the pinned button bar. */
   private void navRow(HorizontalListWidget buttons, Runnable back, Runnable next) {
-    buttons.addEntry(secondary("ggbot.onboarding.back", back));
-    buttons.addEntry(primary("ggbot.onboarding.next", next));
-    buttons.addEntry(cancel());
+    buttons.addEntryInitialized(secondary("ggbot.onboarding.back", back));
+    buttons.addEntryInitialized(primary("ggbot.onboarding.next", next));
+    buttons.addEntryInitialized(cancel());
   }
 
   private void title(VerticalListWidget<Widget> panel, String key) {
