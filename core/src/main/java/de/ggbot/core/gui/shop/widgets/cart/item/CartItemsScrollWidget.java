@@ -1,10 +1,12 @@
 package de.ggbot.core.gui.shop.widgets.cart.item;
 
+import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.widget.AbstractWidget;
 import net.labymod.api.client.gui.screen.widget.action.ListSession;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.ScrollWidget;
 
+@AutoWidget
 public class CartItemsScrollWidget extends AbstractWidget<ScrollWidget> {
 
   @Override

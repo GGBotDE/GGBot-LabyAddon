@@ -1,5 +1,6 @@
 package de.ggbot.core.gui.shop.widgets.cart.item;
 
+import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.widget.AbstractWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
@@ -14,6 +15,7 @@ import java.util.List;
  * those on the wrapper widget intercepted the field's normal input routing and
  * prevented typing.
  */
+@AutoWidget
 public class CartCountSelectionWidget extends AbstractWidget<TextFieldWidget> {
   private final List<Runnable> changeListeners = new ArrayList<>();
 

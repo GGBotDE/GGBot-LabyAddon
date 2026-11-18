@@ -1,6 +1,6 @@
 package de.ggbot.core.gui.shop.widgets.cart.item;
 
-import net.labymod.api.client.gui.icon.Icon;
+import de.ggbot.core.gui.botmenu.ItemIcon;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.Link;
@@ -16,10 +16,10 @@ public class CartItemWidget extends DivWidget {
   public final float pricePerPurchase;
   public final long itemCountPerPurchase;
   public final String itemName;
-  public final Icon icon;
+  public final ItemIcon icon;
 
   public CartItemWidget(float pricePerPurchase, long itemCountPerPurchase, String itemName,
-      Icon icon, String itemId) {
+      ItemIcon icon, String itemId) {
     super();
     this.pricePerPurchase = pricePerPurchase;
     this.itemCountPerPurchase = itemCountPerPurchase;
